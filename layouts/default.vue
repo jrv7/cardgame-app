@@ -1,11 +1,11 @@
 <script setup lang="ts">
 useHead({
   titleTemplate: () => {
-    return 'Fiducial - SSO'
+    return 'My Card Vault'
   },
-  link: [{ rel: 'icon', type: 'image/x-icon', href: '/media/favicon/favicon-32x32.png' }],
+  link: [{ rel: 'icon', type: 'image/x-icon', href: '/media/favicon/favicon-16x16.png' }],
   meta: [
-    { name: 'description', content: 'Connection Portal' }
+    { name: 'description', content: 'My Card Vault' }
   ]
 });
 
@@ -34,5 +34,9 @@ const globalState = useGlobalState();
     <!-- Footer -->
     <app-footer />
     <!-- /Footer -->
+
+    <!-- Modals -->
+    <app-modals-container />
+    <!-- /Modals -->
   </div>
 </template>

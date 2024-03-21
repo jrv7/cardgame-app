@@ -1,20 +1,89 @@
 <script setup lang="ts">
-
 const localePath = useLocalePath();
 const {locales, locale, setLocale} = useI18n();
+const route = useRoute();
+const router = useRouter();
+const authHandler = useOauthServerHandler();
 
+const authState = useAuthState();
+
+const userRole = computed(() => {
+  if (authState.value.user.roles?.includes('ROLE_SUPERUSER')) {
+    return useNuxtApp().$_Tt('administrator');
+  } else if (authState.value.user.roles?.includes('ROLE_ADMIN')) {
+    return useNuxtApp().$_Tt('super_user');
+  } else {
+    return useNuxtApp().$_Tt('user');
+  }
+});
+
+const menuOptions = computed(() => {
+  return [
+    { value: 1, path: 'cards', text: 'cards', description: 'cards_list_description', icon: 'hat-wizard'},
+    { value: 3, path: 'users', text: 'users', description: 'users_list_description', icon: 'user'},
+  ];
+});
+
+const selectedMenu = computed({
+  get() {
+    const parts = route.path.split('/');
+    console.log('Showing menus', parts);
+    return menuOptions.value.find(i => parts.includes(i.path))?.value || 1;
+  },
+  set(value:number) {
+    const selOption = menuOptions.value.find(i => i.value === value);
+
+    if (selOption) {
+      router.push({path: `/${selOption.path}`});
+    } else {
+      router.push({path: '/'});
+    }
+  }
+});
+
+const username = computed(() => {
+  return authState.value.user.fullName ?? (authState.value.user.name && authState.value.user.lastName ? `${authState.value.user.name} ${authState.value.user.lastName}` : authState.value.user.name)
+})
+
+const handleLogOut = async () => {
+  await authHandler.destroySession()
+      .then(() => {
+        router.push({ path: '/auth/login' });
+      })
+}
 </script>
 
 <template>
   <div class="system-header">
-    <div class="header-logo">&nbsp;</div>
-    <span class="message-txt text-size-sm">{{ $_TT('connection') }}</span>
+    <ul class="header-list">
+      <li class="separator" />
 
-    <div class="header-actions-container g-row  text-align-center --width-px-52">
-      <div class="g-col --span-23">
+      <li>
+        <app-input-select
+            left-icon="user"
+            v-model="selectedMenu"
+            :options="menuOptions"
+        ></app-input-select>
+      </li>
+
+      <li class="spacer" />
+
+      <li>
+        <span>{{ username }}</span>
+      </li>
+
+      <li class="separator" />
+
+      <li>
+        <span>{{ userRole }}</span>
+      </li>
+
+      <li class="separator" />
+
+      <li>
         <app-button-select
-            type="secondary"
-            size="square-sm"
+            type="link"
+            size="xm"
             class="margin-v-auto margin-left-auto margin-right-4"
         >
           <template #button-slot>
@@ -46,8 +115,21 @@ const {locales, locale, setLocale} = useI18n();
             </ul>
           </app-card>
         </app-button-select>
-      </div>
-    </div>
+      </li>
+
+      <li class="separator" />
+
+      <li>
+        <app-button
+            type="link"
+            size="square-xs"
+            @click="handleLogOut()"
+        >
+          <fa-icon :icon="['fas', 'power-off']" />
+        </app-button>
+      </li>
+      <li class="separator invisible" />
+    </ul>
   </div>
 </template>
 

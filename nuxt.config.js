@@ -72,12 +72,25 @@ export default defineNuxtConfig({
     '@/assets/scss/components/system/app-header.scss',
     '@/assets/scss/components/system/app-body.scss',
     '@/assets/scss/components/system/app-footer.scss',
+    '@/assets/scss/components/system/app-modals-container.scss',
+    '@/assets/scss/components/system/app-system-prompt-confirmation-message.scss',
+    '@/assets/scss/components/common/app-loading.scss',
+    '@/assets/scss/components/common/app-modal.scss',
     '@/assets/scss/components/common/app-card.scss',
     '@/assets/scss/components/common/app-card-message.scss',
     '@/assets/scss/components/common/app-input.scss',
     '@/assets/scss/components/common/app-button.scss',
-      // Pages
-    '@/assets/scss/components/pages/authorize-page.scss'
+    '@/assets/scss/components/common/app-table.scss',
+    '@/assets/scss/components/common/app-table-pagination.scss',
+    '@/assets/scss/components/common/app-badge.scss',
+    '@/assets/scss/components/common/app-accordion.scss',
+    '@/assets/scss/components/common/app-date-time-picker.scss',
+    '@/assets/scss/components/common/app-label.scss',
+    '@/assets/scss/components/common/app-mtg-card.scss',
+    // Pages
+    '@/assets/scss/components/pages/app-page--cards-list.scss',
+    // Sub Pages
+    '@/assets/scss/components/pages/app-subpage--card-details.scss'
   ],
   components: [
     {

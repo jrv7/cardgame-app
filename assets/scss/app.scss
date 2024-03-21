@@ -23,11 +23,8 @@ body {
   font-size: .845rem;
   letter-spacing: .02rem;
   line-height: 1.32rem;
-  //background-color: var(--c-fiducial-light-grey);
-  background-image: url('~/assets/images/backgrounds/fiducial_auth_background.jpg');
-  background-repeat: repeat;
-  background-position: center;
-  background-size: cover;
+  //background-color: var(--c-cardgame-light-grey);
+  background-color: #000;
   z-index: 1;
 
   .main-system {
@@ -44,4 +41,8 @@ body {
     -webkit-overflow-scrolling: touch;
     z-index: 2;
   }
+}
+
+.is-active {
+  z-index: 1001 !important;
 }

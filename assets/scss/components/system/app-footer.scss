@@ -4,22 +4,20 @@
 
 .system-footer {
   position: fixed;
-  bottom: 0;
+  bottom: -1px;
   left: 0;
   right: 0;
   display: flex;
   flex-flow: nowrap;
   width: 100vw;
-  height: 53px;
-  min-height: 53px;
-  max-height: 53px;
+  height: 1px;
+  min-height: 1px;
+  max-height: 1px;
   padding: 0;
   margin: 0;
-  background-color: var(--c-white);
-  opacity: .2;
+  opacity: 0;
   z-index: 10;
   transition: all .3s ease-in-out;
-  @include default-box-shadow();
 
   &:hover {
     opacity: .7;

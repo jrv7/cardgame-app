@@ -12,11 +12,14 @@ const props = withDefaults(
       icon?: string | string[] | null,
       title?: string | null,
       type?: SimpleButtonTypeType,
+      buttonType?: string | null,
       size?: SimpleButtonSizeType,
       disabled?: boolean,
       iconLeft?: string | string[] | null,
       iconRight?: string | string[] | null,
       spin?: boolean,
+      loading?:boolean,
+      useLoadingState?:boolean
     }>(),
     {
       modelValue: null,
@@ -25,11 +28,14 @@ const props = withDefaults(
       icon: null,
       title: null,
       type: 'primary',
+      buttonType: 'button',
       size: 'normal',
       disabled: false,
       iconLeft: null,
       iconRight: null,
-      spin: false
+      spin: false,
+      loading: false,
+      useLoadingState: false
     }
 );
 
@@ -55,8 +61,11 @@ const handleClick = () => {
       v-model="btnValue"
       :title="title"
       :type="type"
+      :button-type="buttonType"
       :size="size"
-      :disabled="disabled"
+      :use-loading-state="useLoadingState"
+      :loading="loading"
+      :disabled="disabled || loading"
       @clicked="handleClick()"
   >
     <slot></slot>

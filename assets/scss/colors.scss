@@ -14,18 +14,19 @@
   --c-orange-light: rgb(255,180,0);
 
   // General colors
-  --c-text-default-color: #666;
-  --c-text-default-color-lighter: #888;
-  --c-text-default-color-active: #88e;
+  --c-text-default-color: #ccc;
+  --c-text-default-color-lighter: #ddd;
+  --c-text-default-color-active: #eee;
   --c-default-border-color: #dedede;
   --c-default-border-color-lighter: #e4e4e4;
   --c-default-border-color-active: #88e;
   --c-default-boxshadow-color: #ccc;
+  --c-default-boxshadow-light-color: #eee;
 
   // Fiducial colors
-  --c-fiducial-grey: rgb(186, 192, 192);
-  --c-fiducial-dark-grey: #667;
-  --c-fiducial-light-grey: rgb(248,249,251);
+  --c-cardgame-grey: #aaa;
+  --c-cardgame-dark-grey: #a0a0af;
+  --c-cardgame-light-grey: #afafb0;
 
   // Button colors
   --c-button-primary-background: #3498db;
@@ -34,8 +35,69 @@
   --c-button-secondary-border: #fafafa;
   --c-button-warning-background: #baba00;
   --c-button-warning-border: #aaaa00;
+
+  // Designe system colors
+  --color-primary-green-dark: rgba(41,157,134,1);
+  --color-primary-green: rgba(26,188,156,1);
+  --color-primary-green-15: rgba(26,188,156,0.15);
+  --color-primary-green-10: rgba(26,188,156,0.10);
+  --color-primary-blue-dark: rgba(66,137,185,1);
+  --color-primary-blue: #a0a0af;
+  --color-primary-blue-15: rgba(52,152,219,0.15);
+  --color-primary-blue-10: rgba(52,152,219,0.10);
+  --color-primary-dark-blue: #a0a0af;
+  --color-primary-dark-blue-90: rgba(44,62,80,0.90);
+  --color-primary-dark-blue-70: #a0a0af;
+  --color-primary-dark-blue-50: rgba(44,62,80,0.50);
+  --color-primary-dark-blue-25: rgba(44,62,80,0.25);
+  --color-primary-dark-blue-15: rgba(44,62,80,0.15);
+  --color-primary-dark-blue-10: rgba(44,62,80,0.10);
+  --color-primary-dark-blue-6: rgba(44,62,80,0.06);
+  --color-primary-dark-blue-3: rgba(44,62,80,0.03);
+  --color-primary-white: rgba(255,255,255,1);
+  --color-secondary-red-dark: rgba(144,43,32,1);
+  --color-secondary-red: rgba(177,28,12,1);
+  --color-secondary-red-85: rgba(177,28,12,0.85);
+  --color-secondary-red-65: rgba(177,28,12,0.65);
+  --color-secondary-red-50: rgba(177,28,12,0.50);
+  --color-secondary-red-40: rgba(177,28,12,0.40);
+  --color-secondary-red-25: rgba(177,28,12,0.25);
+  --color-secondary-red-10: rgba(177,28,12,0.10);
+  --color-secondary-orange-dark: rgba(221,141,35,1);
+  --color-secondary-orange: rgba(243,156,18,1);
+  --color-secondary-orange-85: rgba(243,156,18,0.85);
+  --color-secondary-orange-15: rgba(243,156,18,0.15);
+  --color-secondary-green-dark: rgba(0,172,93,1);
+  --color-secondary-green: rgba(3,200,110,1);
+  --color-secondary-green-85: rgba(3,200,110,0.85);
+  --color-secondary-green-10: rgba(3,200,110,0.10);
+  --color-secondary-pink-dark: rgba(142,65,123,1);
+  --color-secondary-pink-85: rgba(196,91,170,0.85);
+  --color-secondary-pink: rgba(196,91,170,1);
+  --color-secondary-olive-dark: rgba(32,43,35,1);
+  --color-secondary-olive-85: rgba(58,79,65,0.85);
+  --color-secondary-olive: rgba(58,79,65,1);
+  --color-secondary-blue-dark: rgba(9,59,110,1);
+  --color-secondary-blue: rgba(9,77,146,1);
+  --color-secondary-blue-85: rgba(9,77,146,0.85);
+  --color-secondary-grey-dark: rgba(209,209,209,1);
+  --color-secondary-grey: rgba(239,239,239,1);
+  --color-secondary-grey-85: rgba(239,239,239,0.85);
+  --color-deco-grey: rgba(248,249,249,1);
+  --color-deco-green: rgba(101,147,123,1);
+  --color-deco-green-light: rgba(112,162,136,1);
+  --color-deco-purple: rgba(105,129,219,1);
+  --color-deco-purple-light: rgba(111,136,230,1);
+  --color-deco-pink: rgba(172,22,87,1);
+  --color-deco-pink-light: rgba(183,24,92,1);
+  --color-deco-gold: rgba(209,185,43,1);
+  --color-deco-gold-light: rgba(222,197,46,1);
+  --color-deco-orange: rgba(223,154,87,1);
+  --color-deco-orange-light: rgba(227,169,112,1);
+  --color-deco-brown: rgba(152,108,106,1);
+  --color-deco-brown-light: rgba(167,129,128,1);
 }
 
 // Text colors
 .--txt-color-black { color: var(--c-black); }
-.--txt-color-dark-gray { color: var(--c-fiducial-dark-grey); }
+.--txt-color-dark-gray { color: var(--c-cardgame-dark-grey); }

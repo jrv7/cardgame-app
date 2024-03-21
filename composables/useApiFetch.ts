@@ -1,55 +1,38 @@
 
-export const useApiPost = async (requestUrl, opts = {}) => {
+export const useApiPost = async (requestUrl, opts = {}, headers = {}) => {
   const config = useRuntimeConfig();
-  // const apiCookie = useCookie('api_token') ?? null;
 
-  let headers = {
-    Accept: '*/*',
-    'Origin': config.public.baseAppUrl,
-    'Type': 'application/json',
-    'Content-Type': 'application/json',
-  }
-  // "Authorization": apiCookie?.value ? `Bearer ${apiCookie?.value}` : ''
+  // headers.Authorization = `Bearer ${apiCookie?.value}`;
 
   return new Promise(async (resolve, reject) => {
     const reqOptions = {
       baseURL: config.public.baseApiUrl,
       method: 'POST',
       body: opts,
-      headers: headers
+      headers: {
+        Accept: '*/*',
+        'Origin': config.public.baseAppUrl,
+        'Type': 'application/json',
+        'Content-Type': 'application/json',
+        ...headers
+      }
     }
 
     await $fetch(requestUrl, reqOptions)
       .then((response) => {
-        resolve(response);
+        if (response.success) {
+          resolve(response);
+        } else {
+          reject({code: response.code, message: response.message});
+        }
       })
       .catch((error) => {
         console.log('Invalid credentials from API', error);
         reject(error);
       });
-    // await useFetch(requestUrl, reqOptions)
-    //   .then(res => {
-    //     const data = res.data.value
-    //     const error = res.error.value
-    //
-    //     if (error) {
-    //       // dealing error
-    //       // if (error.statusCode === 401 && error.statusMessage === 'Expired JWT Token') {
-    //       //   const router = useRouter()
-    //       //   router.push('/')
-    //       // }
-    //       console.error('API Post request response problem', error.statusCode ?? error.code);
-    //       reject({code: error.statusCode, message: error.statusMessage})
-    //     } else {
-    //       resolve(data)
-    //     }
-    //   }, error => {
-    //     console.error('API Post request response error', error.statusCode ?? error.code);
-    //     reject({code: error.statusCode ?? error.code, message: `Exception: ${error.statusMessage}`})
-    //   });
   })
 }
-export const useLocalApiPost = async (requestUrl, opts = {}) => {
+export const useLocalApiPost = async (requestUrl, opts = {}, headers = {}) => {
   const config = useRuntimeConfig();
 
   return new Promise(async (resolve, reject) => {
@@ -68,4 +51,28 @@ export const useLocalApiPost = async (requestUrl, opts = {}) => {
       reject(error.value.data)
     }
   })
+}
+
+export const useDynamicPost = async (requestUrl, opts = {}, headers = null) => {
+  const config = useRuntimeConfig();
+  const sessionCode = useCookie('managerSession') ?? null;
+
+  let postHeaders = {};
+  if (null === headers) {
+    if (sessionCode && sessionCode.value && sessionCode.value !== 'null') {
+      postHeaders = {
+        Authorization: `Bearer ${sessionCode.value}`
+      }
+    }
+  } else {
+    postHeaders = {
+      ...headers
+    }
+  }
+
+  if ([useConsts().ENV_DEVELOPMENT, useConsts().ENV_INTEGRATION, useConsts().ENV_RECETTE].includes(config.public.env)) {
+    return await useApiPost(requestUrl, opts, postHeaders);
+  } else {
+    return await useLocalApiPost(requestUrl, opts);
+  }
 }

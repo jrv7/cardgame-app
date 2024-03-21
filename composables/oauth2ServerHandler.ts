@@ -1,138 +1,164 @@
 import {OauthClientType, OauthQueryStringType} from "~/composables/customTypes/OauthClientType";
-import {useLocalApiPost} from "~/composables/useApiFetch";
+import {useDynamicPost, useLocalApiPost} from "~/composables/useApiFetch";
 import {errorHandler} from "ioredis/built/redis/event_handler";
 
 export const useOauthServerHandler = () => {
 
   async function doDestroyLogInSession() {
-    const clientState = useOauthState;
+    const settingsState = useSettingsState();
+    const authState = useAuthState();
+    const sessionCode = useCookie('managerSession') ?? null;
+
     return new Promise((resolve) => {
-      const sessionCode = useCookie('sessioncode') ?? null;
-      clientState().value.client.sessionState = 0;
       sessionCode.value = null;
+      settingsState.value = null;
+      authState.value = {
+        authenticated: false,
+        user: {
+          id: null,
+          email: null,
+          name: null,
+          lastName: null,
+          fullName: null,
+          roles: []
+        }
+      }
       resolve(true);
     });
   }
 
-  async function submitValidationCodeFormData(data: any){
+  async function requestLogin(data:{username:string, password:string}) {
     return new Promise((resolve, reject) => {
-      const sessionCode = useCookie('sessioncode') ?? null;
-      const languageCookie = useCookie('i18n_redirected') ?? 'en-US';
+      const sessionCode = useCookie('managerSession') ?? null;
+      const langCookie = useCookie('i18n_redirected') ?? 'en-US';
       // Fetch client from API
       let postBody = {
-        clientId: useOauthState().value.client?.clientId,
-        locale: languageCookie.value,
-        validationCode: data.validationCode
-      }
-
-      if (sessionCode && sessionCode.value !== 'null') {
-        postBody.sessionCode = sessionCode.value;
-      }
-
-      useLocalApiPost('/second-factor-validation-form-submit', postBody)
-        .then((response) => {
-          if (response.success) {
-            useOauthState().value.client.sessionState = response.data?.sessionState;
-            resolve(response.data);
-          } else {
-            reject(response);
-          }
-        })
-        .catch((error) => {
-          reject(error);
-        })
-    });
-  }
-
-  async function submitLoginFormData(data:{email:string, password:string}) {
-    return new Promise((resolve, reject) => {
-      const sessionCode = useCookie('sessioncode') ?? null;
-      const languageCookie = useCookie('i18n_redirected') ?? 'en-US';
-      // Fetch client from API
-      let postBody = {
-        clientId: useOauthState().value.client?.clientId,
-        locale: languageCookie.value,
+        locale: langCookie.value,
         ...data
       }
 
-      if (sessionCode && sessionCode.value !== 'null') {
-        postBody.sessionCode = sessionCode.value;
-      }
-
-      useLocalApiPost('/login-form-submit', postBody)
+      useDynamicPost('/login', postBody)
         .then((response) => {
           if (response.success) {
-            useOauthState().value.client.session = response.data?.sessionCode;
-            useOauthState().value.client.sessionState = response.data?.sessionState;
-            useOauthState().value.client.userUid = response.data?.userUid;
-            useOauthState().value.client.userData = response.data?.userData;
-            useOauthState().value.client.sessionState = response.data?.sessionState;
-            sessionCode.value = response.data?.sessionCode;
-            resolve(response.data);
-          } else if (response.code === 502) {
+            sessionCode.value = response.data?.token;
+            resolve(response);
+          } else {
             sessionCode.value = null;
-            reject(response);
-          } else {
-            reject(response);
+            reject(response.message);
           }
         })
         .catch((error) => {
+          sessionCode.value = null;
           reject(error);
         })
     });
   }
 
-  async function setClientRights(data: OauthQueryStringType) {
+  const requestSettings = async () => {
+    const settingsState = useSettingsState();
+
     return new Promise((resolve, reject) => {
-      const client:OauthClientType = ref({
-        clientId: data.client_id
-      })  as any;
+      useLocalApiPost('/portal-settings')
+        .then((response) => {
+          settingsState.value = response.data;
+          resolve(response);
+        })
+        .catch((error) => {
+          settingsState.value = null;
+          reject(error);
+        })
+    });
+  }
 
-      const sessionCode = useCookie('sessioncode') ?? null;
-      const languageCookie = useCookie('i18n_redirected') ?? 'en-US';
-      // Fetch client from API
-      let postBody = {
-        clientId: useOauthState().value.client?.clientId,
-        locale: languageCookie.value,
-        ...data
-      }
+  const requestUserData = async () => {
+    const authState = useAuthState();
 
-      if (sessionCode && sessionCode.value !== 'null') {
-        postBody.sessionCode = sessionCode.value;
-      }
-
-      // Fetch client from API
-      useLocalApiPost('/client-warm-up', postBody)
+    return new Promise((resolve, reject) => {
+      useLocalApiPost('/user')
         .then((response) => {
           if (response.success) {
-            useOauthState().value.client = response.data?.client;
-            useOauthState().value.client.session = response.data?.session?.sessionCode;
-            useOauthState().value.client.sessionState = response.data?.session?.sessionState;
-            useOauthState().value.client.userUid = response.data?.session?.userUid;
-            useOauthState().value.client.userData = response.data?.session?.userData;
-            useOauthState().value.client.sessionState = response.data?.session?.sessionState;
-            useOauthState().value.client.sessionStateUid = response.data?.session?.sessionStateUid;
-            useOauthState().value.client.requestCallbackUrl = data.redirectUri;
-            useOauthState().value.client.requestState = data.state;
-            useOauthState().value.client.requestNonce = data.nonce;
-            resolve(response.data);
+            authState.value.authenticated = true;
+            authState.value.user = response.data
+
+            resolve(response);
           } else {
-            reject({error: response.code, message: response.message});
+            authState.value.authenticated = false;
+            authState.value.user = { id: null, email: null, name: null, lastName: null, fullName: null, roles: [] };
+
+            reject(response.message);
           }
+
         })
         .catch((error) => {
-          console.log('oauth2ServerHandler error:', error);
-          useOauthState().value.client = null;
-          reject(error);
+          authState.value.authenticated = false;
+          authState.value.user = { id: null, email: null, name: null, lastName: null, fullName: null, roles: [] };
+
+          reject('User data request failed');
         })
     });
   }
 
+  const doAuthentication = async (data:{username:string, password:string}) => {
+    await new Promise((resolve, reject) => {
+      /**
+       * Requesting user login
+       */
+      requestLogin(data)
+        .then((loginResponse) => {
+          setTimeout(() => {
+            /**
+             * Requesting Portal settings
+             */
+            requestSettings()
+              .then((settingsResponse) => {
+                /**
+                 * Requesting user data after login
+                 */
+                requestUserData()
+                  .then((userDataResponse) => {
+                    resolve({
+                      user: userDataResponse.data,
+                      settings: settingsResponse.data,
+                      sessionToken: loginResponse
+                    })
+                  })
+                  .catch(() => {
+                    reject('User data request failed');
+                  })
+              })
+              .catch(() => {
+                reject('Settings request failed');
+              });
+          }, 300);
+        })
+        .catch((error) => {
+          reject(error);
+        })
+    })
+  }
+
+  const requestKeepAlive = async () => {
+    const sessionCode = useCookie('managerSession') ?? null;
+    console.log('Keeping session alive...');
+    return new Promise((resolve, reject) => {
+      useDynamicPost('/manager/keep-alive', {}, { Authorization: `Bearer ${sessionCode.value}`})
+        .then((response) => {
+          console.log('OK');
+          resolve(response);
+        })
+        .catch((error) => {
+          console.log('KO');
+          doDestroyLogInSession();
+          reject(error);
+        })
+    });
+  }
 
   return {
-    validateClientRights: setClientRights,
-    doLogin: submitLoginFormData,
-    doCodeValidation: submitValidationCodeFormData,
-    destroySession: doDestroyLogInSession
+    doLogin: doAuthentication,
+    destroySession: doDestroyLogInSession,
+    requestUserData: requestUserData,
+    requestSettings: requestSettings,
+    keepAlive: requestKeepAlive
   }
 }

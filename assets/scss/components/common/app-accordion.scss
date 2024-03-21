@@ -1,0 +1,107 @@
+
+
+
+.app-accordion {
+  position: relative;
+  display: flex;
+  flex-flow: nowrap;
+  width: 100%;
+
+  & > .accordion-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    & > li {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--color-secondary-grey);
+      transition: all .3s ease-in-out;
+      z-index: 1;
+
+      & > .accordion-item {
+        position: relative;
+        display: flex;
+        flex-flow: nowrap;
+        width: calc(100% - 24px);
+        padding: 0 12px;
+
+        & > .texts {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+
+          & > span {
+            position: relative;
+            display: flex;
+            width: 100%;
+
+            &.title {
+              line-height: 16px;
+              font-size: 14px;
+              font-weight: 600;
+            }
+
+            &.description {
+              line-height: 14px;
+              font-size: 11px;
+            }
+          }
+        }
+
+        & > .indicator-icon {
+          position: absolute;
+          top: 50%;
+          right: 0;
+          transform: translateY(-50%);
+          display: flex;
+          width: 16px;
+          height: 16px;
+          font-size: 8px;
+          border-radius: 20px;
+          background-color: #000;
+          margin: auto 16px auto auto;
+
+          & > * {
+            margin: auto;
+            color: #fff;
+          }
+        }
+      }
+
+      & > .accordion-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: all .3s ease-in-out;
+      }
+
+      &:not(.disabled):not(.readonly) {
+        & > .accordion-item {
+          cursor: pointer;
+        }
+      }
+
+      &.open {
+        z-index: 100;
+
+        & > .accordion-container {
+          padding-bottom: 24px;
+          max-height: 100vh;
+          overflow: visible;
+        }
+      }
+    }
+  }
+}

@@ -1,10 +1,7 @@
-import {Ref} from "preact/compat";
-import {UnwrapRef} from "vue";
-import {OauthClientType} from "~/composables/customTypes/OauthClientType";
+
 
 export const useGlobalState = () => useState(() => {
   return {
-    loading: false,
     loadTimer: null,
     modals: [],
     pageActions: null,
@@ -15,19 +12,43 @@ export const useGlobalState = () => useState(() => {
   }
 });
 
-export const useOauthState = () => useState(() => {
-  const defaultClientState:OauthClientType = {
-    clientId: null,
-    clientSecret: null,
+export const useLoadingState = () => useState(() => {
+  return {
+    loading: false
+  }
+});
+
+export type AuthUserStateType = {
+  id:number|null,
+  email: string|null,
+  name: string|null,
+  lastName: string|null,
+  fullName: string|null,
+  roles: string[]|null
+};
+export const useAuthState = () => useState(() => {
+  const defaultUserObject:AuthUserStateType = {
+    id: null,
+    email: null,
     name: null,
-    allowedLoginUrls: null,
-    allowedLogoutUrls: null,
-    session: null,
-    sessionState: 0,
-    sessionStateUid: null
+    lastName: null,
+    fullName: null,
+    roles: []
   }
 
   return {
-    client: defaultClientState
-  }
+    authenticated: false,
+    user: defaultUserObject
+  };
+});
+
+export type SettingsStateType = {} | null;
+export const useSettingsState = () => useState(() => {
+  const defaultSettingsObject:SettingsStateType = null
+
+  return defaultSettingsObject;
+});
+
+export const useModalState = () => useState(() => {
+  return [];
 });

@@ -1,0 +1,45 @@
+
+
+
+.app-table-pagination {
+  position: relative;
+  display: flex;
+  flex-flow: nowrap;
+  margin: 24px auto 24px auto;
+  width: 100%;
+
+  & > .pagination-list, .list-navigation {
+    position: relative;
+    display: flex;
+    flex-flow: nowrap;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+
+    & > li {
+      position: relative;
+      display: flex;
+      flex-flow: nowrap;
+
+      & > .app-button {
+        margin: auto;
+      }
+
+      &.spacer {
+        margin: auto;
+      }
+
+      &.spaced {
+        padding: 0 4px;
+      }
+
+      &.spaced-left {
+        padding-left: 24px;
+      }
+
+      &.spaced-right {
+        padding-right: 24px;
+      }
+    }
+  }
+}

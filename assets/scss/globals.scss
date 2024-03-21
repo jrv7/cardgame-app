@@ -38,6 +38,7 @@
 .width-48 { width: calc(48 * 4px); min-width: calc(48 * 4px); }
 .width-52 { width: calc(52 * 4px); min-width: calc(52 * 4px); }
 .width-64 { width: calc(64 * 4px); min-width: calc(64 * 4px); }
+.width-padded-12 { width: calc(100% - 12px); min-width: calc(100% - 12px); max-width: calc(100% - 12px); }
 
 .min-width-1 { min-width: calc(1 * 4px) !important; }
 .min-width-2 { min-width: calc(2 * 4px) !important; }

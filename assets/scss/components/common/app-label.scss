@@ -1,0 +1,40 @@
+
+
+
+.app-label {
+  position: relative;
+  display: flex;
+  flex-flow: nowrap;
+  width: fit-content;
+  padding: 0;
+  border-radius: 4px;
+  background-color: var(--color-primary-blue);
+  margin: 2px 8px 2px 0;
+  color: #fff;
+
+  & > li {
+    color: #fff;
+    padding: 0 2px;
+
+    &:first-of-type, &:last-of-type {
+      padding: 0 8px;
+    }
+
+    &.first-slot {
+      font-size: 9px;
+    }
+
+    & > .app-button {
+      & > .text {
+        color: #fff;
+      }
+    }
+  }
+}
+
+.app-label-container {
+  position: relative;
+  display: flex;
+  flex-flow: wrap !important;
+  width: 100%;
+}

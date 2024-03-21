@@ -10,6 +10,7 @@ const emit = defineEmits(['update:modelValue', 'clicked']);
 const props = withDefaults(
     defineProps<{
       modelValue?: any,
+      options?:any,
       name?: string | null,
       value?: any,
       icon?: string | string[] | null,
@@ -20,10 +21,13 @@ const props = withDefaults(
       iconLeft?: string | string[] | null,
       iconRight?: string | string[] | null,
       spin?: boolean,
-      position?: DropdownContainerPositionType | null
+      position?: DropdownContainerPositionType | null,
+      loading?:boolean,
+      useLoadingState?:boolean
     }>(),
     {
       modelValue: null,
+      options: null,
       name: 'button',
       value: null,
       icon: null,
@@ -34,9 +38,21 @@ const props = withDefaults(
       iconLeft: null,
       iconRight: null,
       spin: false,
-      position: "bottom-right"
+      position: "bottom-right",
+      loading: false,
+      useLoadingState: false
     }
 );
+
+const inputValue = ref(props.options?.find(i => i.selected)?.value || null);
+const parseInputValue = computed({
+  get: () => {
+    return inputValue.value;
+  },
+  set: (value:any) => {
+    inputValue.value = value;
+  }
+});
 
 const btnValue = computed({
   get() {
@@ -85,16 +101,41 @@ const closeDropdown = () => {
         :type="type"
         :size="size"
         :disabled="disabled"
+        :use-loading-state="useLoadingState"
+        :loading="loading"
         @clicked="handleClick()"
     >
-      <slot name="button-slot"></slot>
+      <slot name="button-slot">
+        <template v-if="parseInputValue">
+          {{ options?.find(i => i.value === parseInputValue)?.text || $_Tt('select') }}
+        </template>
+      </slot>
     </app-button>
 
     <div
-        class="dropdown-container"
+        class="dropdown-container is-active"
         :class="[`position-${position}`]"
     >
-      <slot></slot>
+      <slot>
+        <app-card
+            class="--width-px-200 padding-v-8"
+            visible
+        >
+          <ul class="options-list">
+            <template v-for="(opt, oIndex) in options" :key="`app-select-option-${oIndex}`">
+              <li>
+                <app-button
+                    type="link"
+                    size="sm"
+                    align-text="left"
+                    :value="opt.value"
+                    v-model="parseInputValue"
+                >{{ opt.text }}</app-button>
+              </li>
+            </template>
+          </ul>
+        </app-card>
+      </slot>
     </div>
   </div>
 </template>

@@ -13,7 +13,7 @@
     padding: 32px;
     background-color: rgba(255,255,255,.6);
     border-radius: 4px;
-    box-shadow: 0 0 12px -4px #aac9;
+    @include default-box-shadow-no-border();
   }
 
   & > .loader {

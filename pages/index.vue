@@ -1,8 +1,6 @@
 <template>
   <div class="Home">
-    <p>Home
-      <fa-icon :icon="['fas', 'user']" />
-    </p>
+    <p>Cardgame</p>
   </div>
 </template>
 
