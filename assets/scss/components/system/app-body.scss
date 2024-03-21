@@ -1,0 +1,9 @@
+
+.main-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - (2 * 24px));
+  padding: 140px 24px 200px 24px;
+  z-index: 3;
+}

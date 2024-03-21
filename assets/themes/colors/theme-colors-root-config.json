@@ -1,0 +1,12 @@
+[
+  {
+    "variableName": "--primary-bg-body-color",
+    "type": "rgba",
+    "value": "rgba(255,255,255,255)"
+  },
+  {
+    "variableName": "--default-text-color",
+    "type": "rgba",
+    "value": "rgba(200,200,0,255)"
+  }
+]

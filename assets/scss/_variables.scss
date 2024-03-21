@@ -1,0 +1,34 @@
+
+
+
+// Heights
+$height-main-menu: 104px;
+
+$color-box-shadow: rgba(30, 100, 225, .8);
+$color-box-shadow-light: rgba(30, 100, 225, .2);
+$color-dark-grey: #66a;
+
+$color-lighter-red: rgba(255,210,210,1);
+$color-bg-red: rgba(255,0,0,.6);
+$color-border-red: rgba(220,0,0,1);
+
+$color-border: #d0d0d0;
+$color-border-light: #e0e0e0;
+$color-border-lighter: #efefef;
+$color-border-dark: #a0a0a0;
+$color-border-darker: #666;
+$color-border-primary: rgb(40, 210, 255);
+
+$color-buttons--bg-primary: rgb(0, 184, 255);
+$color-buttons--bg-lighter: rgba(195, 204, 246, .2);
+$color-buttons--bg-darker: rgba(125, 154, 196, 1);
+
+$text-color-light: #f0f0f0;
+
+// Text
+$text-xs: .9rem;
+
+:root {
+  // Sizes
+  --floating-distance: -16px;
+}

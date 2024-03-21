@@ -1,0 +1,121 @@
+
+@mixin devices ($breakpoint) { //the name of the mixin is devices
+
+  @if $breakpoint == desktop {
+    @media only screen and (min-width: 681px) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == tablet {    
+    @media only screen and (max-width: 680px) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == mobile {
+    @media only screen and (max-width: 481px) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == devices {
+    @media only screen and (min-width: 1px) {
+      @content;
+    }
+  }
+  
+}
+
+@mixin scrollbars($size: 4px, $foreground-color: #666, $background-color: #0004) {
+  // For Google Chrome
+  &::-webkit-scrollbar {
+    width:  calc($size);
+    height: $size;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $foreground-color;
+    //background: mix($foreground-color, white,  50%);
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $background-color;
+  }
+
+  // For Internet Explorer
+  & {
+    scrollbar-face-color: $foreground-color;
+    scrollbar-track-color: $background-color;
+  }
+}
+
+@mixin no-scrollbars() {
+  // For Google Chrome
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track {
+    display: none;
+  }
+}
+
+@mixin default-box-shadow($color: rgba(30, 120, 255, .8), $spread: 64px, $neg-spread: -18px, $top: 0, $left: 0) {
+  & {
+    box-shadow: var(--c-default-border-color) 0px 0px 0px 1px, var(--c-default-boxshadow-color) 0px 4px 32px;
+    // box-shadow: $left $top $spread $neg-spread $color;
+  }
+}
+
+@mixin default-box-shadow-dark() {
+  & {
+    box-shadow: var(--primary-bg-color-darker) 0px 0px 0px 1px, var(--primary-bg-color-darker) 0px 16px 32px;
+    // box-shadow: $left $top $spread $neg-spread $color;
+  }
+}
+
+@mixin default-box-shadow-no-border() {
+  & {
+    box-shadow: #0000 0px 0px 0px 0px, var(--default-boxshadow-color) 0px 16px 32px;
+    // box-shadow: $left $top $spread $neg-spread $color;
+  }
+}
+
+@mixin default-box-shadow-inset($color: rgba(30, 120, 255, .8), $spread: 64px, $neg-spread: -18px, $top: 0, $left: 0) {
+  & {
+    box-shadow: var(--default-color-white) 0px 0 18px -4px inset, var(--primary-border-color-darker) 0px 0 8px -3px;
+    // box-shadow: $left $top $spread $neg-spread $color;
+  }
+}
+
+@mixin default-box-shadow-clear-inset($color: rgba(30, 120, 255, .8), $spread: 64px, $neg-spread: -18px, $top: 0, $left: 0) {
+  & {
+    box-shadow: 0 0 8px inset var(--primary-border-color-darker);
+    // box-shadow: $left $top $spread $neg-spread $color;
+  }
+}
+
+@mixin default-box-shadow-darker() {
+  & {
+    box-shadow: var(--system-primary-color) 0px 0px 0px 1px, var(--secondary-border-color-darker) 0px 8px 32px -12px;
+  }
+}
+
+@mixin default-box-shadow-primary($color: rgba(30, 120, 255, .8), $spread: 64px, $neg-spread: -18px, $top: 0, $left: 0) {
+  & {
+    box-shadow: var(--system-primary-color) 0px 0px 0px 1px, var(--system-primary-color) 0px 8px 32px -12px;
+    // box-shadow: $left $top $spread $neg-spread $color;
+  }
+}
+
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
+}

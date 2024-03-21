@@ -1,0 +1,83 @@
+:root {
+  .grid {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .g-row {
+    position: relative;
+    display: flex;
+    flex-flow: nowrap;
+  }
+
+  .g-col {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .--width-px-52 {
+    width: 52px;
+    min-width: 52px;
+    max-width: 52px;
+  }
+
+  .--width-px-200 {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+  }
+  .--width-px-240 {
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+  }
+  .--width-px-280 {
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+  }
+  .--width-px-300 {
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+  }
+  .--width-px-320 {
+    width: 320px;
+    min-width: 320px;
+    max-width: 320px;
+  }
+  .--width-px-390 {
+    width: 390px;
+    min-width: 390px;
+    max-width: 390px;
+  }
+
+  .--span-0 { width: calc((100% / 24) * 24) !important; }
+  .--span-1 { width: calc((100% / 24) * 1) !important; }
+  .--span-2 { width: calc((100% / 24) * 2) !important; }
+  .--span-3 { width: calc((100% / 24) * 3) !important; }
+  .--span-4 { width: calc((100% / 24) * 4) !important; }
+  .--span-5 { width: calc((100% / 24) * 5) !important; }
+  .--span-6 { width: calc((100% / 24) * 6) !important; }
+  .--span-7 { width: calc((100% / 24) * 7) !important; }
+  .--span-8 { width: calc((100% / 24) * 8) !important; }
+  .--span-9 { width: calc((100% / 24) * 9) !important; }
+  .--span-10 { width: calc((100% / 24) * 10) !important; }
+  .--span-11 { width: calc((100% / 24) * 11) !important; }
+  .--span-12 { width: calc((100% / 24) * 12) !important; }
+  .--span-13 { width: calc((100% / 24) * 13) !important; }
+  .--span-14 { width: calc((100% / 24) * 14) !important; }
+  .--span-15 { width: calc((100% / 24) * 15) !important; }
+  .--span-16 { width: calc((100% / 24) * 16) !important; }
+  .--span-17 { width: calc((100% / 24) * 17) !important; }
+  .--span-18 { width: calc((100% / 24) * 18) !important; }
+  .--span-19 { width: calc((100% / 24) * 19) !important; }
+  .--span-20 { width: calc((100% / 24) * 20) !important; }
+  .--span-21 { width: calc((100% / 24) * 21) !important; }
+  .--span-22 { width: calc((100% / 24) * 22) !important; }
+  .--span-23 { width: calc((100% / 24) * 23) !important; }
+  .--span-24 { width: calc((100% / 24) * 24) !important; }
+}

@@ -1,0 +1,41 @@
+:root {
+  --c-white: rgb(255,255,255);
+  --c-black: rgb(0,0,0);
+  --c-yellow: rgb(255,255,0);
+  --c-green: rgb(0,255,0);
+  --c-blue: rgb(0,0,255);
+  --c-blue-light: rgb(120,120,255);
+  --c-pink: rgb(255,140,220);
+  --c-brown: rgb(165,42,42);
+  --c-green-light: rgb(80,200,80);
+  --c-red: rgb(190,20,20);
+  --c-red-light: rgb(210, 70,70);
+  --c-orange: rgb(200,160,0);
+  --c-orange-light: rgb(255,180,0);
+
+  // General colors
+  --c-text-default-color: #666;
+  --c-text-default-color-lighter: #888;
+  --c-text-default-color-active: #88e;
+  --c-default-border-color: #dedede;
+  --c-default-border-color-lighter: #e4e4e4;
+  --c-default-border-color-active: #88e;
+  --c-default-boxshadow-color: #ccc;
+
+  // Fiducial colors
+  --c-fiducial-grey: rgb(186, 192, 192);
+  --c-fiducial-dark-grey: #667;
+  --c-fiducial-light-grey: rgb(248,249,251);
+
+  // Button colors
+  --c-button-primary-background: #3498db;
+  --c-button-primary-border: #2f95d9;
+  --c-button-secondary-background: #fff;
+  --c-button-secondary-border: #fafafa;
+  --c-button-warning-background: #baba00;
+  --c-button-warning-border: #aaaa00;
+}
+
+// Text colors
+.--txt-color-black { color: var(--c-black); }
+.--txt-color-dark-gray { color: var(--c-fiducial-dark-grey); }

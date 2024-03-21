@@ -1,0 +1,92 @@
+
+@import "@/assets/scss/_variables.scss";
+@import "@/assets/scss/_mixins.scss";
+
+.system-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-flow: nowrap;
+  width: 100vw;
+  height: 53px;
+  min-height: 53px;
+  max-height: 53px;
+  padding: 0;
+  margin: 0;
+  background-color: var(--c-white);
+  z-index: 10;
+  @include default-box-shadow();
+
+  .header-logo {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 24px;
+    transform: translateY(-50%);
+    width: 182px;
+    height: 22px;
+    background-image: url('~/assets/images/logos/logo_fiducial.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100%;
+    z-index: 4;
+  }
+
+  .message-txt {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-flow: nowrap;
+    margin: auto;
+    line-height: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    z-index: 1;
+  }
+
+  .header-actions-container {
+    position: absolute;
+    display: flex;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 2;
+
+    .languages-list {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+
+      & > li {
+        position: relative;
+        display: flex;
+        padding: 8px 0 0 0;
+
+        &:last-of-type {
+          padding-bottom: 8px;
+        }
+
+        & > span {
+          position: relative;
+          display: flex;
+          margin: auto 0;
+
+          &.flag-icon {
+            margin-right: 12px;
+            img {
+              width: 32px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
