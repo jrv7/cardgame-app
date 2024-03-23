@@ -65,7 +65,6 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-svg-core/styles.css',
     '@/assets/scss/_resets.scss',
     '@/assets/scss/_imports.scss',
-    '@/assets/fonts/keyrune-master/css/keyrune.css',
     '@/assets/scss/globals.scss',
     '@/assets/scss/colors.scss',
     '@/assets/scss/app.scss',
@@ -94,7 +93,8 @@ export default defineNuxtConfig({
     '@/assets/scss/components/pages/app-page--cards-list.scss',
     '@/assets/scss/components/pages/app-page--consumer.scss',
     // Sub Pages
-    '@/assets/scss/components/pages/app-subpage--card-details.scss'
+    '@/assets/scss/components/pages/app-subpage--card-details.scss',
+    '@/assets/scss/components/pages/app-page--subpage-card-filters-page.scss'
   ],
   components: [
     {

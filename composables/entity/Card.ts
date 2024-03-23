@@ -1,7 +1,8 @@
 import {EntityColumnType} from "~/composables/entity/EntityInterface";
-import {CardType, CardInterface} from "~/composables/entity/CardInterface";
+import {CardType, CardInterface, self} from "~/composables/entity/CardInterface";
 import {UnwrapRef} from "vue";
 import {Ref} from "preact/compat";
+import {CollectionSet} from "~/composables/entity/CollectionSet";
 
 export class Card implements CardInterface {
   private id: number = 0;
@@ -22,8 +23,8 @@ export class Card implements CardInterface {
   private oracleText: string | null = null;
   private originalText: string | null = null;
   private originalType: string | null = null;
-  private setCollectionCode: string | null = null;
-  private setCollectionName: string | null = null;
+  private collectionSet:CollectionSet|null;
+  private collectionSets:CollectionSet[]|null;
   private layout: string | null = null;
   private artist: string | null = null;
   private colors: string[] | null = [];
@@ -51,8 +52,8 @@ export class Card implements CardInterface {
     'oracleText',
     'originalText',
     'originalType',
-    'setCollectionCode',
-    'setCollectionName',
+    'collectionSet',
+    'collectionSets',
     'layout',
     'artist',
     'colors',
@@ -107,10 +108,10 @@ export class Card implements CardInterface {
         this.setOriginalText(cloneFrom.getOriginalText());
         // originalType:string|null;
         this.setOriginalType(cloneFrom.getOriginalType());
-        // setCollectionCode:string|null;
-        this.setSetCollectionCode(cloneFrom.getSetCollectionCode());
-        // setCollectionName:string|null;
-        this.setSetCollectionName(cloneFrom.getSetCollectionName());
+        // setCollectionSet:CollectionSet|null;
+        this.setCollectionSet(cloneFrom.getCollectionSet());
+        // setCollectionSets:CollectionSet[]|null;
+        this.setCollectionSets(cloneFrom.getCollectionSets()?.map(i => { return new CollectionSet(i); }));
         // layout:string|null;
         this.setLayout(cloneFrom.getLayout());
         // artist:string|null;
@@ -273,20 +274,20 @@ export class Card implements CardInterface {
     this.originalType = value;
     return this.runValidation();
   }
-  // 'setCode',
-  getSetCollectionCode():string|null {
-    return this.setCollectionCode;
+  // 'collectionSet',
+  getCollectionSet():CollectionSet|null {
+    return this.collectionSet;
   }
-  setSetCollectionCode(value:string|null): CardInterface {
-    this.setCollectionCode = value;
+  setCollectionSet(value:CollectionSet|null): CardInterface {
+    this.collectionSet = value;
     return this.runValidation();
   }
-  // 'setName',
-  getSetCollectionName():string|null {
-    return this.setCollectionName;
+  // 'collectionSet',
+  getCollectionSets():CollectionSet[]|null {
+    return this.collectionSets;
   }
-  setSetCollectionName(value:string|null): CardInterface {
-    this.setCollectionName = value;
+  setCollectionSets(value:CollectionSet[]|null): CardInterface {
+    this.collectionSets = value;
     return this.runValidation();
   }
   // 'layout',
@@ -418,8 +419,8 @@ export class Card implements CardInterface {
       oracleText: this.getOracleText(),
       originalText: this.getOriginalText(),
       originalType: this.getOriginalType(),
-      setCollectionCode: this.getSetCollectionCode(),
-      setCollectionName: this.getSetCollectionName(),
+      collectionSet: this.getCollectionSet(),
+      collectionSets: this.getCollectionSets(),
       layout: this.getLayout(),
       artist: this.getArtist(),
       colors: this.getColors(),
@@ -473,10 +474,10 @@ export class Card implements CardInterface {
     this.setOriginalText(object.originalText);
     // originalType:string|null;
     this.setOriginalType(object.originalType);
-    // setCollectionCode:string|null;
-    this.setSetCollectionCode(object.setCollectionCode);
-    // setCollectionName:string|null;
-    this.setSetCollectionName(object.setCollectionName);
+    // setCollectionSet:CollectionSet|null;
+    this.setCollectionSet(object.collectionSet ? new CollectionSet(object.collectionSet) : null);
+    // setCollectionSets:CollectionSet[]|null;
+    this.setCollectionSets(object.collectionSets ? object.collectionSets.map(i => { return new CollectionSet(i); }) : null);
     // layout:string|null;
     this.setLayout(object.layout);
     // artist:string|null;
@@ -492,5 +493,22 @@ export class Card implements CardInterface {
     // subtypes:string[]|null;
     this.setSubtypes(object.subtypes);
     return this;
+  }
+
+  getDefaultImage(): string | null {
+    return "";
+  }
+
+  async fetchMeta():Promise<self|null> {
+    await useDynamicPost(`/cards/${this.getId()}`)
+      .then((response) => {
+        console.log('Card meta fetched', response);
+        if (response.success) {
+          return new Card(response.data);
+        }
+      })
+      .catch(() => {
+        console.error('Could not fetch card meta');
+      })
   }
 }

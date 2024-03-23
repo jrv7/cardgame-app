@@ -8,7 +8,7 @@ import {useLoadingState} from "~/composables/states";
 import {EntityInterface} from "~/composables/entity/EntityInterface";
 const refSelectAllCheckbox = ref(null);
 
-const emit = defineEmits(['update:filter', 'update:search', 'select-all', 'filtered', 'reset-filters']);
+const emit = defineEmits(['update:filter', 'update:search', 'update:pagination', 'select-all', 'filtered', 'reset-filters']);
 const loadingState = useLoadingState();
 const tableKey = ref(1);
 
@@ -16,6 +16,7 @@ const props = withDefaults(
     defineProps<{
       tableData?: EntityInterface[] | null,
       columns: AppTableColumnType[],
+      pagination?:AppTablePaginationType|null,
       loading?: boolean,
       selected?: number[],
       allowSelection?:boolean,
@@ -47,7 +48,6 @@ const parsedFilters = computed({
     return props.filter || filters.value;
   },
   set: (value:any) => {
-    console.log('Setting table filters from headerActions', value);
     filters.value = value;
     emit('update:filter', value);
   }
@@ -63,6 +63,16 @@ const pagination = ref({
   total: 0,
   filtered: false
 }) as AppTablePaginationType;
+
+const parsePagination = computed({
+  get: () => {
+    return props.pagination || pagination.value;
+  },
+  set: (value:AppTablePaginationType|null) => {
+    pagination.value = value;
+    emit('update:pagination', value);
+  }
+});
 
 const stringSearch:string|null = ref(null) as string|null;
 const searchTrigger:any = ref(null) as any;
@@ -119,11 +129,11 @@ const handleSelectAll = () => {
 
 const handleGoToPage = async (page) => {
   if (loadingRequest.value !== null) return;
-  console.log('Going to page', page, pagination.value);
-  if (page < 1 || page > pagination.value.pages || page === pagination.value.page) return;
-  pagination.value.page = page;
-
-  await requestData();
+  console.log('Going to page', page, parsePagination.value);
+  if (page < 1 || page > parsePagination.value.pages || page === parsePagination.value.page) return;
+  let currentPagination = useNuxtApp().$deepClone(parsePagination.value);
+  currentPagination.page = page;
+  emit('update:pagination', currentPagination);
 }
 
 const handleSort = async (col) => {
@@ -157,20 +167,16 @@ const handleStringSearch = async () => {
 }
 
 const handleFiltersApplied = async () => {
-  pagination.value.page = 1;
-  emit('filtered', true);
-
-  setTimeout(() => {
-    requestData();
-  }, 200)
+  let currentPagination = useNuxtApp().$deepClone(parsePagination.value);
+  currentPagination.page = 1;
+  emit('update:pagination', currentPagination);
+  emit('update.filter', parsedFilters.value);
 }
 const handleResetFilters = () => {
+  let currentPagination = useNuxtApp().$deepClone(parsePagination.value);
+  currentPagination.page = 1;
+  emit('update:pagination', currentPagination);
   emit('reset-filters', true);
-  pagination.value.page = 1;
-
-  setTimeout(() => {
-    requestData();
-  }, 200)
 }
 const handleExpandRow = (row) => {
   if (!mainColumn) return;
@@ -188,8 +194,10 @@ const rebuild = () => {
 defineExpose({ rebuild });
 
 onNuxtReady(async () => {
-  if (props.defaultListSize !== pagination.value.pageSize) {
-    pagination.value.pageSize = props.defaultListSize;
+  if (props.defaultListSize !== parsePagination.value.pageSize) {
+    let currentPagination = useNuxtApp().$deepClone(parsePagination.value);
+    currentPagination.pageSize = props.defaultListSize;
+    parsePagination.value = currentPagination;
   }
 
   setTimeout(() => {
@@ -212,7 +220,7 @@ onNuxtReady(async () => {
         :filters-component="filtersComponent"
         v-model:string-search="parseStringSearch"
         v-model:filter="parsedFilters"
-        :has-filters="pagination.filtered"
+        :has-filters="parsePagination.filtered"
         :title="title"
         @searched="handleStringSearch()"
         @filtered="handleFiltersApplied()"
@@ -385,19 +393,19 @@ onNuxtReady(async () => {
     </table>
 
     <div class="app-table-pagination">
-      <ul class="pagination-list">
-        <li>{{ $_Tt('showing') }} {{ tableData.length }} {{ $_tt('results') }} {{ $_tt('of') }} {{ pagination.total }} | {{ $_Tt('from') }} {{ (((pagination.page - 1) * pagination.pageSize) + 1) }} {{ $_tt('to') }} {{ (((pagination.page - 1) * pagination.pageSize) + tableData.length) }}</li>
+      <ul class="pagination-list" v-if="tableData.length && parsePagination.total && parsePagination.pages">
+        <li>{{ $_Tt('showing') }} {{ tableData.length }} {{ $_tt('results') }} {{ $_tt('of') }} {{ parsePagination.total }} | {{ $_Tt('from') }} {{ (((parsePagination.page - 1) * parsePagination.pageSize) + 1) }} {{ $_tt('to') }} {{ (((parsePagination.page - 1) * parsePagination.pageSize) + tableData.length) }}</li>
         <li class="spacer" />
         <li>
           <ul class="list-navigation">
-            <template v-if="pagination.page !== 1">
+            <template v-if="parsePagination.page !== 1">
               <li class="spaced spaced-right">
                 <app-button-icon
                     type="link"
                     size="sm"
                     use-loading-state
                     :loading="!!loadingRequest"
-                    @click="handleGoToPage(pagination.page - 1)"
+                    @click="handleGoToPage(parsePagination.page - 1)"
                 >
                   <fa-icon :icon="['fas', 'circle-chevron-left']" />
                 </app-button-icon>
@@ -426,7 +434,7 @@ onNuxtReady(async () => {
 
             <template v-for="btn in 3" :key="`navigation-next-button-${btn}`">
               <li
-                  v-if="((pagination.page - 4) + btn) > ((pagination.page - 4) >= 1 ? (pagination.page - 4) : 1)"
+                  v-if="((parsePagination.page - 4) + btn) > ((parsePagination.page - 4) >= 1 ? (parsePagination.page - 4) : 1)"
                   class="spaced"
               >
                 <app-button-icon
@@ -434,9 +442,9 @@ onNuxtReady(async () => {
                     size="sm-squared"
                     use-loading-state
                     :loading="!!loadingRequest"
-                    @click="handleGoToPage(((pagination.page - 4) + btn))"
+                    @click="handleGoToPage(((parsePagination.page - 4) + btn))"
                 >
-                  {{ ((pagination.page - 4) + btn) }}
+                  {{ ((parsePagination.page - 4) + btn) }}
                 </app-button-icon>
               </li>
             </template>
@@ -450,15 +458,15 @@ onNuxtReady(async () => {
                   disabled
                   :loading="!!loadingRequest"
               >
-                {{ $_Tt('page') }} {{ pagination.page }}
+                {{ $_Tt('page') }} {{ parsePagination.page }}
               </app-button-icon>
             </li>
 
             <template v-for="btn in 3" :key="`navigation-next-button-${btn}`">
               <li
-                  v-if="(pagination.page + btn) <= (pagination.pages - 1)"
+                  v-if="(parsePagination.page + btn) <= (parsePagination.pages - 1)"
                   class="spaced"
-                  @click="handleGoToPage((pagination.page + btn))"
+                  @click="handleGoToPage((parsePagination.page + btn))"
               >
                 <app-button-icon
                     type="secondary"
@@ -466,12 +474,12 @@ onNuxtReady(async () => {
                     use-loading-state
                     :loading="!!loadingRequest"
                 >
-                  {{ (pagination.page + btn) }}
+                  {{ (parsePagination.page + btn) }}
                 </app-button-icon>
               </li>
             </template>
 
-            <template v-if="pagination.page !== pagination.pages">
+            <template v-if="parsePagination.page !== parsePagination.pages">
               <li class="spaced">
                 <app-button
                     type="link"
@@ -487,9 +495,9 @@ onNuxtReady(async () => {
                     size="sm-squared"
                     use-loading-state
                     :loading="!!loadingRequest"
-                    @click="handleGoToPage(pagination.pages)"
+                    @click="handleGoToPage(parsePagination.pages)"
                 >
-                  >>{{ pagination.pages }}
+                  >>{{ parsePagination.pages }}
                 </app-button>
               </li>
               <li class="spaced spaced-left">
@@ -498,7 +506,7 @@ onNuxtReady(async () => {
                     size="sm"
                     use-loading-state
                     :loading="!!loadingRequest"
-                    @click="handleGoToPage(pagination.page + 1)"
+                    @click="handleGoToPage(parsePagination.page + 1)"
                 >
                   <fa-icon :icon="['fas', 'circle-chevron-right']" />
                 </app-button>

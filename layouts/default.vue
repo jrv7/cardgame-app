@@ -38,5 +38,7 @@ const globalState = useGlobalState();
     <!-- Modals -->
     <app-modals-container />
     <!-- /Modals -->
+
+    <link href="//cdn.jsdelivr.net/npm/keyrune@latest/css/keyrune.css" rel="stylesheet" type="text/css" />
   </div>
 </template>

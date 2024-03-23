@@ -1,0 +1,72 @@
+
+
+
+.app-page--subpage-card-filters-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: calc(400px);
+  padding: 24px 24px 0 24px;
+
+  .collection-set-filter-list {
+    position: relative;
+    display: flex;
+    flex-flow: wrap;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-height: 60vh;
+    overflow-y: auto;
+
+    & > li {
+      position: relative;
+      display: inline-flex;
+      flex-flow: nowrap;
+      margin: 0;
+      padding: 0;
+      width: calc(100% / 6);
+
+      &.btn-load-more, &.list-search {
+        width: 100%;
+        text-align: center;
+
+        & > .app-button {
+          width: 100%;
+        }
+      }
+
+      &.list-search {
+        margin-bottom: 24px;
+      }
+
+      &.separator {
+        width: 100%;
+        border-top: 1px solid #eee;
+        margin: 8px 0 12px 0;
+      }
+
+      & > input[type=checkbox] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        max-width: 1px;
+        height: 1px;
+        max-height: 1px;
+        opacity: 0;
+      }
+
+      & > .set-icon {
+        position: relative;
+        display: flex;
+        margin: auto 12px;
+        cursor: pointer;
+      }
+
+      & > .set-name {
+        position: relative;
+        display: none;
+      }
+    }
+  }
+}

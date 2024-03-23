@@ -155,5 +155,15 @@
   "cards_list_description": "cards_list_description",
   "users_list_description": "users_list_description",
   "consumer": "consumer",
-  "consumer_description": "consumer_description"
+  "consumer_description": "consumer_description",
+  "card_details_filter_collection_sets_field_description": "card_details_filter_collection_sets_field_description",
+  "collection_sets": "collection_sets",
+  "card_details_filter_simple_search_field_description": "card_details_filter_simple_search_field_description",
+  "types": "types",
+  "filter_cards_supertypes_description": "filter_cards_supertypes_description",
+  "filter_cards_subtypes_description": "filter_cards_subtypes_description",
+  "filter_cards_types_description": "filter_cards_types_description",
+  "subtypes": "subtypes",
+  "supertypes": "supertypes",
+  "name": "name"
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import LazyPageCardDetails from '~/components/Pages/Card/Details';
+import LazyPageCardFilters from '~/components/Pages/Card/TableFilters';
 import {Card} from "~/composables/entity/Card";
 import {UnwrapRef} from "vue";
 import {CardInterface} from "~/composables/entity/CardInterface";
@@ -17,20 +18,32 @@ const pagination = ref({
   to:10
 });
 
+const originalFilters = ref({
+  simpleSearch: [],
+  collectionsSets: [],
+  types: [],
+  subtypes: [],
+  supertypes: [],
+  colors: [],
+  identityColors: [],
+});
+const filters = ref(useNuxtApp().$deepClone(originalFilters.value));
+
 const refCardsList = ref(null);
 const modalHandler = useModal();
 const listUrl = ref('/cards');
-const isLoading = ref(false);
-const isLoadingTrigger: any = ref(null) as any;
 const search = ref(null);
 const columns = ref([
   { column: 'id', hidden: true, label: 'id', main: true},
   { column: 'cmc', label: 'cmc', width: '4%', searchable: true, dataType: 'string'},
   { column: 'manaCost', label: 'manaCost', width: '4%', searchable: true, dataType: 'string'},
-  { column: 'setCode', label: 'setCode', width: '4%', searchable: true, dataType: 'string'},
+  { column: 'collectionSet', label: 'collectionSet', width: '4%', searchable: true, dataType: 'string'},
   { column: 'name', label: 'name', searchable: true, dataType: 'string'}
 ]);
 const selectedItems = ref([]);
+
+const isLoading = ref(false);
+const isLoadingTrigger: any = ref(null) as any;
 const parseIsLoading = computed({
   get: () => {
     return isLoading.value;
@@ -55,6 +68,9 @@ const parsePrimaryColumn = computed(() => {
   return CardEntity.getPrimary();
 });
 
+const handleResetFilters = () => {
+  filters.value = useNuxtApp().$deepClone(originalFilters.value);
+}
 const handleSelectAll = () => {
   console.log('Select all');
 }
@@ -125,6 +141,7 @@ const openCardViewModal = (card, fromChild = false) => {
         v-model:pagination="pagination"
         v-model:loading="parseIsLoading"
         v-model:search="search"
+        v-model:filters="filters"
         :primary-column="parsePrimaryColumn"
     >
       <app-table
@@ -134,8 +151,13 @@ const openCardViewModal = (card, fromChild = false) => {
           :Entity="Card"
           :selected="selectedItems"
           :title="$_Tt('cards')"
+          allow-filter
+          :filters-component="shallowRef(LazyPageCardFilters)"
+          v-model:pagination="pagination"
+          v-model:filter="filters"
           v-model:search="search"
           @select-all="handleSelectAll"
+          @reset-filters="handleResetFilters()"
       >
         <template #head-column-actions="{rowData}">
           <fa-icon :icon="['fas', 'diamond']" />
@@ -164,12 +186,12 @@ const openCardViewModal = (card, fromChild = false) => {
           <span v-else>{{ rowData.getTypes() }}</span>
         </template>
 
-        <template #column_setCode="{rowData}">
+        <template #column_collectionSet="{rowData}">
           <app-mtg-set-symbol
-              v-if="rowData.getSetCollectionCode() !== null"
-              :value="rowData.getSetCollectionCode()"
+              v-if="rowData.getCollectionSet() !== null"
+              :value="rowData.getCollectionSet()?.getCode()"
               :rarity="rowData.getRarity()"
-              :name="rowData.getName()"
+              :name="rowData.getCollectionSet()?.getName()"
           />
           <span v-else>-</span>
         </template>

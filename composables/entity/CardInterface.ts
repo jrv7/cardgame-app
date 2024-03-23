@@ -1,5 +1,6 @@
 
 import {EntityColumnType, EntityInterface} from "~/composables/entity/EntityInterface";
+import {CollectionSet} from "~/composables/entity/CollectionSet";
 
 export type self = CardInterface;
 
@@ -22,8 +23,8 @@ export type CardType = {
     oracleText:string|null,
     originalText:string|null,
     originalType:string|null,
-    setCollectionCode:string|null,
-    setCollectionName:string|null,
+    collectionSet:CollectionSet|null,
+    collectionSets:CollectionSet[]|null,
     layout:string|null,
     artist:string|null,
     colors:string[]|null,
@@ -52,8 +53,8 @@ export interface CardInterface extends EntityInterface {
     oracleText:string|null;
     originalText:string|null;
     originalType:string|null;
-    setCollectionCode:string|null;
-    setCollectionName:string|null;
+    collectionSet:CollectionSet|null,
+    collectionSets:CollectionSet[]|null,
     layout:string|null;
     artist:string|null;
     colors:string[]|null;
@@ -116,12 +117,12 @@ export interface CardInterface extends EntityInterface {
     // originalType:string|null;
     getOriginalType():string|null;
     setOriginalType(value:string|null): self;
-    // setCollectionCode:string|null;
-    getSetCollectionCode():string|null;
-    setSetCollectionCode(value:string|null): self;
-    // setName:string|null;
-    getSetCollectionName():string|null;
-    setSetCollectionName(value:string|null): self;
+    // collectionSet:string|null;
+    getCollectionSet():CollectionSet|null;
+    setCollectionSet(value:CollectionSet|null): self;
+    // collectionSets:string|null;
+    getCollectionSets():CollectionSet[]|null;
+    setCollectionSets(value:CollectionSet[]|null): self;
     // layout:string|null;
     getLayout():string|null;
     setLayout(value:string|null): self;

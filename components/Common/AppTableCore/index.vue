@@ -19,7 +19,7 @@ const props = withDefaults(
       Entity?: EntityInterface | null,
       data?: any[] | null,
       primaryColumn?: {} | null,
-      filters?: {} | [] | null,
+      filters?:any,
       search?: string | null,
       pagination?: PaginationType | null,
       loading?: boolean,
@@ -59,7 +59,6 @@ async function goToNextPage() {
 }
 
 async function runFetchData(force = false, appendItems = false) {
-  console.log('Table core: requesting...');
   if (!props.url) return;
   if (currentlyLoading.value !== 0 && !force) return;
   console.log(props.url);
@@ -74,8 +73,6 @@ async function runFetchData(force = false, appendItems = false) {
   if (null !== props.filters) {
     params.filters = props.filters;
   }
-
-  console.log('Table Core: Refreshing list', params);
 
   useStateHandler().startLoading();
   currentlyLoading.value = setTimeout(() => {
@@ -188,6 +185,15 @@ watch(() => props.pagination, async (newValue, oldValue) => {
 }, { immediate: true, deep: true });
 
 watch(()=> props.search, (newValue) => {
+  clearTimeout(searchTrigger.value);
+  searchTrigger.value = setTimeout(() => {
+    currentPagination.value.page = 1;
+    runFetchData(true);
+  }, 400);
+});
+
+watch(()=> props.filters, (newValue) => {
+  console.log('CORE: Filters changed', newValue);
   clearTimeout(searchTrigger.value);
   searchTrigger.value = setTimeout(() => {
     currentPagination.value.page = 1;

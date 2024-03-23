@@ -23,5 +23,11 @@
         text-shadow: 0 0 2px #fff !important;
       }
     }
+
+    &.hoverable {
+      & > li.set-icon-rarity {
+        cursor: pointer;
+      }
+    }
   }
 }
