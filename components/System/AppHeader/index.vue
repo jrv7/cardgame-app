@@ -21,6 +21,7 @@ const menuOptions = computed(() => {
   return [
     { value: 1, path: 'cards', text: 'cards', description: 'cards_list_description', icon: 'hat-wizard'},
     { value: 3, path: 'users', text: 'users', description: 'users_list_description', icon: 'user'},
+    { value: 3, path: 'consumer', text: 'consumer', description: 'consumer_description', icon: 'cogs'},
   ];
 });
 

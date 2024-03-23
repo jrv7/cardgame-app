@@ -2,6 +2,7 @@
 
 export const useGlobalState = () => useState(() => {
   return {
+    loading: false,
     loadTimer: null,
     modals: [],
     pageActions: null,

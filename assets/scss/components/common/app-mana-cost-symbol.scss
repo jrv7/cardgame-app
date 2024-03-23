@@ -1,0 +1,237 @@
+
+
+
+.app-mana-cost-symbol {
+  position: relative;
+  display: flex;
+  flex-flow: nowrap;
+
+  & > .mana-cost {
+    position: relative;
+    display: flex;
+    flex-flow: nowrap;
+    margin: 0;
+    padding: 0;
+
+    & > li.mana-symbol-image {
+      position: relative;
+      display: flex;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 1px !important;
+      background-image: url('~/assets/images/icons/mana_map-3.png');
+      background-repeat: no-repeat;
+      background-size: calc(280px * 1.086);
+      box-shadow: 0 0 2px #000;
+      scale: .90;
+
+      &.mana_SCHEME {
+        background-color: #aaa;
+        background-image: url('~/assets/images/icons/mana_map-scheme.svg');
+        background-position: center center;
+        background-size: calc(16px);
+        background-repeat: no-repeat;
+      }
+
+      &.mana_0,
+      &.mana_1,
+      &.mana_2,
+      &.mana_3,
+      &.mana_4,
+      &.mana_5,
+      &.mana_6,
+      &.mana_7,
+      &.mana_8,
+      &.mana_9 { background-position-y: calc((-5px) * 1.48); }
+
+      &.mana_10,
+      &.mana_11,
+      &.mana_12,
+      &.mana_13,
+      &.mana_14,
+      &.mana_15,
+      &.mana_16,
+      &.mana_17,
+      &.mana_18,
+      &.mana_19 {
+        background-position-y: calc(((-5px) * 1.48) + (1 * (-22px * 1.04)));
+      }
+
+      &.mana_20,
+      &.mana_X,
+      &.mana_Y,
+      &.mana_Z,
+      &.mana_W,
+      &.mana_U,
+      &.mana_B,
+      &.mana_R,
+      &.mana_G,
+      &.mana_S {
+        background-position-y: calc(((-5px) * 1.48) + (2 * (-22px * 1.04)));
+      }
+
+      &.mana_W--U,
+      &.mana_W--B,
+      &.mana_U--B,
+      &.mana_U--R,
+      &.mana_B--R,
+      &.mana_B--G,
+      &.mana_R--W,
+      &.mana_R--G,
+      &.mana_G--W,
+      &.mana_G--U {
+        background-position-y: calc(((-5px) * 1.48) + (3 * (-22px * 1.048)));
+      }
+
+      &.mana_W--P,
+      &.mana_U--P,
+      &.mana_B--P,
+      &.mana_R--P,
+      &.mana_G--P,
+      &.mana_2--W,
+      &.mana_2--U,
+      &.mana_2--B,
+      &.mana_2--R,
+      &.mana_2--G {
+        background-position-y: calc(((-5px) * 1.48) + (4 * (-22px * 1.048)));
+      }
+
+      &.mana_C {
+        background-position-y: calc(((-5px) * 1.48) + (5 * (-22px * 1.048)));
+      }
+      &.mana_E {
+        background-position-y: calc(((-5px) * 1.48) + (5 * (-22px * 1.04)));
+        background-color: #bbb;
+      }
+      &.mana_T {
+        background-position-y: calc(((-5px) * 1.48) + (5 * (-22px * 1.06)));
+        background-color: #bbb;
+      }
+      &.mana_Q {
+        background-position-y: calc(((-5px) * 1.48) + (5 * (-22px * 1.05)));
+      }
+      &.mana_C--P {
+        background-position-y: calc(((-5px) * 1.48) + (5 * (-22px * 1.048)));
+        background-color: #bbb;
+      }
+
+      &.mana_0 { background-position-x: calc((-33px * 1.116) + (0 * (-22px * 1.016))); }
+      &.mana_1 { background-position-x: calc((-33px * 1.116) + (1 * (-22px * 1.04))); }
+      &.mana_2 { background-position-x: calc((-33px * 1.116) + (2 * (-22px * 1.05))); }
+      &.mana_3 { background-position-x: calc((-33px * 1.116) + (3 * (-22px * 1.05))); }
+      &.mana_4 { background-position-x: calc((-33px * 1.116) + (4 * (-22px * 1.05))); }
+      &.mana_5 { background-position-x: calc((-33px * 1.116) + (5 * (-22px * 1.05))); }
+      &.mana_6 { background-position-x: calc((-33px * 1.116) + (6 * (-22px * 1.05))); }
+      &.mana_7 { background-position-x: calc((-33px * 1.116) + (7 * (-22px * 1.05))); }
+      &.mana_8 { background-position-x: calc((-33px * 1.116) + (8 * (-22px * 1.05))); }
+      &.mana_9 { background-position-x: calc((-33px * 1.116) + (9 * (-22px * 1.05))); }
+
+      &.mana_10 { background-position-x: calc((-33px * 1.116) + (0 * (-22px * 1.016))); }
+      &.mana_11 { background-position-x: calc((-33px * 1.116) + (1 * (-22px * 1.04))); }
+      &.mana_12 { background-position-x: calc((-33px * 1.116) + (2 * (-22px * 1.05))); }
+      &.mana_13 { background-position-x: calc((-33px * 1.116) + (3 * (-22px * 1.05))); }
+      &.mana_14 { background-position-x: calc((-33px * 1.116) + (4 * (-22px * 1.05))); }
+      &.mana_15 { background-position-x: calc((-33px * 1.116) + (5 * (-22px * 1.05))); }
+      &.mana_16 { background-position-x: calc((-33px * 1.116) + (6 * (-22px * 1.05))); }
+      &.mana_17 { background-position-x: calc((-33px * 1.116) + (7 * (-22px * 1.05))); }
+      &.mana_18 { background-position-x: calc((-33px * 1.116) + (8 * (-22px * 1.05))); }
+      &.mana_19 { background-position-x: calc((-33px * 1.116) + (9 * (-22px * 1.05))); }
+
+      &.mana_20 { background-position-x: calc((-33px * 1.116) + (0 * (-22px * 1.016))); }
+      &.mana_X { background-position-x: calc((-33px * 1.116) + (1 * (-22px * 1.04))); }
+      &.mana_Y { background-position-x: calc((-33px * 1.116) + (2 * (-22px * 1.05))); }
+      &.mana_Z { background-position-x: calc((-33px * 1.116) + (3 * (-22px * 1.05))); }
+      &.mana_W { background-position-x: calc((-33px * 1.116) + (4 * (-22px * 1.05))); }
+      &.mana_U { background-position-x: calc((-33px * 1.116) + (5 * (-22px * 1.05))); }
+      &.mana_B { background-position-x: calc((-33px * 1.116) + (6 * (-22px * 1.05))); }
+      &.mana_R { background-position-x: calc((-33px * 1.116) + (7 * (-22px * 1.05))); }
+      &.mana_G { background-position-x: calc((-33px * 1.116) + (8 * (-22px * 1.05))); }
+      &.mana_S { background-position-x: calc((-33px * 1.116) + (9 * (-22px * 1.05))); }
+
+      &.mana_W--U { background-position-x: calc((-33px * 1.116) + (0 * (-22px * 1.016))); }
+      &.mana_W--B { background-position-x: calc((-33px * 1.116) + (1 * (-22px * 1.04))); }
+      &.mana_U--B { background-position-x: calc((-33px * 1.116) + (2 * (-22px * 1.05))); }
+      &.mana_U--R { background-position-x: calc((-33px * 1.116) + (3 * (-22px * 1.05))); }
+      &.mana_B--R { background-position-x: calc((-33px * 1.116) + (4 * (-22px * 1.05))); }
+      &.mana_B--G { background-position-x: calc((-33px * 1.116) + (5 * (-22px * 1.05))); }
+      &.mana_R--W { background-position-x: calc((-33px * 1.116) + (6 * (-22px * 1.05))); }
+      &.mana_R--G { background-position-x: calc((-33px * 1.116) + (7 * (-22px * 1.05))); }
+      &.mana_G--W { background-position-x: calc((-33px * 1.116) + (8 * (-22px * 1.05))); }
+      &.mana_G--U { background-position-x: calc((-33px * 1.116) + (9 * (-22px * 1.048))); }
+
+      &.mana_2--W { background-position-x: calc((-33px * 1.116) + (0 * (-22px * 1.05))); }
+      &.mana_2--U { background-position-x: calc((-33px * 1.116) + (1 * (-22px * 1.05))); }
+      &.mana_2--B { background-position-x: calc((-33px * 1.116) + (2 * (-22px * 1.05))); }
+      &.mana_2--R { background-position-x: calc((-33px * 1.116) + (3 * (-22px * 1.05))); }
+      &.mana_2--G { background-position-x: calc((-33px * 1.116) + (4 * (-22px * 1.048))); }
+      &.mana_W--P { background-position-x: calc((-33px * 1.116) + (5 * (-22px * 1.05))); }
+      &.mana_U--P { background-position-x: calc((-33px * 1.116) + (6 * (-22px * 1.05))); }
+      &.mana_B--P { background-position-x: calc((-33px * 1.116) + (7 * (-22px * 1.05))); }
+      &.mana_R--P { background-position-x: calc((-33px * 1.116) + (8 * (-22px * 1.05))); }
+      &.mana_G--P { background-position-x: calc((-33px * 1.116) + (9 * (-22px * 1.048))); }
+      &.mana_C--P { background-position-x: calc((-33px * 1.116) + (4 * (-22px * 1.048))); }
+
+      &.mana_T { background-position-x: calc((-33px * 1.116) + (0 * (-22px * 1.048))); }
+      &.mana_Q { background-position-x: calc((-33px * 1.116) + (1 * (-22px * 1.048))); }
+      &.mana_C { background-position-x: calc((-33px * 1.116) + (2 * (-22px * 1.048))); }
+      &.mana_E { background-position-x: calc((-33px * 1.116) + (3 * (-22px * 1.048))); }
+
+      &.mana_LAND {
+        --symbol-size: 28px;
+        --background-size: 48px;
+        overflow: hidden;
+        width: var(--symbol-size);
+        height: var(--symbol-size);
+
+        &:before {
+          content: '';
+          position: absolute;
+          display: flex;
+          top: 50%;
+          left: 50%;
+          width: var(--background-size);
+          min-width: var(--background-size);
+          max-width: var(--background-size);
+          height: var(--background-size);
+          min-height: var(--background-size);
+          max-height: var(--background-size);
+          transform: translate(-50%, -50%);
+          background-color: #fff;
+          background-image: url('~/assets/images/icons/mana_map-land.png');
+          background-repeat: no-repeat;
+          background-size: 100%;
+        }
+      }
+
+      &.mana_PLANE {
+        --symbol-size: 28px;
+        --background-size: 22px;
+        overflow: hidden;
+        width: var(--symbol-size);
+        height: var(--symbol-size);
+        background-color: #ddd;
+        color: #000 !important;
+
+        &:before {
+          content: '';
+          position: absolute;
+          display: flex;
+          top: calc(50% + 2px);
+          left: 50%;
+          width: var(--background-size);
+          min-width: var(--background-size);
+          max-width: var(--background-size);
+          height: var(--background-size);
+          min-height: var(--background-size);
+          max-height: var(--background-size);
+          transform: translate(-50%, -50%);
+          background-image: url('~/assets/images/icons/mana_map-plane.svg');
+          background-repeat: no-repeat;
+          background-size: 100%;
+          color: #000 !important;
+        }
+      }
+    }
+  }
+}

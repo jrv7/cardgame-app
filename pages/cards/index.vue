@@ -1,16 +1,59 @@
 <script setup lang="ts">
 import LazyPageCardDetails from '~/components/Pages/Card/Details';
+import {Card} from "~/composables/entity/Card";
+import {UnwrapRef} from "vue";
+import {CardInterface} from "~/composables/entity/CardInterface";
+import {Ref} from "preact/compat";
+
+const CardEntity = new Card();
+let tableData: Ref<UnwrapRef<CardInterface[]>> = ref([]) as Ref<UnwrapRef<CardInterface[]>>;
+
+const pagination = ref({
+  page: 1,
+  pages: 1,
+  pageSize: 10,
+  total: 0,
+  from: 1,
+  to:10
+});
 
 const refCardsList = ref(null);
 const modalHandler = useModal();
 const listUrl = ref('/cards');
+const isLoading = ref(false);
+const isLoadingTrigger: any = ref(null) as any;
+const search = ref(null);
 const columns = ref([
-  { column: 'id', hidden: true, label: 'id', width: '48px', main: true},
-  { column: 'cmc', label: 'cmc', searchable: true, dataType: 'string'},
-  { column: 'manaCost', label: 'manaCost', searchable: true, dataType: 'string'},
-  { column: 'name', label: 'name', width: '100%', searchable: true, dataType: 'string'}
+  { column: 'id', hidden: true, label: 'id', main: true},
+  { column: 'cmc', label: 'cmc', width: '4%', searchable: true, dataType: 'string'},
+  { column: 'manaCost', label: 'manaCost', width: '4%', searchable: true, dataType: 'string'},
+  { column: 'setCode', label: 'setCode', width: '4%', searchable: true, dataType: 'string'},
+  { column: 'name', label: 'name', searchable: true, dataType: 'string'}
 ]);
 const selectedItems = ref([]);
+const parseIsLoading = computed({
+  get: () => {
+    return isLoading.value;
+  },
+  set: (value) => {
+    if (value) {
+      clearTimeout(isLoadingTrigger.value);
+      isLoading.value = value;
+    } else {
+      clearTimeout(isLoadingTrigger.value);
+
+      isLoadingTrigger.value = setTimeout(() => {
+        isLoading.value = value;
+        clearTimeout(isLoadingTrigger.value);
+        isLoadingTrigger.value = null;
+      }, 800);
+    }
+  }
+});
+
+const parsePrimaryColumn = computed(() => {
+  return CardEntity.getPrimary();
+});
 
 const handleSelectAll = () => {
   console.log('Select all');
@@ -24,6 +67,7 @@ const openCardViewModal = (card, fromChild = false) => {
     card: card
   };
   cardDetailsModal.noPadding = true;
+  cardDetailsModal.invisible = true;
   cardDetailsModal.type = 'full-right';
   cardDetailsModal.icon = ['fas', 'address-card'];
   cardDetailsModal.buttons = {
@@ -47,11 +91,6 @@ const openCardViewModal = (card, fromChild = false) => {
             // Delete card
             useDynamicPost(`/manager/card/delete/${modalData}`)
                 .then((response) => {
-                  if (fromChild) {
-                    refCardsList.value.rebuild();
-                  }
-
-                  refCardsList.value.refresh();
                   resolve(true);
                 })
                 .catch(() => {
@@ -78,38 +117,84 @@ const openCardViewModal = (card, fromChild = false) => {
 
 <template>
   <div class="app-page--cards-list">
-    <app-table
-        ref="refCardsList"
+    <app-table-core
+        ref="TableCoreRef"
         :url="listUrl"
-        :columns="columns"
-        :selected="selectedItems"
-        :title="$_Tt('cards')"
-        @select-all="handleSelectAll"
+        :Entity="Card"
+        v-model:data="tableData"
+        v-model:pagination="pagination"
+        v-model:loading="parseIsLoading"
+        v-model:search="search"
+        :primary-column="parsePrimaryColumn"
     >
-      <template #head-column-actions="{rowData}">
-        <fa-icon :icon="['fas', 'diamond']" />
-      </template>
+      <app-table
+          ref="refCardsList"
+          :table-data="tableData"
+          :columns="columns"
+          :Entity="Card"
+          :selected="selectedItems"
+          :title="$_Tt('cards')"
+          v-model:search="search"
+          @select-all="handleSelectAll"
+      >
+        <template #head-column-actions="{rowData}">
+          <fa-icon :icon="['fas', 'diamond']" />
+        </template>
 
-      <template #column_name="{rowData}">
-        <div class="g-row">
-          <div class="g-col --span-24">
-            <div class="g-row">
-              <div class="g-col --span-24">
-                <span class="text-strong">
-                  <a href="javascript: () => null" @click.prevent="openCardViewModal(rowData)">{{ rowData.name }}</a>
-                  <!-- app-badge :value="rowData.uid" type="warning" size="sm" / -->
-                </span>
+        <template #column_manaCost="{rowData}">
+          <app-mtg-mana-cost-symbol
+              v-if="rowData.getManaCost() !== null"
+              :value="rowData.getType() !== 'land' ? rowData.getManaCost() : '{LAND}'"
+          />
+          <app-mtg-mana-cost-symbol
+              v-else-if="rowData.getType() === 'Scheme'"
+              :value="'{SCHEME}'"
+              :title="rowData.getType()"
+          />
+          <app-mtg-mana-cost-symbol
+              v-else-if="rowData.getTypes().map(i => i.name).includes('Land')"
+              :value="'{LAND}'"
+              :title="rowData.getType()"
+          />
+          <app-mtg-mana-cost-symbol
+              v-else-if="rowData.getTypes().map(i => i.name).includes('Plane') || rowData.getTypes().map(i => i.name).includes('Phenomenon')"
+              :value="'{PLANE}'"
+              :title="rowData.getType()"
+          />
+          <span v-else>{{ rowData.getTypes() }}</span>
+        </template>
+
+        <template #column_setCode="{rowData}">
+          <app-mtg-set-symbol
+              v-if="rowData.getSetCollectionCode() !== null"
+              :value="rowData.getSetCollectionCode()"
+              :rarity="rowData.getRarity()"
+              :name="rowData.getName()"
+          />
+          <span v-else>-</span>
+        </template>
+
+        <template #column_name="{rowData}">
+          <div class="g-row">
+            <div class="g-col --span-24">
+              <div class="g-row">
+                <div class="g-col --span-24">
+                  <span class="text-strong">
+                    <a href="javascript: () => null" @click.prevent="openCardViewModal(rowData)">{{ rowData.getName() }}</a>
+                    <!-- app-badge :value="rowData.uid" type="warning" size="sm" / -->
+                  </span>
+                </div>
               </div>
-            </div>
-            <div class="g-row">
-              <div class="g-col --span-24">
-                <span>{{ rowData.type }}</span>
+              <div class="g-row">
+                <div class="g-col --span-24">
+                  <span>{{ rowData.getType() }}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </template>
+        </template>
 
-    </app-table>
+      </app-table>
+    </app-table-core>
   </div>
 </template>

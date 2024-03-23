@@ -1,0 +1,27 @@
+
+
+
+.app-mtg-set-symbol {
+  position: relative;
+  display: flex;
+  flex-flow: nowrap;
+  margin: auto 0;
+
+  & > .set-symbols-list {
+    position: relative;
+    display: flex;
+    flex-flow: nowrap;
+    margin: auto;
+    padding: 0;
+
+    & > li.set-icon-rarity {
+      position: relative;
+      display: flex;
+      font-size: 32px;
+
+      & > .ss-common {
+        text-shadow: 0 0 2px #fff !important;
+      }
+    }
+  }
+}

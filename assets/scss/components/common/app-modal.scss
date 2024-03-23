@@ -136,6 +136,48 @@
     }
   }
 
+  &.invisible {
+    & > .scroller {
+      & > .modal-container {
+        background-color: #000a !important;
+        box-shadow: none !important;
+
+        & > .header {
+          &:after {
+            opacity: 0 !important;
+          }
+
+          & > .icon {
+            opacity: 0 !important;
+          }
+
+          & > .title {
+            opacity: 0 !important;
+          }
+
+          & > .close-button-container {
+            & > .app-button {
+              color: #fff !important;
+
+              & > .text {
+                color: #fff !important;
+                & > .icon > .fa-icon {
+                  color: #fff !important;
+                  text-shadow: 0 0 4px #fff !important;
+                  font-size: 18px !important;
+                }
+              }
+            }
+          }
+        }
+
+        & > .footer {
+          opacity: 0 !important;
+        }
+      }
+    }
+  }
+
   &.visible {
     & > .scroller {
       & > .modal-container {

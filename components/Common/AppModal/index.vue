@@ -20,6 +20,7 @@ const props = withDefaults(
       backdrop?:boolean,
       closeOnBackdropClick?:boolean,
       noPadding?:boolean,
+      invisible?:boolean,
       buttons?:{
         close?:boolean,
         confirm?:boolean,
@@ -34,6 +35,7 @@ const props = withDefaults(
       backdrop: true,
       closeOnBackdropClick: true,
       noPadding: false,
+      invisible: false,
       buttons: {
         close: true,
         confirm: true,
@@ -127,7 +129,7 @@ const handleConfirm = async () => {
 <template>
   <div
       class="app-modal"
-      :class="[`type-${type}`, `size-${size}`, {'visible': parsedVisible, 'no-padding': noPadding}]"
+      :class="[`type-${type}`, `size-${size}`, {'visible': parsedVisible, 'invisible': invisible, 'no-padding': noPadding}]"
   >
     <div
         class="backdrop"

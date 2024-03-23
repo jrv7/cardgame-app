@@ -65,6 +65,7 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-svg-core/styles.css',
     '@/assets/scss/_resets.scss',
     '@/assets/scss/_imports.scss',
+    '@/assets/fonts/keyrune-master/css/keyrune.css',
     '@/assets/scss/globals.scss',
     '@/assets/scss/colors.scss',
     '@/assets/scss/app.scss',
@@ -87,8 +88,11 @@ export default defineNuxtConfig({
     '@/assets/scss/components/common/app-date-time-picker.scss',
     '@/assets/scss/components/common/app-label.scss',
     '@/assets/scss/components/common/app-mtg-card.scss',
+    '@/assets/scss/components/common/app-mana-cost-symbol.scss',
+    '@/assets/scss/components/common/app-mtg-set-symbol.scss',
     // Pages
     '@/assets/scss/components/pages/app-page--cards-list.scss',
+    '@/assets/scss/components/pages/app-page--consumer.scss',
     // Sub Pages
     '@/assets/scss/components/pages/app-subpage--card-details.scss'
   ],

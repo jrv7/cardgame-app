@@ -5,15 +5,16 @@ import {AppTableColumnType} from "~/composables/customTypes/AppTableColumnType";
 import {AppTablePaginationType} from "~/composables/customTypes/AppTablePaginationType";
 import {UnwrapRef} from "vue";
 import {useLoadingState} from "~/composables/states";
+import {EntityInterface} from "~/composables/entity/EntityInterface";
 const refSelectAllCheckbox = ref(null);
 
-const emit = defineEmits(['update:filter', 'select-all', 'filtered', 'reset-filters']);
+const emit = defineEmits(['update:filter', 'update:search', 'select-all', 'filtered', 'reset-filters']);
 const loadingState = useLoadingState();
 const tableKey = ref(1);
 
 const props = withDefaults(
     defineProps<{
-      url:string,
+      tableData?: EntityInterface[] | null,
       columns: AppTableColumnType[],
       loading?: boolean,
       selected?: number[],
@@ -38,7 +39,6 @@ const props = withDefaults(
     }
 );
 
-const tableData = ref([]);
 const visibleSubTables = ref([]);
 const filters = ref(null);
 const originalFilters = ref(null);
@@ -64,7 +64,23 @@ const pagination = ref({
   filtered: false
 }) as AppTablePaginationType;
 
-const stringSearch = ref(null);
+const stringSearch:string|null = ref(null) as string|null;
+const searchTrigger:any = ref(null) as any;
+
+const parseStringSearch = computed({
+  get: () => {
+    return stringSearch.value;
+  },
+  set: (value:string|null) => {
+    stringSearch.value = value;
+
+    searchTrigger.value = setTimeout(() => {
+      emit('update:search', value);
+      clearTimeout(searchTrigger.value);
+      searchTrigger.value = null;
+    }, 2000);
+  }
+});
 
 const parsedColumns = computed(() => {
   return props.columns.filter(i => !i.hidden);
@@ -91,7 +107,7 @@ const handleSelectAll = () => {
 
   if (refSelectAllCheckbox.value.checked) {
     if (mainColumn) {
-      selected = tableData.value.map(i => {
+      selected = props.tableData.map(i => {
         return i[mainColumn.value.column];
       });
     } else {
@@ -103,7 +119,8 @@ const handleSelectAll = () => {
 
 const handleGoToPage = async (page) => {
   if (loadingRequest.value !== null) return;
-  if (page < 1 || page > pagination.value.to || page === pagination.value.page) return;
+  console.log('Going to page', page, pagination.value);
+  if (page < 1 || page > pagination.value.pages || page === pagination.value.page) return;
   pagination.value.page = page;
 
   await requestData();
@@ -135,8 +152,8 @@ const handleSort = async (col) => {
 }
 
 const handleStringSearch = async () => {
-  pagination.value.page = 1;
-  await requestData();
+  console.log('Searching', stringSearch.value);
+  emit('update:search', stringSearch.value);
 }
 
 const handleFiltersApplied = async () => {
@@ -163,57 +180,12 @@ const handleExpandRow = (row) => {
     visibleSubTables.value.push(row[mainColumn.value.column]);
   }
 }
-async function requestData() {
-  return new Promise((resolve) => {
-    if (null !== loadingRequest.value) {
-      resolve(false);
-      return;
-    }
-
-    loadingRequest.value = true;
-    //useLoader().start();
-
-    let requestBody = {
-      page: pagination.value.page,
-      pageSize: pagination.value.pageSize,
-      sort: useNuxtApp().$deepClone(sortedColumn.value),
-      search: stringSearch.value,
-      filters: parsedFilters.value,
-      searchableColumns: parseSearchable.value
-    }
-
-    useLocalApiPost(props.url, requestBody)
-      .then((response) => {
-        if (response.success) {
-          pagination.value.pages = response.data.pages;
-          pagination.value.from = response.data.from;
-          pagination.value.to = response.data.to;
-          pagination.value.count = response.data.count;
-          pagination.value.total = response.data.total;
-          pagination.value.filtered = response.data.filtered ?? false;
-          tableData.value = response.data.results;
-        }
-      })
-      .finally(() => {
-        setTimeout(() => {
-          clearTimeout(loadingRequest.value);
-          loadingRequest.value = null;
-          // useLoader().stop();
-          resolve(true);
-        }, 1000)
-      })
-  })
-}
-
-const refresh = async () => {
-  await requestData();
-}
 
 const rebuild = () => {
   tableKey.value++;
 }
 
-defineExpose({ refresh, rebuild });
+defineExpose({ rebuild });
 
 onNuxtReady(async () => {
   if (props.defaultListSize !== pagination.value.pageSize) {
@@ -225,8 +197,7 @@ onNuxtReady(async () => {
   }, 200)
 
   sortedColumn.value = useNuxtApp().$deepClone(props.columns.find(i => !!i.sort && [useConsts().SORT_ORDER_UP, useConsts().SORT_ORDER_DOWN].includes(i.sort)));
-  await requestData();
-})
+});
 </script>
 
 <template>
@@ -239,7 +210,7 @@ onNuxtReady(async () => {
         :allow-quick-search="allowQuickSearch"
         :allow-filters="allowFilters"
         :filters-component="filtersComponent"
-        v-model:string-search="stringSearch"
+        v-model:string-search="parseStringSearch"
         v-model:filter="parsedFilters"
         :has-filters="pagination.filtered"
         :title="title"
@@ -345,13 +316,13 @@ onNuxtReady(async () => {
           <slot name="data-row" :row-data="row">
             <slot :name="`row_${rIndex}`">
               <tr
-                  :class="[`${((rIndex % 2) ? 'odd' : 'even')}-row`, {'open': visibleSubTables.includes(row[mainColumn.column])}]"
+                  :class="[`${((rIndex % 2) ? 'odd' : 'even')}-row`, {'open': visibleSubTables.includes(row.getData(mainColumn.column))}]"
               >
                 <td class="edge-spacer"></td>
                 <template v-if="allowSelection">
                   <td class="selector">
                     <div class="cell">
-                      <input type="checkbox" :checked="mainColumn && parseSelected.length && parseSelected.includes(row[mainColumn.column])">
+                      <input type="checkbox" :checked="mainColumn && parseSelected.length && parseSelected.includes(row.getData(mainColumn.column))">
                     </div>
                   </td>
                 </template>
@@ -363,7 +334,7 @@ onNuxtReady(async () => {
                           size="sm-squared"
                           @click="handleExpandRow(row)"
                       >
-                        <fa-icon :icon="['fas', visibleSubTables.includes(row[mainColumn.column]) ? 'chevron-up' : 'chevron-down']" />
+                        <fa-icon :icon="['fas', visibleSubTables.includes(row.getData(mainColumn.column)) ? 'chevron-up' : 'chevron-down']" />
                       </app-button>
                     </div>
                   </td>
@@ -371,11 +342,11 @@ onNuxtReady(async () => {
                 <template v-for="(col, cIndex) in parsedColumns" :key="`table-body-row-${rIndex}-col-${cIndex}`">
                   <td>
                     <div class="cell">
-                      <slot :name="`row_${rIndex+1}_column_${cIndex+1}`" :row-data="row" :col-data="row[col.column]">
-                        <slot :name="`column_${cIndex+1}`" :row-data="row" :col-data="row[col.column]">
-                          <slot :name="`column_${col.slot || col.column}`" :row-data="row" :col-data="row[col.column]">
+                      <slot :name="`row_${rIndex+1}_column_${cIndex+1}`" :row-data="row">
+                        <slot :name="`column_${cIndex+1}`" :row-data="row">
+                          <slot :name="`column_${col.slot || col.column}`" :row-data="row">
                             <slot :name="`column_${col.slot || col.column}_text`">
-                              {{ row[col.column] }}
+                              {{ row.getData(col.column) }}
                             </slot>
                           </slot>
                         </slot>
@@ -396,7 +367,7 @@ onNuxtReady(async () => {
                 <td class="edge-spacer"></td>
               </tr>
 
-              <template v-if="visibleSubTables.includes(row[mainColumn.column])">
+              <template v-if="visibleSubTables.includes(row.getData(mainColumn.column))">
                 <tr class="sublist">
                   <td class="edge-spacer"></td>
                   <td :colspan="parsedColumns.length + 2">
@@ -518,7 +489,7 @@ onNuxtReady(async () => {
                     :loading="!!loadingRequest"
                     @click="handleGoToPage(pagination.pages)"
                 >
-                  {{ pagination.pages }}
+                  >>{{ pagination.pages }}
                 </app-button>
               </li>
               <li class="spaced spaced-left">

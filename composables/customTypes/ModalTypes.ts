@@ -16,6 +16,7 @@ export type AppModalType = {
   backdrop?:boolean,
   closeOnBackdropClick?:boolean,
   noPadding?:boolean,
+  invisible?:boolean,
   referential?:any,
   buttons?:{
     close?:boolean,

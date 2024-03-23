@@ -149,5 +149,11 @@
   "landing_page": "landing Page",
   "auth_gateway": "authentication gateway",
   "available_modules": "available authentication modules",
-  "settings_page_menu_description_general": "General settings and options"
+  "settings_page_menu_description_general": "General settings and options",
+  "card": "card",
+  "cards": "cards",
+  "cards_list_description": "cards_list_description",
+  "users_list_description": "users_list_description",
+  "consumer": "consumer",
+  "consumer_description": "consumer_description"
 }

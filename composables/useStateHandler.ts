@@ -3,6 +3,18 @@ export const useStateHandler = () => {
   const globalState = useGlobalState();
 
   return {
+    isLoading: () => {
+      return globalState.value.loading;
+    },
+    startLoading: () => {
+      globalState.value.loading = true;
+    },
+    stopLoading: () => {
+      globalState.value.loadTimer = setTimeout(() => {
+        globalState.value.loading = false;
+        globalState.value.loadTimer = null;
+      }, 800)
+    },
     logMissingTranslation: (language, word) => {
       const clientName = 'gateway';
       const loggedWord = word.replaceAll(clientName+'__', '');
