@@ -1,6 +1,7 @@
 
 import {EntityColumnType, EntityInterface} from "~/composables/entity/EntityInterface";
 import {CollectionSet} from "~/composables/entity/CollectionSet";
+import {ImageCollection} from "~/composables/entity/ImageCollection";
 
 export type self = CardInterface;
 
@@ -24,14 +25,15 @@ export type CardType = {
     originalText:string|null,
     originalType:string|null,
     collectionSet:CollectionSet|null,
-    collectionSets:CollectionSet[]|null,
     layout:string|null,
     artist:string|null,
     colors:string[]|null,
     identityColors:string[]|null,
     supertypes:string[]|null,
     types:string[]|null,
-    subtypes:string[]|null
+    subtypes:string[]|null,
+    collectionSets:CollectionSet[]|null,
+    imageCollection:ImageCollection[]|null
 };
 
 export interface CardInterface extends EntityInterface {
@@ -53,8 +55,7 @@ export interface CardInterface extends EntityInterface {
     oracleText:string|null;
     originalText:string|null;
     originalType:string|null;
-    collectionSet:CollectionSet|null,
-    collectionSets:CollectionSet[]|null,
+    collectionSet:CollectionSet|null;
     layout:string|null;
     artist:string|null;
     colors:string[]|null;
@@ -62,6 +63,8 @@ export interface CardInterface extends EntityInterface {
     supertypes:string[]|null;
     types:string[]|null;
     subtypes:string[]|null;
+    collectionSets:CollectionSet[]|null;
+    imageCollection:ImageCollection[]|null;
 
     // id: number;
     getId(): number;
@@ -119,10 +122,7 @@ export interface CardInterface extends EntityInterface {
     setOriginalType(value:string|null): self;
     // collectionSet:string|null;
     getCollectionSet():CollectionSet|null;
-    setCollectionSet(value:CollectionSet|null): self;
-    // collectionSets:string|null;
-    getCollectionSets():CollectionSet[]|null;
-    setCollectionSets(value:CollectionSet[]|null): self;
+    setCollectionSet(value:CollectionSet|null):self;
     // layout:string|null;
     getLayout():string|null;
     setLayout(value:string|null): self;
@@ -144,6 +144,12 @@ export interface CardInterface extends EntityInterface {
     // subtypes:string[]|null;
     getSubtypes():string[]|null;
     setSubtypes(value:string[]|null): self;
+    // collectionSets:string|null;
+    getCollectionSets():CollectionSet[]|null;
+    setCollectionSets(value:CollectionSet[]|null):self;
+    // imageCollection:ImageCollection[]|null;
+    getImageCollection():ImageCollection[];
+    setImageCollection(value:ImageCollection[]|null):self;
 
     getColumns(): EntityColumnType[];
 

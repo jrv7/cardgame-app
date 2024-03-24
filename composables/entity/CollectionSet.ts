@@ -2,8 +2,6 @@ import {EntityColumnType} from "~/composables/entity/EntityInterface";
 import {CollectionSetInterface, CollectionSetType} from "~/composables/entity/CollectionSetInterface";
 import {UnwrapRef} from "vue";
 import {Ref} from "preact/compat";
-import {i} from "vite-node/types-516036fa";
-import {object, undefined} from "zod";
 
 export class CollectionSet implements CollectionSetInterface {
   private id: number = 0;

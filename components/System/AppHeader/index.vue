@@ -20,7 +20,7 @@ const userRole = computed(() => {
 const menuOptions = computed(() => {
   return [
     { value: 1, path: 'cards', text: 'cards', description: 'cards_list_description', icon: 'hat-wizard'},
-    { value: 3, path: 'users', text: 'users', description: 'users_list_description', icon: 'user'},
+    { value: 2, path: 'users', text: 'users', description: 'users_list_description', icon: 'user'},
     { value: 3, path: 'consumer', text: 'consumer', description: 'consumer_description', icon: 'cogs'},
   ];
 });
@@ -35,6 +35,7 @@ const selectedMenu = computed({
     const selOption = menuOptions.value.find(i => i.value === value);
 
     if (selOption) {
+      console.log('Setting menu as ', selOption.path)
       router.push({path: `/${selOption.path}`});
     } else {
       router.push({path: '/'});

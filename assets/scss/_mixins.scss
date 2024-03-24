@@ -89,7 +89,7 @@
 
 @mixin default-box-shadow-light-no-border() {
   & {
-    box-shadow: 0px 2px 10px rgba(44,62,80,0.150);
+    box-shadow: 0 2px 24px - 16px var(--c-default-boxshadow-color);
     // box-shadow: $left $top $spread $neg-spread $color;
   }
 }

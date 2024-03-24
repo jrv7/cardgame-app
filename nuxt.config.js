@@ -82,6 +82,7 @@ export default defineNuxtConfig({
     '@/assets/scss/components/common/app-button.scss',
     '@/assets/scss/components/common/app-table.scss',
     '@/assets/scss/components/common/app-table-pagination.scss',
+    '@/assets/scss/components/common/app-list.scss',
     '@/assets/scss/components/common/app-badge.scss',
     '@/assets/scss/components/common/app-accordion.scss',
     '@/assets/scss/components/common/app-date-time-picker.scss',
@@ -89,6 +90,9 @@ export default defineNuxtConfig({
     '@/assets/scss/components/common/app-mtg-card.scss',
     '@/assets/scss/components/common/app-mana-cost-symbol.scss',
     '@/assets/scss/components/common/app-mtg-set-symbol.scss',
+    // MTG Components
+    '@/assets/scss/components/common/mtg/mtg-card.scss',
+    '@/assets/scss/components/common/mtg/app-mtg-set-symbol-carousel.scss',
     // Pages
     '@/assets/scss/components/pages/app-page--cards-list.scss',
     '@/assets/scss/components/pages/app-page--consumer.scss',

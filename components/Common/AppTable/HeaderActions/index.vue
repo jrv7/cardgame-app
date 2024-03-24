@@ -1,9 +1,8 @@
 <script setup lang="ts">
 
 import {AppModalType} from "~/composables/customTypes/ModalTypes";
-import LazyPageSessionDetails from "~/components/Pages/Session/Details/index.vue";
-import {AppTableColumnType} from "~/composables/customTypes/AppTableColumnType";
-import {filter} from "domutils";
+
+const route = useRoute();
 
 const emit = defineEmits(['update:string-search', 'update:filter', 'searched', 'filtered', 'reset-filters']);
 
@@ -76,6 +75,23 @@ const handleFilters = () => {
   }
   filtersModal.onFinish = async (modalData) => {
     return new Promise((resolve, reject) => {
+      const pageFiltersCookie = useCookie('pagefilters');
+      let filterCookie = [];
+
+      if (pageFiltersCookie.value) {
+        filterCookie = JSON.parse(pageFiltersCookie.value);
+      }
+
+      filterCookie = filterCookie.filter(i => i.page !== route.path);
+      filterCookie.push(
+          {
+            page: route.path,
+            filters: modalData
+          }
+      );
+
+      pageFiltersCookie.value = JSON.stringify(filterCookie);
+
       emit('update:filter', modalData);
       emit('filtered', true);
 
@@ -86,6 +102,8 @@ const handleFilters = () => {
   }
   filtersModal.onCancel = async (modalData) => {
     return new Promise((resolve, reject) => {
+      const pageFiltersCookie = useCookie('pagefilters');
+      pageFiltersCookie.value = null;
       emit('reset-filters', true);
 
       setTimeout(() => {
@@ -120,8 +138,8 @@ const handleFilters = () => {
               <template #right-icon>
                 <app-button-icon
                     type="link"
-                    size="sm"
-                    class="margin-left-auto margin-right-0"
+                    size="xs"
+                    class="margin-left-auto margin-v-auto"
                     @click="clearStringSearch()"
                 >
                   <fa-icon :icon="['fas', 'xmark']" />
@@ -133,13 +151,13 @@ const handleFilters = () => {
         <li class="separator" />
         <li>
           <template v-if="allowQuickSearch">
-            <app-button-icon
-                :type="hasFilters ? 'primary' : 'link'"
-                size="square-xs"
+            <app-button
+                :type="hasFilters ? 'primary' : 'secondary'"
+                size="sm-squared"
                 @click="handleFilters()"
             >
               <fa-icon :icon="['fas', 'filter']" />
-            </app-button-icon>
+            </app-button>
           </template>
         </li>
       </ul>

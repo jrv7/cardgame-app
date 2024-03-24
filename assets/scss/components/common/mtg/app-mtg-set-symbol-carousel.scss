@@ -1,0 +1,49 @@
+
+@import "@/assets/scss/_variables.scss";
+@import "@/assets/scss/_mixins.scss";
+
+.app-mtg-set-symbol-carousel {
+  position: relative;
+  display: flex;
+  flex-flow: nowrap;
+  width: calc(100% - 24px);
+  overflow-x: auto;
+  padding: 0 12px;
+  margin: 12px 0;
+  @include no-scrollbars();
+
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 100%;
+    background-color: #fff2;
+    opacity: 0;
+    transition: all .3s ease-in-out;
+  }
+  &:before {
+    left: -16px;
+    border-radius: 0 50% 50% 0;
+  }
+  &:after {
+    right: -16px;
+    border-radius: 50% 0 0 50%;
+  }
+
+  &:hover {
+    &:before {
+      opacity: 1;
+    }
+    &:after {
+      opacity: 1;
+    }
+  }
+
+  & > li {
+    position: relative;
+    display: flex;
+    margin: 0 4px;
+  }
+}

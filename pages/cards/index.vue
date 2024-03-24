@@ -5,6 +5,20 @@ import {Card} from "~/composables/entity/Card";
 import {UnwrapRef} from "vue";
 import {CardInterface} from "~/composables/entity/CardInterface";
 import {Ref} from "preact/compat";
+import LazyAppTable from '~/components/Common/AppTable';
+import LazyAppList from '~/components/Common/AppList';
+
+const route = useRoute();
+
+const listType = ref('card');
+const ready = ref(false);
+const parseComponent = computed(() => {
+  if (listType.value === 'list') {
+    return LazyAppTable;
+  }
+
+  return LazyAppList;
+});
 
 const CardEntity = new Card();
 let tableData: Ref<UnwrapRef<CardInterface[]>> = ref([]) as Ref<UnwrapRef<CardInterface[]>>;
@@ -28,6 +42,15 @@ const originalFilters = ref({
   identityColors: [],
 });
 const filters = ref(useNuxtApp().$deepClone(originalFilters.value));
+const parseHasFilters = computed(() => {
+  return filters.value.simpleSearch.length
+      || filters.value.collectionsSets.length
+      || filters.value.types.length
+      || filters.value.subtypes.length
+      || filters.value.supertypes.length
+      || filters.value.colors.length
+      || filters.value.identityColors.length;
+})
 
 const refCardsList = ref(null);
 const modalHandler = useModal();
@@ -129,94 +152,160 @@ const openCardViewModal = (card, fromChild = false) => {
   modalHandler.set(cardDetailsModal);
   modalHandler.show(cardDetailsModal);
 }
+
+onNuxtReady(async () => {
+  await new Promise((resolve) => {
+    const pageFiltersCookie = useCookie('pagefilters');
+    if (pageFiltersCookie.value) {
+      const currentPageFilters = pageFiltersCookie.value.find(i => i.page === route.path);
+
+      if (currentPageFilters) {
+        filters.value = currentPageFilters.filters;
+      }
+    }
+
+    resolve();
+  })
+      .then(() => {
+        setTimeout(() => {
+          ready.value = true;
+        }, 200)
+      })
+})
 </script>
 
 <template>
-  <div class="app-page--cards-list">
-    <app-table-core
-        ref="TableCoreRef"
-        :url="listUrl"
-        :Entity="Card"
-        v-model:data="tableData"
-        v-model:pagination="pagination"
-        v-model:loading="parseIsLoading"
-        v-model:search="search"
-        v-model:filters="filters"
-        :primary-column="parsePrimaryColumn"
-    >
-      <app-table
-          ref="refCardsList"
-          :table-data="tableData"
-          :columns="columns"
-          :Entity="Card"
-          :selected="selectedItems"
-          :title="$_Tt('cards')"
-          allow-filter
-          :filters-component="shallowRef(LazyPageCardFilters)"
-          v-model:pagination="pagination"
-          v-model:filter="filters"
-          v-model:search="search"
-          @select-all="handleSelectAll"
-          @reset-filters="handleResetFilters()"
-      >
-        <template #head-column-actions="{rowData}">
-          <fa-icon :icon="['fas', 'diamond']" />
-        </template>
+  <div class="app-page--cards-list" v-if="ready">
+    <div class="g-row">
+      <div class="g-col --span-24">
+        <app-table-header-actions
+            :filters-component="shallowRef(LazyPageCardFilters)"
+            v-model:filter="filters"
+            v-model:string-search="search"
+            :has-filters="!!parseHasFilters"
+            title="Cards"
+            @reset-filters="handleResetFilters()"
+        >
+          <template #first-slot>
+            <app-button-group>
+              <app-button
+                  :type="listType === 'list' ? 'primary' : 'secondary'"
+                  size="sm-squared"
+                  :value="'list'"
+                  v-model="listType"
+              >
+                <fa-icon :icon="['fas', 'bars']" />
+              </app-button>
+              <app-button
+                  :type="listType === 'card' ? 'primary' : 'secondary'"
+                  size="sm-squared"
+                  :value="'card'"
+                  v-model="listType"
+              >
+                <fa-icon :icon="['fas', 'square-caret-down']" />
+              </app-button>
+            </app-button-group>
+          </template>
+        </app-table-header-actions>
+      </div>
+    </div>
+    <div class="g-row">
+      <div class="g-col --span-24">
+        <app-table-core
+            ref="TableCoreRef"
+            :url="listUrl"
+            :Entity="Card"
+            v-model:data="tableData"
+            v-model:pagination="pagination"
+            v-model:loading="parseIsLoading"
+            v-model:search="search"
+            v-model:filters="filters"
+            :primary-column="parsePrimaryColumn"
+        >
+          <component
+              :is="parseComponent"
+              ref="refCardsList"
+              :table-data="tableData"
+              :columns="columns"
+              :Entity="Card"
+              :selected="selectedItems"
+              :title="$_Tt('cards')"
+              allow-filter
+              hide-action-bar
+              v-model:pagination="pagination"
+              v-model:filter="filters"
+              v-model:search="search"
+              @select-all="handleSelectAll"
+              @reset-filters="handleResetFilters()"
+          >
+            <template #app-list-item="{itemData}">
+              <app-mtg-card
+                  :card="itemData"
+                  @click="openCardViewModal(itemData)"
+                  hide-descriptions
+              />
+            </template>
 
-        <template #column_manaCost="{rowData}">
-          <app-mtg-mana-cost-symbol
-              v-if="rowData.getManaCost() !== null"
-              :value="rowData.getType() !== 'land' ? rowData.getManaCost() : '{LAND}'"
-          />
-          <app-mtg-mana-cost-symbol
-              v-else-if="rowData.getType() === 'Scheme'"
-              :value="'{SCHEME}'"
-              :title="rowData.getType()"
-          />
-          <app-mtg-mana-cost-symbol
-              v-else-if="rowData.getTypes().map(i => i.name).includes('Land')"
-              :value="'{LAND}'"
-              :title="rowData.getType()"
-          />
-          <app-mtg-mana-cost-symbol
-              v-else-if="rowData.getTypes().map(i => i.name).includes('Plane') || rowData.getTypes().map(i => i.name).includes('Phenomenon')"
-              :value="'{PLANE}'"
-              :title="rowData.getType()"
-          />
-          <span v-else>{{ rowData.getTypes() }}</span>
-        </template>
+            <template #head-column-actions="{rowData}">
+              <fa-icon :icon="['fas', 'diamond']" />
+            </template>
 
-        <template #column_collectionSet="{rowData}">
-          <app-mtg-set-symbol
-              v-if="rowData.getCollectionSet() !== null"
-              :value="rowData.getCollectionSet()?.getCode()"
-              :rarity="rowData.getRarity()"
-              :name="rowData.getCollectionSet()?.getName()"
-          />
-          <span v-else>-</span>
-        </template>
+            <template #column_manaCost="{rowData}">
+              <app-mtg-mana-cost-symbol
+                  v-if="rowData.getManaCost() !== null"
+                  :value="rowData.getType() !== 'land' ? rowData.getManaCost() : '{LAND}'"
+              />
+              <app-mtg-mana-cost-symbol
+                  v-else-if="rowData.getType() === 'Scheme'"
+                  :value="'{SCHEME}'"
+                  :title="rowData.getType()"
+              />
+              <app-mtg-mana-cost-symbol
+                  v-else-if="rowData.getTypes().map(i => i.name).includes('Land')"
+                  :value="'{LAND}'"
+                  :title="rowData.getType()"
+              />
+              <app-mtg-mana-cost-symbol
+                  v-else-if="rowData.getTypes().map(i => i.name).includes('Plane') || rowData.getTypes().map(i => i.name).includes('Phenomenon')"
+                  :value="'{PLANE}'"
+                  :title="rowData.getType()"
+              />
+              <span v-else>{{ rowData.getTypes() }}</span>
+            </template>
 
-        <template #column_name="{rowData}">
-          <div class="g-row">
-            <div class="g-col --span-24">
+            <template #column_collectionSet="{rowData}">
+              <app-mtg-set-symbol
+                  v-if="rowData.getCollectionSet() !== null"
+                  :value="rowData.getCollectionSet()?.getCode()"
+                  :rarity="rowData.getRarity()"
+                  :name="rowData.getCollectionSet()?.getName()"
+              />
+              <span v-else>-</span>
+            </template>
+
+            <template #column_name="{rowData}">
               <div class="g-row">
                 <div class="g-col --span-24">
+                  <div class="g-row">
+                    <div class="g-col --span-24">
                   <span class="text-strong">
                     <a href="javascript: () => null" @click.prevent="openCardViewModal(rowData)">{{ rowData.getName() }}</a>
                     <!-- app-badge :value="rowData.uid" type="warning" size="sm" / -->
                   </span>
+                    </div>
+                  </div>
+                  <div class="g-row">
+                    <div class="g-col --span-24">
+                      <span>{{ rowData.getType() }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="g-row">
-                <div class="g-col --span-24">
-                  <span>{{ rowData.getType() }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
+            </template>
 
-      </app-table>
-    </app-table-core>
+          </component>
+        </app-table-core>
+      </div>
+    </div>
   </div>
 </template>

@@ -30,8 +30,6 @@
     flex-direction: column;
     margin: auto;
     min-height: 100vh;
-    overflow-y: auto;
-    overflow-x: visible;
     z-index: 10;
 
     & > .modal-container {
@@ -115,7 +113,6 @@
         width: calc(100% - 48px);
         vertical-align: top;
         padding: 24px;
-        overflow: auto;
         border-radius: 0;
       }
 

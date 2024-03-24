@@ -65,6 +65,7 @@ const parseCollectionSetPrimaryCol = computed(() => {
 
 const isReady = ref(false);
 const collectionSetsList:CollectionSetInterface[] = ref([]) as CollectionSetInterface[];
+
 const prefilteredCollectionSetList:CollectionSetInterface[] = ref([]) as CollectionSetInterface[];
 const parseOptions = computed(() => {
   return [
@@ -105,6 +106,10 @@ const parseOptions = computed(() => {
     }
   });
 });
+
+const parseCollectionSetsList = computed(() => {
+  return collectionSetsList.value.filter(i => !prefilteredCollectionSetList.value.map(j => j.getId()).includes(i.getId()));
+})
 
 const filters:any = ref({
   simpleSearch: null,
@@ -347,6 +352,8 @@ onNuxtReady(async () => {
                                       :value="colSetSelected.getCode()"
                                       :rarity="filters.collectionsSets?.includes(colSetSelected.getId()) ? 'mythic' : 'uncommon'"
                                       :name="colSetSelected.getName()"
+                                      can-hover
+                                      @click="handleSetSelect(colSetSelected.getId())"
                                   />
                                 </label>
                                 <span class="set-name">{{ colSetSelected.getName() }}</span>
@@ -357,7 +364,7 @@ onNuxtReady(async () => {
                               <li class="separator"></li>
                             </template>
 
-                            <template v-for="(colSet, index) in collectionSetsList" :key="`collection-set-filters-list-item-${index}`">
+                            <template v-for="(colSet, index) in parseCollectionSetsList" :key="`collection-set-filters-list-item-${index}`">
                               <li>
                                 <input
                                     type="checkbox"
@@ -376,6 +383,8 @@ onNuxtReady(async () => {
                                       :value="colSet.getCode()"
                                       :rarity="filters.collectionsSets?.includes(colSet.getId()) ? 'mythic' : 'uncommon'"
                                       :name="colSet.getName()"
+                                      can-hover
+                                      @click="handleSetSelect(colSet.getId())"
                                   />
                                 </label>
                                 <span class="set-name">{{ colSet.getName() }}</span>

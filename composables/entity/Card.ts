@@ -1,8 +1,9 @@
 import {EntityColumnType} from "~/composables/entity/EntityInterface";
-import {CardType, CardInterface, self} from "~/composables/entity/CardInterface";
+import {CardType, CardInterface} from "~/composables/entity/CardInterface";
 import {UnwrapRef} from "vue";
 import {Ref} from "preact/compat";
 import {CollectionSet} from "~/composables/entity/CollectionSet";
+import {ImageCollection} from "~/composables/entity/ImageCollection";
 
 export class Card implements CardInterface {
   private id: number = 0;
@@ -24,7 +25,6 @@ export class Card implements CardInterface {
   private originalText: string | null = null;
   private originalType: string | null = null;
   private collectionSet:CollectionSet|null;
-  private collectionSets:CollectionSet[]|null;
   private layout: string | null = null;
   private artist: string | null = null;
   private colors: string[] | null = [];
@@ -32,6 +32,8 @@ export class Card implements CardInterface {
   private supertypes: string[] | null = [];
   private types: string[] | null = [];
   private subtypes: string[] | null = [];
+  private collectionSets:CollectionSet[]|null;
+  private imageCollection:ImageCollection[]|null;
 
   private columns: {}[] = [
     'id',
@@ -53,14 +55,15 @@ export class Card implements CardInterface {
     'originalText',
     'originalType',
     'collectionSet',
-    'collectionSets',
     'layout',
     'artist',
     'colors',
     'identityColors',
     'supertypes',
     'types',
-    'subtypes'
+    'subtypes',
+    'collectionSets',
+    'imageCollection'
   ];
 
   public errors: Ref<UnwrapRef<{ field: string; message: string }[]>> = ref([]) as Ref<UnwrapRef<{ field: string; message: string }[]>>;
@@ -110,8 +113,6 @@ export class Card implements CardInterface {
         this.setOriginalType(cloneFrom.getOriginalType());
         // setCollectionSet:CollectionSet|null;
         this.setCollectionSet(cloneFrom.getCollectionSet());
-        // setCollectionSets:CollectionSet[]|null;
-        this.setCollectionSets(cloneFrom.getCollectionSets()?.map(i => { return new CollectionSet(i); }));
         // layout:string|null;
         this.setLayout(cloneFrom.getLayout());
         // artist:string|null;
@@ -126,6 +127,12 @@ export class Card implements CardInterface {
         this.setTypes(cloneFrom.getTypes());
         // subtypes:string[]|null;
         this.setSubtypes(cloneFrom.getSubtypes());
+        // setCollectionSets:CollectionSet[]|null;
+        this.setCollectionSets(cloneFrom.getCollectionSets()?.map(i => { return new CollectionSet(i); }));
+        if (cloneFrom.getImageCollection()) {
+          // imageCollection:ImageCollection[]|null;
+          this.setImageCollection(cloneFrom.getImageCollection()?.map(i => { return new ImageCollection(i); }));
+        }
       }
     }
   }
@@ -278,17 +285,9 @@ export class Card implements CardInterface {
   getCollectionSet():CollectionSet|null {
     return this.collectionSet;
   }
-  setCollectionSet(value:CollectionSet|null): CardInterface {
-    this.collectionSet = value;
-    return this.runValidation();
-  }
-  // 'collectionSet',
-  getCollectionSets():CollectionSet[]|null {
-    return this.collectionSets;
-  }
   setCollectionSets(value:CollectionSet[]|null): CardInterface {
     this.collectionSets = value;
-    return this.runValidation();
+    return this;
   }
   // 'layout',
   getLayout():string|null {
@@ -346,9 +345,25 @@ export class Card implements CardInterface {
     this.subtypes = value;
     return this.runValidation();
   }
+  setCollectionSet(value:CollectionSet|null):CardInterface {
+    this.collectionSet = value;
+    return this;
+  }
+  // 'collectionSet',
+  getCollectionSets():CollectionSet[]|null {
+    return this.collectionSets;
+  }
+  setImageCollection(value:ImageCollection[]|null):CardInterface {
+    this.imageCollection = value;
+    return this;
+  }
+  // 'imageCollection',
+  getImageCollection():ImageCollection[] {
+    return this.imageCollection ?? [];
+  }
 
-  getDefaultText():string|null {
-    return this.getName();
+  getDefaultText():string {
+    return this.getName() ?? '';
   }
 
   private runValidation(): CardInterface {
@@ -400,7 +415,7 @@ export class Card implements CardInterface {
   }
 
   getData(column?:string) {
-    let dataObj = {
+    let dataObj:CardType = {
       id: this.getId(),
       uniqueCardId: this.getUniqueCardId(),
       uniqueCardCode: this.getUniqueCardCode(),
@@ -420,14 +435,15 @@ export class Card implements CardInterface {
       originalText: this.getOriginalText(),
       originalType: this.getOriginalType(),
       collectionSet: this.getCollectionSet(),
-      collectionSets: this.getCollectionSets(),
       layout: this.getLayout(),
       artist: this.getArtist(),
       colors: this.getColors(),
       identityColors: this.getIdentityColors(),
       supertypes: this.getSupertypes(),
       types: this.getTypes(),
-      subtypes: this.getSubtypes()
+      subtypes: this.getSubtypes(),
+      collectionSets: this.getCollectionSets(),
+      imageCollection: this.getImageCollection(),
     };
 
     if (column) {
@@ -476,8 +492,6 @@ export class Card implements CardInterface {
     this.setOriginalType(object.originalType);
     // setCollectionSet:CollectionSet|null;
     this.setCollectionSet(object.collectionSet ? new CollectionSet(object.collectionSet) : null);
-    // setCollectionSets:CollectionSet[]|null;
-    this.setCollectionSets(object.collectionSets ? object.collectionSets.map(i => { return new CollectionSet(i); }) : null);
     // layout:string|null;
     this.setLayout(object.layout);
     // artist:string|null;
@@ -492,23 +506,15 @@ export class Card implements CardInterface {
     this.setTypes(object.types);
     // subtypes:string[]|null;
     this.setSubtypes(object.subtypes);
+    // setCollectionSets:CollectionSet[]|null;
+    this.setCollectionSets(object.collectionSets ? object.collectionSets.map(i => { return new CollectionSet(i); }) : null);
+    // setImageCollection:ImageCollection[]|null;
+    this.setImageCollection(object.imageCollection ? object.imageCollection.map(i => { return new ImageCollection(i); }) : null);
+
     return this;
   }
 
   getDefaultImage(): string | null {
     return "";
-  }
-
-  async fetchMeta():Promise<self|null> {
-    await useDynamicPost(`/cards/${this.getId()}`)
-      .then((response) => {
-        console.log('Card meta fetched', response);
-        if (response.success) {
-          return new Card(response.data);
-        }
-      })
-      .catch(() => {
-        console.error('Could not fetch card meta');
-      })
   }
 }

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 
 import {CardInterface} from "~/composables/entity/CardInterface";
+import {CardController} from "~/composables/controller/CardController";
+import {CollectionSet} from "~/composables/entity/CollectionSet";
 
 const props = withDefaults(
     defineProps< {
@@ -8,17 +10,38 @@ const props = withDefaults(
     }>(), {
     });
 
-const cardMeta:CardInterface|null = ref(null) as CardInterface|null;
-
+const CController = new CardController(props.card);
 const isLoading:any = ref(null) as any;
-
 const ready = ref(false);
+const cardSets:any = ref([]) as any;
+const activeSet:CollectionSet|null = ref(null) as CollectionSet|null;
+const parseActiveSet = computed(() => {
+  if (!activeSet.value || !ready.value) {
+    return null;
+  }
 
+  return activeSet.value;
+});
+
+const uniqueSets = ref([]);
+
+const parseCollectionSets = computed(() => {
+  return CController.getCard().getImageCollection().filter(i => {
+    const colSet = i.getCollectionSet();
+    if (!uniqueSets.value.includes(colSet.getId())) {
+      uniqueSets.value.push(colSet.getId());
+
+      return colSet;
+    }
+
+    return false;
+  }).map(i => i.getCollectionSet());
+});
 const changeCollectionSet = async (set) => {
   isLoading.value = true;
 
   await new Promise((resolve) => {
-    console.log('Changing set', set);
+    activeSet.value = set;
 
     setTimeout(() => {
       resolve();
@@ -33,39 +56,27 @@ const changeCollectionSet = async (set) => {
 }
 
 onNuxtReady(async () => {
-  await new Promise((resolve) => {
-    isLoading.value = true;
-    cardMeta.value = props.card.fetchMeta();
-    resolve();
-  })
+  await CController.fetchMeta()
       .then(() => {
         ready.value = true;
         isLoading.value = setTimeout(() => {
           clearTimeout(isLoading.value);
           isLoading.value = null;
         }, 400);
-      })
+      });
 })
 </script>
 
 <template>
   <div class="app-subpage--card-details" v-if="ready">
-    <img class="app-mtg-card default" v-if="card.imageUrl" :src="card.imageUrl" :alt="card.name">
-    <ul class="collection-sets-list">
-      <template v-for="(set, index) in card.getCollectionSets()" :key="`car-collection-set-item-${index}`">
-        <li>
-          <app-mtg-set-symbol
-              v-if="set.getCode() !== null"
-              :value="set.getCode()"
-              :rarity="set.getId() === card.getCollectionSet().getId() ? 'mythic' : 'uncommon'"
-              :name="set.getName()"
-              :loading="!!isLoading"
-              can-hover
-              @click="changeCollectionSet(set)"
-          />
-          <span v-else>-</span>
-        </li>
-      </template>
-    </ul>
+    <app-mtg-card-static
+        :card="CController.getCard()"
+        :active-set="parseActiveSet"
+    />
+
+    <app-mtg-set-symbol-carousel
+        :sets="parseCollectionSets"
+        v-model="activeSet"
+    />
   </div>
 </template>

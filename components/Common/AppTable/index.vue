@@ -26,7 +26,8 @@ const props = withDefaults(
       filtersComponent?:object,
       defaultListSize?:number,
       title?:string,
-      filter?:any
+      filter?:any,
+      hideActionBar?:boolean
     }>(),
     {
       allowSelection: true,
@@ -36,7 +37,8 @@ const props = withDefaults(
       loading: false,
       defaultListSize: 10,
       title: null,
-      filter: null
+      filter: null,
+      hideActionBar: false
     }
 );
 
@@ -214,26 +216,28 @@ onNuxtReady(async () => {
       class="app-table"
       :class="{'loading': loading || loadingState.loading}"
   >
-    <app-table-header-actions
-        :allow-quick-search="allowQuickSearch"
-        :allow-filters="allowFilters"
-        :filters-component="filtersComponent"
-        v-model:string-search="parseStringSearch"
-        v-model:filter="parsedFilters"
-        :has-filters="parsePagination.filtered"
-        :title="title"
-        @searched="handleStringSearch()"
-        @filtered="handleFiltersApplied()"
-        @reset-filters="handleResetFilters()"
-    >
-      <template #table-header-actions>
-        <slot name="table-header-actions">
-        </slot>
-      </template>
-      <template #first-slot>
-        <slot name="table-header-actions-first-slot"></slot>
-      </template>
-    </app-table-header-actions>
+    <template v-if="!hideActionBar">
+      <app-table-header-actions
+          :allow-quick-search="allowQuickSearch"
+          :allow-filters="allowFilters"
+          :filters-component="filtersComponent"
+          v-model:string-search="parseStringSearch"
+          v-model:filter="parsedFilters"
+          :has-filters="parsePagination.filtered"
+          :title="title"
+          @searched="handleStringSearch()"
+          @filtered="handleFiltersApplied()"
+          @reset-filters="handleResetFilters()"
+      >
+        <template #table-header-actions>
+          <slot name="table-header-actions">
+          </slot>
+        </template>
+        <template #first-slot>
+          <slot name="table-header-actions-first-slot"></slot>
+        </template>
+      </app-table-header-actions>
+    </template>
 
     <table cellspacing="0">
       <colgroup>
