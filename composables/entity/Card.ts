@@ -20,6 +20,7 @@ export class Card implements CardInterface {
   private manaCost: string | null = null;
   private rarity: string | null = null;
   private type: string | null = null;
+  private latestImageUrl: string | null = null;
   private imageUrl: string | null = null;
   private oracleText: string | null = null;
   private originalText: string | null = null;
@@ -50,6 +51,7 @@ export class Card implements CardInterface {
     'manaCost',
     'rarity',
     'type',
+    'latestImageUrl',
     'imageUrl',
     'oracleText',
     'originalText',
@@ -103,6 +105,8 @@ export class Card implements CardInterface {
         this.setRarity(cloneFrom.getRarity());
         // type:string|null;
         this.setType(cloneFrom.getType());
+        // latestImageUrl:string|null;
+        this.setLatestImageUrl(cloneFrom.getLatestImageUrl());
         // imageUrl:string|null;
         this.setImageUrl(cloneFrom.getImageUrl());
         // oracleText:string|null;
@@ -143,7 +147,7 @@ export class Card implements CardInterface {
   }
   setId(value: number): CardInterface {
     this.id = value;
-    return this.runValidation();
+    return this;
   }
   // 'uniqueCardId',
   getUniqueCardId(): number {
@@ -151,7 +155,7 @@ export class Card implements CardInterface {
   }
   setUniqueCardId(value: number): CardInterface {
     this.uniqueCardId = value;
-    return this.runValidation();
+    return this;
   }
   // 'uniqueCardCode',
   getUniqueCardCode(): string {
@@ -159,7 +163,7 @@ export class Card implements CardInterface {
   }
   setUniqueCardCode(value: string): CardInterface {
     this.uniqueCardCode = value;
-    return this.runValidation();
+    return this;
   }
   // 'cardId',
   getCardId():string|null {
@@ -167,7 +171,7 @@ export class Card implements CardInterface {
   }
   setCardId(value:string|null): CardInterface {
     this.cardId = value;
-    return this.runValidation();
+    return this;
   }
   // 'cardNumber',
   getCardNumber():number|null {
@@ -175,7 +179,7 @@ export class Card implements CardInterface {
   }
   setCardNumber(value:number|null): CardInterface {
     this.cardNumber = value;
-    return this.runValidation();
+    return this;
   }
   // 'multiverseId',
   getMultiverseId():number|null {
@@ -183,7 +187,7 @@ export class Card implements CardInterface {
   }
   setMultiverseId(value:number|null): CardInterface {
     this.multiverseId = value;
-    return this.runValidation();
+    return this;
   }
   // 'name',
   getName():string|null {
@@ -191,7 +195,7 @@ export class Card implements CardInterface {
   }
   setName(value:string|null): CardInterface {
     this.name = value;
-    return this.runValidation();
+    return this;
   }
   // 'cmc',
   getCmc():number|null {
@@ -199,7 +203,7 @@ export class Card implements CardInterface {
   }
   setCmc(value:number|null): CardInterface {
     this.cmc = value;
-    return this.runValidation();
+    return this;
   }
   // 'power',
   getPower():number|null {
@@ -207,7 +211,7 @@ export class Card implements CardInterface {
   }
   setPower(value:number|null): CardInterface {
     this.power = value;
-    return this.runValidation();
+    return this;
   }
   // 'toughness',
   getToughness():number|null {
@@ -215,7 +219,7 @@ export class Card implements CardInterface {
   }
   setToughness(value:number|null): CardInterface {
     this.toughness = value;
-    return this.runValidation();
+    return this;
   }
   // 'loyalty',
   getLoyalty():number|null {
@@ -223,7 +227,7 @@ export class Card implements CardInterface {
   }
   setLoyalty(value:number|null): CardInterface {
     this.loyalty = value;
-    return this.runValidation();
+    return this;
   }
   // 'manaCost',
   getManaCost():string|null {
@@ -231,7 +235,7 @@ export class Card implements CardInterface {
   }
   setManaCost(value:string|null): CardInterface {
     this.manaCost = value;
-    return this.runValidation();
+    return this;
   }
   // 'rarity',
   getRarity():string|null {
@@ -239,7 +243,7 @@ export class Card implements CardInterface {
   }
   setRarity(value:string|null): CardInterface {
     this.rarity = value;
-    return this.runValidation();
+    return this;
   }
   // 'type',
   getType():string|null {
@@ -247,7 +251,15 @@ export class Card implements CardInterface {
   }
   setType(value:string|null): CardInterface {
     this.type = value;
-    return this.runValidation();
+    return this;
+  }
+  // 'latestImageUrl',
+  getLatestImageUrl():string|null {
+    return this.latestImageUrl;
+  }
+  setLatestImageUrl(value:string|null): CardInterface {
+    this.latestImageUrl = value;
+    return this;
   }
   // 'imageUrl',
   getImageUrl():string|null {
@@ -255,7 +267,7 @@ export class Card implements CardInterface {
   }
   setImageUrl(value:string|null): CardInterface {
     this.imageUrl = value;
-    return this.runValidation();
+    return this;
   }
   // 'oracleText',
   getOracleText():string|null {
@@ -263,7 +275,7 @@ export class Card implements CardInterface {
   }
   setOracleText(value:string|null): CardInterface {
     this.oracleText = value;
-    return this.runValidation();
+    return this;
   }
   // 'originalText',
   getOriginalText():string|null {
@@ -271,7 +283,7 @@ export class Card implements CardInterface {
   }
   setOriginalText(value:string|null): CardInterface {
     this.originalText = value;
-    return this.runValidation();
+    return this;
   }
   // 'originalType',
   getOriginalType():string|null {
@@ -279,7 +291,7 @@ export class Card implements CardInterface {
   }
   setOriginalType(value:string|null): CardInterface {
     this.originalType = value;
-    return this.runValidation();
+    return this;
   }
   // 'collectionSet',
   getCollectionSet():CollectionSet|null {
@@ -295,7 +307,7 @@ export class Card implements CardInterface {
   }
   setLayout(value:string|null): CardInterface {
     this.layout = value;
-    return this.runValidation();
+    return this;
   }
   // 'artist',
   getArtist():string|null {
@@ -303,7 +315,7 @@ export class Card implements CardInterface {
   }
   setArtist(value:string|null): CardInterface {
     this.artist = value;
-    return this.runValidation();
+    return this;
   }
   // 'colors',
   getColors():string[]|null {
@@ -311,7 +323,7 @@ export class Card implements CardInterface {
   }
   setColors(value:string[]|null): CardInterface {
     this.colors = value;
-    return this.runValidation();
+    return this;
   }
   // 'identityColors',
   getIdentityColors():string[]|null {
@@ -319,7 +331,7 @@ export class Card implements CardInterface {
   }
   setIdentityColors(value:string[]|null): CardInterface {
     this.identityColors = value;
-    return this.runValidation();
+    return this;
   }
   // 'supertypes',
   getSupertypes():string[]|null {
@@ -327,7 +339,7 @@ export class Card implements CardInterface {
   }
   setSupertypes(value:string[]|null): CardInterface {
     this.supertypes = value;
-    return this.runValidation();
+    return this;
   }
   // 'types',
   getTypes():string[]|null {
@@ -335,7 +347,7 @@ export class Card implements CardInterface {
   }
   setTypes(value:string[]|null): CardInterface {
     this.types = value;
-    return this.runValidation();
+    return this;
   }
   // 'subtypes'
   getSubtypes():string[]|null {
@@ -343,7 +355,7 @@ export class Card implements CardInterface {
   }
   setSubtypes(value:string[]|null): CardInterface {
     this.subtypes = value;
-    return this.runValidation();
+    return this;
   }
   setCollectionSet(value:CollectionSet|null):CardInterface {
     this.collectionSet = value;
@@ -430,6 +442,7 @@ export class Card implements CardInterface {
       manaCost: this.getManaCost(),
       rarity: this.getRarity(),
       type: this.getType(),
+      latestImageUrl: this.getLatestImageUrl(),
       imageUrl: this.getImageUrl(),
       oracleText: this.getOracleText(),
       originalText: this.getOriginalText(),
@@ -482,6 +495,8 @@ export class Card implements CardInterface {
     this.setRarity(object.rarity);
     // type:string|null;
     this.setType(object.type);
+    // latestImageUrl:string|null;
+    this.setLatestImageUrl(object.latestImageUrl);
     // imageUrl:string|null;
     this.setImageUrl(object.imageUrl);
     // oracleText:string|null;

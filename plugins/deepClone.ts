@@ -5,7 +5,7 @@ export default defineNuxtPlugin(() => {
       deepClone: (obj: object, forceUnref: boolean = false) => {
         const original = unref(obj);
         if (typeof obj !== 'object') {
-          console.error('Cannot copy non-object targets')
+          // console.error('Cannot copy non-object targets')
           return null
         }
 

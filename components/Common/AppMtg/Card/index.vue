@@ -27,9 +27,15 @@ const parseCardImage = computed(() => {
   if (null !== props.activeSet) {
     const cardSetImage = props.card.getImageCollection().find(i => i.getCollectionSet().getId() === props.activeSet?.getId());
     if (cardSetImage) {
+      console.log('Returning set image');
       return cardSetImage.getCollectionImage();
     }
+  } else if (props.card?.getLatestImageUrl()) {
+    console.log('Returning latest image');
+    return props.card?.getLatestImageUrl();
   }
+  console.log('Returning default image');
+
   return props.card.getImageUrl();
 });
 

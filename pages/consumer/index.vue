@@ -1,24 +1,11 @@
 <script setup lang="ts">
 
-const page = ref(1);
-const parsePageNumber = computed({
-  get: () => {
-    return page.value;
-  },
-  set: (value:number) => {
-    const fetchPageCookie = useCookie('fetchpagenumber') ?? 1;
-    page.value = value;
-    fetchPageCookie.value = `${value}`;
-  }
-});
-
 const cardsFetched = ref(0);
 const fetchAllCards = async () => {
   return new Promise(() => {
-    useDynamicPost('/cards/fetch-all', {page: parsePageNumber.value, limit: 1})
+    useDynamicPost('/cards/fetch-all-from-json', {limit: 10})
         .then((response) => {
           if (response.success) {
-            parsePageNumber.value = (response.data.page + 1);
             cardsFetched.value = (cardsFetched.value + response.data?.cards);
 
             setTimeout(() => {
@@ -35,9 +22,6 @@ const fetchAllCards = async () => {
 
 onNuxtReady(async () => {
   await new Promise((resolve) => {
-    const fetchPageCookie = useCookie('fetchpagenumber') ?? 1;
-    console.log('Page number loaded from cookies:', fetchPageCookie.value);
-    page.value = parseInt(fetchPageCookie.value!);
     setTimeout(() => {
       resolve()
     }, 200)

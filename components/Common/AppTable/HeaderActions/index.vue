@@ -79,7 +79,7 @@ const handleFilters = () => {
       let filterCookie = [];
 
       if (pageFiltersCookie.value) {
-        filterCookie = JSON.parse(pageFiltersCookie.value);
+        filterCookie = pageFiltersCookie.value;
       }
 
       filterCookie = filterCookie.filter(i => i.page !== route.path);

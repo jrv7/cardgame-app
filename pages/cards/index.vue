@@ -11,6 +11,31 @@ import LazyAppList from '~/components/Common/AppList';
 const route = useRoute();
 
 const listType = ref('card');
+const handleListTypeChange = (value:string) => {
+  listType.value = value;
+  const pageConfigsCookie = useCookie('pageconfigs');
+  let configsCookie = [];
+
+  if (pageConfigsCookie.value) {
+    configsCookie = pageConfigsCookie.value;
+  }
+
+  let currentConfigs = configsCookie.find(i => i.page === route.path);
+  if (!currentConfigs) {
+    currentConfigs = {
+      page: route.path,
+      listType: value
+    }
+  } else {
+    currentConfigs.listType = value;
+  }
+
+  let newConfigs = configsCookie.filter(i => i.page !== route.path);
+  newConfigs.push(currentConfigs);
+  //
+  pageConfigsCookie.value = JSON.stringify(newConfigs);
+}
+
 const ready = ref(false);
 const parseComponent = computed(() => {
   if (listType.value === 'list') {
@@ -154,6 +179,7 @@ const openCardViewModal = (card, fromChild = false) => {
 }
 
 onNuxtReady(async () => {
+
   await new Promise((resolve) => {
     const pageFiltersCookie = useCookie('pagefilters');
     if (pageFiltersCookie.value) {
@@ -161,6 +187,17 @@ onNuxtReady(async () => {
 
       if (currentPageFilters) {
         filters.value = currentPageFilters.filters;
+      }
+    }
+
+    const pageConfigsCookie = useCookie('pageconfigs');
+    if (pageConfigsCookie.value) {
+      console.log('has config cookie', pageConfigsCookie.value);
+      const pageConfigs = pageConfigsCookie.value.find(i => i.page === route.path);
+
+      if (pageConfigs) {
+        console.log('config found', pageConfigs)
+        listType.value = pageConfigs.listType;
       }
     }
 
@@ -191,16 +228,14 @@ onNuxtReady(async () => {
               <app-button
                   :type="listType === 'list' ? 'primary' : 'secondary'"
                   size="sm-squared"
-                  :value="'list'"
-                  v-model="listType"
+                  @click="handleListTypeChange('list')"
               >
                 <fa-icon :icon="['fas', 'bars']" />
               </app-button>
               <app-button
                   :type="listType === 'card' ? 'primary' : 'secondary'"
                   size="sm-squared"
-                  :value="'card'"
-                  v-model="listType"
+                  @click="handleListTypeChange('card')"
               >
                 <fa-icon :icon="['fas', 'square-caret-down']" />
               </app-button>
@@ -261,16 +296,16 @@ onNuxtReady(async () => {
                   :title="rowData.getType()"
               />
               <app-mtg-mana-cost-symbol
-                  v-else-if="rowData.getTypes().map(i => i.name).includes('Land')"
+                  v-else-if="rowData.getTypes()?.map(i => i.name).includes('Land')"
                   :value="'{LAND}'"
                   :title="rowData.getType()"
               />
               <app-mtg-mana-cost-symbol
-                  v-else-if="rowData.getTypes().map(i => i.name).includes('Plane') || rowData.getTypes().map(i => i.name).includes('Phenomenon')"
+                  v-else-if="rowData.getTypes()?.map(i => i.name).includes('Plane') || rowData.getTypes().map(i => i.name).includes('Phenomenon')"
                   :value="'{PLANE}'"
                   :title="rowData.getType()"
               />
-              <span v-else>{{ rowData.getTypes() }}</span>
+              <span v-else>-</span>
             </template>
 
             <template #column_collectionSet="{rowData}">

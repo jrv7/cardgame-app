@@ -21,7 +21,8 @@
     position: relative;
     display: flex;
     flex-flow: wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
+    horiz-align: left;
     width: 100%;
 
     & > .list-item {
@@ -31,10 +32,27 @@
       width: 0px;
       padding: calc((((100% - 48px) / 5) / 2) * 1.4) calc(((100% - 48px) / 5) / 2);
       max-height: calc(((100% / 5) - 16px) * 1.4);
-      margin-bottom: 12px;
+      margin: 0 auto 12px auto;
       transition: all .3s ease-in-out;
       z-index: 1;
       @include no-scrollbars();
+
+
+      &:nth-last-child(5):first-of-type {
+        margin: 0 8px 12px 0;
+      }
+      &:nth-last-child(4):first-of-type {
+        margin: 0 8px 12px 0;
+      }
+      &:nth-last-child(3):first-of-type {
+        margin: 0 8px 12px 0;
+      }
+      &:nth-last-child(2):first-of-type {
+        margin: 0 8px 12px 0;
+      }
+      &:nth-last-child(1):first-of-type, &:nth-last-child(1):last-of-type {
+        margin: 0 8px 12px 0;
+      }
 
       & > .item-content {
         position: absolute;

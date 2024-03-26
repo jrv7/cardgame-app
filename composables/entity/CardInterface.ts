@@ -20,6 +20,7 @@ export type CardType = {
     manaCost:string|null,
     rarity:string|null,
     type:string|null,
+    latestImageUrl:string|null,
     imageUrl:string|null,
     oracleText:string|null,
     originalText:string|null,
@@ -51,6 +52,7 @@ export interface CardInterface extends EntityInterface {
     manaCost:string|null;
     rarity:string|null;
     type:string|null;
+    latestImageUrl:string|null;
     imageUrl:string|null;
     oracleText:string|null;
     originalText:string|null;
@@ -108,6 +110,9 @@ export interface CardInterface extends EntityInterface {
     // type:string|null;
     getType():string|null;
     setType(value:string|null): self;
+    // latestImageUrl:string|null;
+    getLatestImageUrl():string|null;
+    setLatestImageUrl(value:string|null): self;
     // imageUrl:string|null;
     getImageUrl():string|null;
     setImageUrl(value:string|null): self;
