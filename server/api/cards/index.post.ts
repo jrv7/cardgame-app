@@ -1,7 +1,17 @@
-import {useApiPost} from "~/composables/useApiFetch";
+import {fetchCardList} from "~/server/composables/cards/Functions";
 
 export default defineEventHandler(async (event) => {
-  const apiCookies = parseCookies(event);
+  const localDbList = useStorage('cache-db:card-list');
+  const localDbCards = useStorage('cache-db:cards');
+  const localDbCardsToFetch = useStorage('cache-db:cards-to-fetch');
+
+  await localDbCardsToFetch.getItem('list')
+    .then((items) => {
+      if (!items) {
+        console.log('Setting default cards-to-fetch list');
+        localDbCardsToFetch.setItem('list', []);
+      }
+    })
 
   let headers = {}
   let requestBody
@@ -12,17 +22,5 @@ export default defineEventHandler(async (event) => {
     requestBody = event.node?.req?.body;
   }
 
-  console.log('APP server: Requesting cards');
-
-  return new Promise((resolve, reject) => {
-    useApiPost('/cards', requestBody, headers)
-      .then((response) => {
-        console.log('APP server: Requesting cards', response);
-        resolve(response);
-      })
-      .catch((e) => {
-        console.log('API error', e);
-        reject(e);
-      });
-  })
+  return fetchCardList(localDbList, requestBody, headers, localDbCards);
 })

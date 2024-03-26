@@ -1,11 +1,11 @@
-import {useApiPost} from "~/composables/useApiFetch";
+import {fetchCardDetails} from "~/server/composables/cards/Functions";
 
 export default defineEventHandler(async (event) => {
-  const apiCookies = parseCookies(event);
   const cardId = getRouterParam(event, 'cardId');
+  const localDb = useStorage('cache-db:cards');
 
   let headers = {}
-  let requestBody
+  let requestBody;
 
   if (process.env.NODE_ENV === "development") {
     requestBody = await readBody(event);
@@ -13,16 +13,5 @@ export default defineEventHandler(async (event) => {
     requestBody = event.node?.req?.body;
   }
 
-  console.log('APP server: Requesting cards');
-
-  return new Promise((resolve, reject) => {
-    useApiPost(`/cards/${cardId}`, requestBody, headers)
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((e) => {
-        console.log('API error', e);
-        reject(e);
-      });
-  })
+  return fetchCardDetails(localDb, cardId, requestBody, headers);
 })

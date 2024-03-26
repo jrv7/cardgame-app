@@ -14,6 +14,15 @@ import {UnwrapRef} from "vue";
 
 const config = useRuntimeConfig();
 const globalState = useGlobalState();
+
+onBeforeMount(async () => {
+  await useDynamicPost('/scryfall/symbology')
+      .then((response) => {
+        if (response.data) {
+          globalState.value.mtgManaSymbolsCollection = response.data;
+        }
+      })
+})
 </script>
 
 <template>

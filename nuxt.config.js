@@ -10,6 +10,14 @@ export default defineNuxtConfig({
       '/**': { isr: false }
     }
   },
+  nitro: {
+    storage: {
+      db: {
+        driver: 'fs',
+        base: './.data/db'
+      }
+    }
+  },
   vite: {
     hmr: false,
     server: {

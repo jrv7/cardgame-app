@@ -267,6 +267,7 @@ onNuxtReady(async () => {
               :title="$_Tt('cards')"
               allow-filter
               hide-action-bar
+              :loading="parseIsLoading"
               v-model:pagination="pagination"
               v-model:filter="filters"
               v-model:search="search"

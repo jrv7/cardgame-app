@@ -9,7 +9,8 @@ export const useGlobalState = () => useState(() => {
     theme: 'light',
     scrollingLocked: 0,
     blurReactiveComponents: [],
-    missingTranslations: []
+    missingTranslations: [],
+    mtgManaSymbolsCollection: []
   }
 });
 
