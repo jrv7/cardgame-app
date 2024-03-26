@@ -165,5 +165,6 @@
   "filter_cards_types_description": "filter_cards_types_description",
   "subtypes": "subtypes",
   "supertypes": "supertypes",
-  "name": "name"
+  "name": "name",
+  "cache": "cache"
 }
