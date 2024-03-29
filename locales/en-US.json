@@ -166,5 +166,10 @@
   "subtypes": "subtypes",
   "supertypes": "supertypes",
   "name": "name",
-  "cache": "cache"
+  "cache": "cache",
+  "filter_by": "filter by",
+  "decks": "decks",
+  "decks_list_description": "decks_list_description",
+  "colors": "colors",
+  "identity": "identity"
 }

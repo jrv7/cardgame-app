@@ -1,0 +1,79 @@
+
+
+
+.app-mtg--mana-bar-buttons {
+  position: relative;
+  display: flex;
+  flex-flow: nowrap;
+  width: 100%;
+  margin: auto;
+
+  & > ul {
+    position: relative;
+    display: flex;
+    flex-flow: nowrap;
+    width: 100%;
+    margin: auto;
+    padding: 8px;
+    background-color: #fff2;
+    border-radius: 20px;
+
+    & > li {
+      position: relative;
+      display: flex;
+      flex-flow: nowrap;
+      height: 18px;
+      line-height: 18px;
+      margin-right: 8px;
+
+      &.separator {
+        position: relative;
+        width: 8px;
+
+        &:not(.invisible) {
+          &:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1px;
+            height: 18px;
+            transform: translate(-50%, -50%);
+            border-left: 1px solid var(--color-primary-dark-blue);
+          }
+        }
+      }
+
+      &:last-of-type { margin-right: 0; }
+
+      & > img {
+        height: 100%;
+      }
+
+      & > span, & > .app-button, & > .app-button-select {
+        position: relative;
+        display: flex;
+        margin: auto 0;
+      }
+
+      & > span { margin-right: 12px; }
+
+      &.mana-filter {
+        &:not(.enabled) {
+          filter: saturate(0);
+          opacity: .4;
+        }
+
+        &.enabled {
+          filter: saturate(2);
+          border-radius: 20px;
+          box-shadow: 0 0 3px 1px #Fe0;
+
+          & > .app-button {
+            top: 2px;
+          }
+        }
+      }
+    }
+  }
+}

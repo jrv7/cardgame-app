@@ -22,6 +22,7 @@ export type CardType = {
     type:string|null,
     latestImageUrl:string|null,
     imageUrl:string|null,
+    artImageUrl:string|null,
     oracleText:string|null,
     originalText:string|null,
     originalType:string|null,
@@ -54,6 +55,7 @@ export interface CardInterface extends EntityInterface {
     type:string|null;
     latestImageUrl:string|null;
     imageUrl:string|null;
+    artImageUrl:string|null;
     oracleText:string|null;
     originalText:string|null;
     originalType:string|null;
@@ -116,6 +118,9 @@ export interface CardInterface extends EntityInterface {
     // imageUrl:string|null;
     getImageUrl():string|null;
     setImageUrl(value:string|null): self;
+    // artImageUrl:string|null;
+    getArtImageUrl():string|null;
+    setArtImageUrl(value:string|null): self;
     // oracleText:string|null;
     getOracleText():string|null;
     setOracleText(value:string|null): self;

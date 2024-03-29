@@ -1,4 +1,4 @@
-import {CardInterface} from "~/composables/entity/CardInterface";
+import {CardInterface, CardType} from "~/composables/entity/CardInterface";
 import {CollectionSet} from "~/composables/entity/CollectionSet";
 import {ImageCollection} from "~/composables/entity/ImageCollection";
 
@@ -15,15 +15,8 @@ export class CardController {
   async fetchMeta() {
     return new Promise((resolve, reject) => {
       useDynamicPost(`/cards/${this.Card.getId()}`)
-        .then((response) => {
-          this.Card.setCollectionSet(new CollectionSet(response.data.collectionSet));
-          this.Card.setCollectionSets(response.data.collectionSets.map(i => {
-            return new CollectionSet(i);
-          }));
-          this.Card.setImageCollection(response.data.imageCollection.map(i => {
-            return new ImageCollection(i);
-          }));
-
+        .then((response: { data:CardType, success:boolean }) => {
+          this.Card.transformFromObject(response.data);
           resolve();
         })
         .catch(() => {

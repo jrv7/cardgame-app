@@ -63,6 +63,12 @@ const parsedVisible = computed({
   }
 });
 
+const backgroundImageUrl:string|null = ref(null) as string|null;
+const setModalBackgroundImage = (value:string|null) => {
+  console.log('Changing modal background image', value);
+  backgroundImageUrl.value = value;
+}
+
 const backdropClickTrigger:any = ref(null);
 const handleBackdropClick = async () => {
   if (null !== backdropClickTrigger.value) return;
@@ -135,7 +141,14 @@ const handleConfirm = async () => {
         class="backdrop"
         :class="{'visible': backdrop}"
         @click.self="handleBackdropClick()"
-    ></div>
+    >
+      <div
+          v-if="backgroundImageUrl"
+          class="background-image"
+          :style="[backgroundImageUrl ? {'background-image': `url(${backgroundImageUrl})`} : {}]"
+          @click.self="handleBackdropClick()"
+      />
+    </div>
 
     <div class="scroller">
       <div class="modal-container">
@@ -164,6 +177,7 @@ const handleConfirm = async () => {
               ref="refModalComponent"
               :is="parseComponent"
               v-bind="componentData"
+              @set-modal-background="setModalBackgroundImage"
           />
         </div>
         <div class="footer">

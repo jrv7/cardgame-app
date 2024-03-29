@@ -1,0 +1,268 @@
+
+
+
+.app-mtg--deck-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  height: 200px;
+  transition: all .2s ease-in-out;
+
+  & > .deck-cards {
+    position: absolute;
+    top: calc(60%);
+    left: calc(30%);
+    width: 100px;
+    height: 140px;
+    transition: all .2s ease-in-out;
+
+    & > .front-card {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 140px;
+      border-radius: 4px;
+      background-color: #000;
+      z-index: 10;
+    }
+
+    & > .card-behind {
+      position: absolute;
+      top: calc(50%);
+      left: calc(50%);
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 140px;
+      border-radius: 4px;
+      background-color: #000;
+      z-index: 9;
+      border: 1px solid #444;
+    }
+  }
+
+  //& > #deckboxSvg {
+  //  width: 255px;
+  //  height: 230px;
+  //  perspective: 1000;
+  //  overflow: visible;
+  //  transition: all .2s ease-in-out;
+  //
+  //  & > #deckbox {
+  //    overflow: visible;
+  //    transition: all .2s ease-in-out;
+  //    transform-style: preserve-3d;
+  //
+  //    & > #Cover {
+  //      transition: all .2s ease-in-out;
+  //
+  //      & > #coverFront {
+  //        fill: url(#cover-front-gradient) #fff;
+  //        // background-image: url('/media/icons/language/country-flag-en-EN.png');
+  //      }
+  //    }
+  //  }
+  //}
+  //
+  //&.opened {
+  //  & > #deckboxSvg {
+  //    & > #deckbox {
+  //      & > #Cover {
+  //        transform: rotateY(0deg) rotateZ(-60deg) translateX(-185px) translateY(-90px);
+  //        scale: 0.92;
+  //      }
+  //    }
+  //  }
+  //}
+
+  //&:hover {
+  //  scale: 1;
+  //}
+  //
+  //& > .box-container {
+  //  position: absolute;
+  //  top: 50%;
+  //  left: 50%;
+  //  display: flex;
+  //  width: 180px;
+  //  height: 120px;
+  //  transform-style: preserve-3d;
+  //  transform: translate(-50%, -50%) rotateX(2deg);
+  //  perspective: 1000px;
+  //  z-index: 1;
+  //
+  //  --rotate-y: -20deg;
+  //
+  //  & > .box {
+  //    position: absolute;
+  //    top: 70%;
+  //    left: 40%;
+  //    display: flex;
+  //    width: 180px;
+  //    height: 120px;
+  //    transform-style: preserve-3d;
+  //    transform: translate(-25%, -50%) rotateX(-12deg) rotateY(var(--rotate-y));
+  //
+  //    & > .face {
+  //      position: absolute;
+  //      height: 80px;
+  //      background-color: #fff;
+  //      border-radius: 4px;
+  //
+  //      &.left {
+  //        left: -40px;
+  //        width: 80px;
+  //        border-top-left-radius: 8px;
+  //        transform: rotateY(90deg) translateX(-87px);
+  //      }
+  //
+  //      &.right {
+  //        right: -40px;
+  //        width: 80px;
+  //        scale: .998;
+  //        border-top-left-radius: 8px;
+  //        transform: rotateY(90deg) translateX(-87px);
+  //      }
+  //
+  //      &.bottom {
+  //        bottom: -120px;
+  //        width: 80px;
+  //        height: 180px;
+  //        background-color: #aaa;
+  //        transform: rotateX(90deg) rotateZ(90deg) translateX(85px) translateY(-50px) translateZ(70px);
+  //      }
+  //
+  //      &.front {
+  //        width: 180px;
+  //        height: 60px;
+  //        background-color: #666;
+  //        transform: translateY(20px) translateZ(130px);
+  //      }
+  //
+  //      &.back {
+  //        width: 180px;
+  //        background-color: #000;
+  //        opacity: 0;
+  //        transform: translateX(0px) translateX(0px) translateZ(50px);
+  //      }
+  //    }
+  //  }
+  //
+  //  &.opened {
+  //    z-index: 3;
+  //  }
+  //}
+  //
+  //& > .cover-container {
+  //  position: absolute;
+  //  top: calc(54% + 1px);
+  //  left: 50%;
+  //  display: flex;
+  //  width: 180px;
+  //  height: 120px;
+  //  transform-style: preserve-3d;
+  //  transform:
+  //          translateX(-50%)
+  //          translateY(-50%)
+  //          rotateX(2deg)
+  //          rotateY(0deg)
+  //          rotateZ(0deg);
+  //  perspective: 3000px;
+  //  z-index: 3;
+  //
+  //  & > .cover {
+  //    position: absolute;
+  //    top: 30%;
+  //    left: 40%;
+  //    display: flex;
+  //    width: 186px;
+  //    height: 40px;
+  //    transform-style: preserve-3d;
+  //    transition: all .2s ease-in-out;
+  //    transform: translateX(-25%) translateY(-50%) rotateX(-12deg) rotateZ(0deg) rotateY(-20deg);
+  //
+  //    & > .face {
+  //      position: absolute;
+  //      height: 40px;
+  //      background-color: #99f;
+  //      transition: all .2s ease-in-out;
+  //
+  //      &.front {
+  //        top: 0;
+  //        height: 204px;
+  //        width: 40px;
+  //        background-color: #f80;
+  //        border-radius: 4px;
+  //
+  //        transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg) translateX(-72px) translateY(-40px) translateZ(40px);
+  //      }
+  //
+  //      &.top {
+  //        top: 0;
+  //        width: 204px;
+  //        height: 80px;
+  //        border-radius: 8px 8px 0 0;
+  //        transform: rotateX(90deg) rotateY(0deg) rotateZ(0deg) translateX(-42px) translateY(0px) translateZ(30px);
+  //      }
+  //
+  //      &.left {
+  //        left: -40px;
+  //        width: 90px;
+  //        border-bottom-right-radius: 20px;
+  //        background-color: #f80;
+  //        opacity: 0;
+  //        transform: rotateX(0deg) rotateY(90deg) rotateZ(0deg) translateX(-100px) translateY(0px) translateZ(-5px);
+  //      }
+  //
+  //      &.right {
+  //        right: -40px;
+  //        width: 90px;
+  //        border-bottom-right-radius: 20px;
+  //        opacity: 0;
+  //        transform: rotateX(0deg) rotateY(90deg) rotateZ(0deg) translateX(-102px) translateY(0px) translateZ(5px);
+  //      }
+  //
+  //      &.back {
+  //        width: 180px;
+  //        background-color: #000;
+  //        opacity: 0;
+  //        transform:
+  //                translateX(0px)
+  //                translateY(2px)
+  //                translateZ(50px);
+  //      }
+  //    }
+  //
+  //    &.opened {
+  //      scale: 0.98;
+  //      z-index: 1;
+  //
+  //      & > .face.top {
+  //        transform: rotateX(160deg) rotateY(0deg) rotateZ(0deg) translateX(-80px) translateY(-4px) translateZ(142px);
+  //      }
+  //      & > .face.right {
+  //        transform: rotateX(-145deg) rotateY(90deg) rotateZ(190deg) translateX(-90px) translateY(40px) translateZ(3px);
+  //      }
+  //      & > .face.front {
+  //        transform: rotateX(49deg) rotateY(0deg) rotateZ(90deg) translateX(-155px) translateY(-8px) translateZ(45px);
+  //      }
+  //    }
+  //  }
+  //}
+  //
+  //& > .signature-card {
+  //  position: absolute;
+  //  bottom: 0;
+  //  left: 0;
+  //  width: 178px;
+  //  height: 120px;
+  //  display: flex;
+  //  opacity: 0;
+  //  transform-style: preserve-3d;
+  //  background-color: #fff;
+  //  perspective: 3000px;
+  //  z-index: 2;
+  //}
+}

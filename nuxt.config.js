@@ -101,8 +101,12 @@ export default defineNuxtConfig({
     // MTG Components
     '@/assets/scss/components/common/mtg/mtg-card.scss',
     '@/assets/scss/components/common/mtg/app-mtg-set-symbol-carousel.scss',
+    '@/assets/scss/components/common/mtg/app-mtg--deck-box.scss',
+    '@/assets/scss/components/common/mtg/app-mtg--mana-bar-buttons.scss',
     // Pages
     '@/assets/scss/components/pages/app-page--cards-list.scss',
+    '@/assets/scss/components/pages/app-mtg--deck-list.scss',
+
     '@/assets/scss/components/pages/app-page--consumer.scss',
     // Sub Pages
     '@/assets/scss/components/pages/app-subpage--card-details.scss',

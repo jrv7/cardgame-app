@@ -45,67 +45,73 @@ export const fetchCardList = async (localDb, requestBody, headers, localDbCards 
   const headerHash = btoa(JSON.stringify(requestBody));
   let _requestBody = JSON.parse(JSON.stringify(requestBody));
   let requestInterval = 10;
+  const settingsDb = useStorage('cache-db:global-settings');
   const localDbCardsToFetch = useStorage('cache-db:cards-to-fetch');
 
   return new Promise((resolve, reject) => {
-    localDb.getItem(`page--${headerHash}`)
-      .then((response) => {
-        if (response) {
-          new Promise(() => {
-            resolve(response);
-          })
-        } else {
-          new Promise(() => {
-            useApiPost('/cards', _requestBody, headers)
-              .then((response) => {
-                localDb.setItem(`page--${headerHash}`, response);
+    settingsDb.getItem('use-databases')
+      .then((useMemoryDatabases:boolean) => {
+        localDb.getItem(`page--${headerHash}`)
+          .then((response) => {
+            if (response && useMemoryDatabases) {
+              new Promise(() => {
                 resolve(response);
+              })
+            } else {
+              new Promise(() => {
+                useApiPost('/cards', _requestBody, headers)
+                  .then((response) => {
+                    localDb.setItem(`page--${headerHash}`, response);
+                    resolve(response);
 
-                if (null !== localDbCards) {
-                  localDbCardsToFetch.getItem('list')
-                    .then((list:array) => {
-                      if (list) {
-                        const isEmpty = !list.length;
-                        if (response.success && response.data?.results?.length) {
-                          let firstCard:number|null = null;
-                          response.data?.results.forEach(card => {
-                            if (!firstCard) {
-                              firstCard = card.id;
-                            }
+                    if (useMemoryDatabases) {
+                      if (null !== localDbCards) {
+                        localDbCardsToFetch.getItem('list')
+                          .then((list:array) => {
+                            if (list) {
+                              const isEmpty = !list.length;
+                              if (response.success && response.data?.results?.length) {
+                                let firstCard:number|null = null;
+                                response.data?.results.forEach(card => {
+                                  if (!firstCard) {
+                                    firstCard = card.id;
+                                  }
 
-                            if (!list.includes(card.id)) {
-                              list.push(card.id);
+                                  if (!list.includes(card.id)) {
+                                    list.push(card.id);
+                                  }
+                                })
+
+                                localDbCardsToFetch.setItem('list', list)
+                                  .then(() => {
+                                    if (isEmpty) {
+                                      fetchCardDetails(localDbCards, firstCard);
+                                    }
+                                  })
+                              }
                             }
                           })
-
-                          localDbCardsToFetch.setItem('list', list)
-                            .then(() => {
-                              if (isEmpty) {
-                                fetchCardDetails(localDbCards, firstCard);
-                              }
-                            })
-                        }
                       }
-                    })
-                }
 
-                // Request next page when available
-                if (currentPage < 10 && response.success && response?.data?.pages && (response?.data?.page < response?.data?.pages)) {
-                  _requestBody.page++;
-                  if (_requestBody.page >= 5) {
-                    requestInterval = 10000;
-                  }
-                  setTimeout(() => {
-                    fetchCardList(localDb, _requestBody, headers, localDbCards, _requestBody.page);
-                  }, requestInterval);
-                }
+                      // Request next page when available
+                      if (currentPage < 10 && response.success && response?.data?.pages && (response?.data?.page < response?.data?.pages)) {
+                        _requestBody.page++;
+                        if (_requestBody.page >= 5) {
+                          requestInterval = 10000;
+                        }
+                        setTimeout(() => {
+                          fetchCardList(localDb, _requestBody, headers, localDbCards, _requestBody.page);
+                        }, requestInterval);
+                      }
+                    }
+                  })
+                  .catch((e) => {
+                    console.log('API error', e);
+                    reject(e);
+                  });
               })
-              .catch((e) => {
-                console.log('API error', e);
-                reject(e);
-              });
+            }
           })
-        }
       })
   })
 }

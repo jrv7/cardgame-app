@@ -22,7 +22,8 @@ const props = withDefaults(
       iconRight?: string | string[] | null,
       alignText?: string,
       loading?:boolean,
-      useLoadingState?:boolean
+      useLoadingState?:boolean,
+      quickClick?:boolean
     }>(), {
       modelValue: null,
       name: 'button',
@@ -38,7 +39,8 @@ const props = withDefaults(
       iconRight: null,
       alignText: 'center',
       loading: false,
-      useLoadingState: false
+      useLoadingState: false,
+      quickClick: false
     }
 );
 
@@ -64,7 +66,7 @@ const handleClick = () => {
   lockTimer.value =  setTimeout(() => {
     clearTimeout(lockTimer.value);
     lockTimer.value = null;
-  }, 600);
+  }, props.quickClick ? 100 : 600);
 
   clickTimer.value = setTimeout(() => {
     clearTimeout(clickTimer.value);

@@ -14,6 +14,10 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     return {
         provide: {
+            getTimestamp: ():number => {
+                const currentDate = new Date();
+                return currentDate.getMilliseconds();
+            },
             dateFromString: stringToDate,
             dateFormat: (date: string, format:string = 'Y-m-d', withTime:string|boolean = false) => {
                 if (typeof date !== 'string') return null;

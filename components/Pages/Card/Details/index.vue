@@ -4,6 +4,8 @@ import {CardInterface} from "~/composables/entity/CardInterface";
 import {CardController} from "~/composables/controller/CardController";
 import {CollectionSet} from "~/composables/entity/CollectionSet";
 
+const emit = defineEmits(['set-modal-background']);
+
 const props = withDefaults(
     defineProps< {
       card : any,
@@ -62,6 +64,7 @@ onNuxtReady(async () => {
         isLoading.value = setTimeout(() => {
           clearTimeout(isLoading.value);
           isLoading.value = null;
+          emit('set-modal-background', CController.getCard().getArtImageUrl());
         }, 400);
       });
 })

@@ -19,40 +19,39 @@
 
   & > .body {
     position: relative;
+    left: calc(50% + 12px);
+    transform: translateX(-50%);
     display: flex;
     flex-flow: wrap;
     justify-content: flex-start;
     horiz-align: left;
     width: 100%;
 
+    --item-size: 5;
+
     & > .list-item {
+      &.item-size-1 { --item-size: 1; }
+      &.item-size-2 { --item-size: 2; }
+      &.item-size-3 { --item-size: 3; }
+      &.item-size-4 { --item-size: 4; }
+      &.item-size-5 { --item-size: 5; }
+      &.item-size-6 { --item-size: 6; }
+      &.item-size-7 { --item-size: 7; }
+      &.item-size-8 { --item-size: 8; }
+      &.item-size-9 { --item-size: 9; }
+      &.item-size-10 { --item-size: 10; }
+
       position: relative;
       display: flex;
       flex-direction: column;
-      width: 0px;
-      padding: calc((((100% - 48px) / 5) / 2) * 1.4) calc(((100% - 48px) / 5) / 2);
-      max-height: calc(((100% / 5) - 16px) * 1.4);
-      margin: 0 auto 12px auto;
+      width: 0;
+      padding: calc((((100% - 48px) / var(--item-size)) / 2) * 1.4) calc(((100% - 48px) / var(--item-size)) / 2);
+      max-height: calc(((100% / var(--item-size)) - 16px) * 1.4);
+      margin: 0 calc(((100% - ((((100% - 48px) / var(--item-size)))) * var(--item-size)) / 6) / 2) 12px 0;
       transition: all .3s ease-in-out;
       z-index: 1;
+      background-color: #000;
       @include no-scrollbars();
-
-
-      &:nth-last-child(5):first-of-type {
-        margin: 0 8px 12px 0;
-      }
-      &:nth-last-child(4):first-of-type {
-        margin: 0 8px 12px 0;
-      }
-      &:nth-last-child(3):first-of-type {
-        margin: 0 8px 12px 0;
-      }
-      &:nth-last-child(2):first-of-type {
-        margin: 0 8px 12px 0;
-      }
-      &:nth-last-child(1):first-of-type, &:nth-last-child(1):last-of-type {
-        margin: 0 8px 12px 0;
-      }
 
       & > .item-content {
         position: absolute;

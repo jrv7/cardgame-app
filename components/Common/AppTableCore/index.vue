@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {EntityInterface} from "~/composables/entity/EntityInterface";
 import {PaginationType} from "~/composables/customTypes/PaginationType";
+import {AppTablePaginationType} from "~/composables/customTypes/AppTablePaginationType";
 const route = useRoute();
 const router = useRouter();
 
@@ -16,8 +17,8 @@ const emit = defineEmits([
 const props = withDefaults(
     defineProps<{
       url: string,
-      Entity?: EntityInterface | null,
-      data?: any[] | null,
+      data: EntityInterface[],
+      Entity: EntityInterface,
       primaryColumn?: {} | null,
       filters?:any,
       search?: string | null,
@@ -27,8 +28,6 @@ const props = withDefaults(
       noRouting?: boolean
     }>(),
     {
-      Entity: null,
-      data: [],
       primaryColumn: null,
       filters: null,
       search: null,
@@ -48,9 +47,11 @@ const props = withDefaults(
 
 const tableCoreUUID = ref('');
 const currentlyLoading = ref(0);
-const currentPagination = ref({});
+const currentPagination:AppTablePaginationType = ref(null) as AppTablePaginationType;
 const apiData = ref([]);
 const searchTrigger: any = ref(null);
+const requestTrigger:any = ref(null) as any;
+const lastRequestHash:number|null = ref(null) as number|null;
 
 async function goToNextPage() {
   if (currentPagination.value.page >= currentPagination.value.pages) return;
@@ -58,71 +59,99 @@ async function goToNextPage() {
   await runFetchData(false, true);
 }
 
-async function runFetchData(force = false, appendItems = false) {
-  if (!props.url) return;
-  if (currentlyLoading.value !== 0 && !force) return;
-  console.log(props.url);
+const runFetchData = async (force = false, appendItems = false) => {
+  return new Promise((resolve, reject) => {
+    if (!props.url) {
+      reject('No URL');
+      return;
+    }
+    if (currentlyLoading.value !== 0 && !force) {
+      reject('OnGoing Request');
+      return;
+    }
+    if (null !== requestTrigger.value) {
+      reject('OnGoing Request found');
+      return;
+    }
 
-  let params = {
-    page: currentPagination.value.page,
-    pageSize: currentPagination.value.pageSize,
-    search: props.search,
-    sort: null
-  };
+    let params = {
+      page: currentPagination.value.page,
+      pageSize: currentPagination.value.pageSize,
+      search: props.search,
+      sort: null
+    };
 
-  if (null !== props.filters) {
-    params.filters = props.filters;
-  }
+    if (null !== props.filters) {
+      params.filters = props.filters;
+    }
 
-  useStateHandler().startLoading();
-  currentlyLoading.value = setTimeout(() => {
+    const unreferenced = useNuxtApp().$deepClone(params);
+
+    useStateHandler().startLoading();
     emit('fetching', true);
     emit('update:loading', true);
 
-    useDynamicPost(props.url, params)
-        .then((response) => {
-          if (response.success) {
-            let parsedData = [];
-            if (null !== props.Entity) {
-              parsedData = response.data.results.map(i => {
-                return new props.Entity(i);
-              });
-            } else {
-              parsedData = response.data.results;
-            }
+    const RequestUniqueId = btoa(props.url + JSON.stringify(unreferenced));
 
-            if ((!appendItems && !props.infinite) || currentPagination.value.page === 1) {
-              apiData.value = parsedData;
-            } else {
-              apiData.value = [...apiData.value, ...parsedData];
-            }
+    if ((!appendItems && !props.infinite) || currentPagination.value.page === 1) {
+      emit('update:data', []);
+    }
 
-            currentPagination.value.pages = response.data.pages;
-            currentPagination.value.count = response.data.count;
-            currentPagination.value.from = response.data.from;
-            currentPagination.value.to = response.data.to;
-            currentPagination.value.total = response.data.total;
+    useLocalApiPost('/gatekeeper', {requestHash: RequestUniqueId})
+        .then((reqControl) => {
+          if (reqControl.success) {
+            console.warn('CORE::running-request');
+            useDynamicPost(props.url, unreferenced)
+                .then((response) => {
+                  if (response.success) {
+                    let parsedData = [];
 
-            emit('loaded', apiData.value);
-            emit('update:data', apiData.value);
-            emit('update:loading', false);
+                    parsedData = response.data.results.map(i => {
+                      return new props.Entity(i);
+                    });
+
+                    if ((!appendItems && !props.infinite) || currentPagination.value.page === 1) {
+                      apiData.value = parsedData;
+                    } else {
+                      apiData.value = [...apiData.value, ...parsedData];
+                    }
+
+                    currentPagination.value.pages = response.data.pages;
+                    currentPagination.value.count = response.data.count;
+                    currentPagination.value.from = response.data.from;
+                    currentPagination.value.to = response.data.to;
+                    currentPagination.value.total = response.data.total;
+
+                    emit('loaded', apiData.value);
+                    emit('update:data', apiData.value);
+                    emit('update:loading', false);
+
+                    resolve('CORE: Loaded');
+                  }
+                })
+                .catch((error) => {
+                  emit('loaded', []);
+                  emit('update:data', []);
+                  emit('update:loading', false);
+                  console.log('Table: request error', error);
+                  reject('CORE: Failed');
+                })
+                .finally(() => {
+                  useLocalApiPost(`/gatekeeper/${reqControl.requestId}`, {requestHash: RequestUniqueId})
+                      .then(() => {
+                        console.log('CORE: On Finally');
+                        currentlyLoading.value = 0;
+                        emit('update:pagination', currentPagination.value);
+                      })
+                });
+          } else {
+            console.error('Request refused by Gatekeeper', reqControl);
           }
         })
-        .catch((error) => {
-          emit('loaded', []);
-          emit('update:data', []);
-          emit('update:loading', false);
-          console.log('Table: request error', error);
+        .catch((e) => {
+          console.log('Gatekeeper error:', e)
         })
-        .finally(() => {
-          emit('update:pagination', currentPagination.value);
-
-          setTimeout(() => {
-            clearTimeout(currentlyLoading.value);
-            currentlyLoading.value = 0;
-          }, 100);
-        });
-  }, 200)
+  })
 }
 
 async function  toggleAllSelected() {
@@ -157,51 +186,25 @@ async function runSearch(data) {
   console.log('Table core: Running search', data);
 }
 
-function refresh() {
-  runFetchData();
+const refresh = async (resetPagination = false) => {
+  let force = false;
+  let appendResults = props.infinite;
+
+  currentPagination.value = useNuxtApp().$deepClone(props.pagination);
+
+  if (resetPagination) {
+    currentPagination.value.page = 1;
+    appendResults = false;
+  }
+
+  await runFetchData(force, appendResults);
 }
 
-watch(() => props.pagination, async (newValue, oldValue) => {
-  currentPagination.value = useNuxtApp().$deepClone(newValue);
+const abortRequest = () => {
+  console.log('Aborting...');
+}
 
-  if (
-      newValue?.pageSize &&
-      oldValue?.pageSize &&
-      newValue?.page &&
-      oldValue?.page &&
-      ((newValue.pageSize !== oldValue.pageSize) || (newValue.page !== oldValue.page))
-  ) {
-    if (props.url) {
-      await runFetchData();
-    } else {
-      currentPagination.value.pages = ((parseInt(props.data.length / currentPagination.value.pageSize)) + (props.data.length % currentPagination.value.pageSize ? 1 : 0));
-      currentPagination.value.from = (((currentPagination.value.page - 1) * currentPagination.value.pageSize) + 1);
-      currentPagination.value.to = (((currentPagination.value.page - 1) * currentPagination.value.pageSize) + props.data.filter((i, index) => {
-        return ( (index >= ((currentPagination.value.page - 1) * currentPagination.value.pageSize)) && (index < (((currentPagination.value.page - 1) * currentPagination.value.pageSize) + currentPagination.value.pageSize)));
-      }).length);
-      currentPagination.value.total = props.data.length;
-    }
-  }
-}, { immediate: true, deep: true });
-
-watch(()=> props.search, (newValue) => {
-  clearTimeout(searchTrigger.value);
-  searchTrigger.value = setTimeout(() => {
-    currentPagination.value.page = 1;
-    runFetchData(true);
-  }, 400);
-});
-
-watch(()=> props.filters, (newValue) => {
-  console.log('CORE: Filters changed', newValue);
-  clearTimeout(searchTrigger.value);
-  searchTrigger.value = setTimeout(() => {
-    currentPagination.value.page = 1;
-    runFetchData(true);
-  }, 400);
-})
-
-defineExpose({ goToNextPage, toggleAllSelected, setSorting, runSearch, refresh });
+defineExpose({ goToNextPage, toggleAllSelected, setSorting, runSearch, refresh, reload: refresh, abortRequest, abort: abortRequest });
 
 onMounted(async () => {
   tableCoreUUID.value = `TABLE_CORE_${(Math.floor(Math.random() * 100) + 1)}_${Date.now()}`;

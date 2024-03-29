@@ -4,6 +4,7 @@ const {locales, locale, setLocale} = useI18n();
 const route = useRoute();
 const router = useRouter();
 const authHandler = useOauthServerHandler();
+const globalState = useGlobalState();
 
 const authState = useAuthState();
 
@@ -20,8 +21,9 @@ const userRole = computed(() => {
 const menuOptions = computed(() => {
   return [
     { value: 1, path: 'cards', text: 'cards', description: 'cards_list_description', icon: 'hat-wizard'},
-    { value: 2, path: 'users', text: 'users', description: 'users_list_description', icon: 'user'},
-    { value: 3, path: 'consumer', text: 'consumer', description: 'consumer_description', icon: 'cogs'},
+    { value: 2, path: 'decks', text: 'decks', description: 'decks_list_description', icon: 'deck'},
+    { value: 3, path: 'users', text: 'users', description: 'users_list_description', icon: 'user'},
+    { value: 4, path: 'consumer', text: 'consumer', description: 'consumer_description', icon: 'cogs'},
   ];
 });
 
@@ -36,7 +38,8 @@ const selectedMenu = computed({
 
     if (selOption) {
       console.log('Setting menu as ', selOption.path)
-      router.push({path: `/${selOption.path}`});
+      window.location = `/${selOption.path}`;
+      // router.push({path: `/${selOption.path}`});
     } else {
       router.push({path: '/'});
     }
@@ -46,6 +49,10 @@ const selectedMenu = computed({
 const username = computed(() => {
   return authState.value.user.fullName ?? (authState.value.user.name && authState.value.user.lastName ? `${authState.value.user.name} ${authState.value.user.lastName}` : authState.value.user.name)
 })
+
+const handleDisableMemoryDatabases = () => {
+  useStateHandler().toggleMemoryDatabase();
+}
 
 const handleLogOut = async () => {
   await authHandler.destroySession()
@@ -123,9 +130,9 @@ const handleLogOut = async () => {
 
       <li>
         <app-button
-            type="link"
-            size="square-xs"
-            @click="handleLogOut()"
+            :type="globalState.useMemoryDatabases ? 'primary' : 'error'"
+            size="sm-squared"
+            @click="handleDisableMemoryDatabases()"
         >
           <fa-icon :icon="['fas', 'power-off']" />
         </app-button>

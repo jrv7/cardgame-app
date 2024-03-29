@@ -2,6 +2,7 @@
 import {CardInterface} from "~/composables/entity/CardInterface";
 import {CollectionSet} from "~/composables/entity/CollectionSet";
 import {ImageCollection} from "~/composables/entity/ImageCollection";
+import fallbackImageUrl from '~/assets/images/backgrounds/mtg-card-default-background.png'
 
 const emit = defineEmits(['click']);
 
@@ -22,16 +23,17 @@ const setImages:any = ref([]) as any;
 
 const parseCardImage = computed(() => {
   if (!props.card?.getImageUrl()) {
-    return require('~/assets/images/backgrounds/mtg-card-default-background.png');
+    return '~/assets/images/backgrounds/mtg-card-default-background.png';
   }
   if (null !== props.activeSet) {
     const cardSetImage = props.card.getImageCollection().find(i => i.getCollectionSet().getId() === props.activeSet?.getId());
     if (cardSetImage) {
       return cardSetImage.getCollectionImage();
     }
-  } else if (props.card?.getLatestImageUrl()) {
-    return props.card?.getLatestImageUrl();
   }
+  // else if (props.card?.getLatestImageUrl()) {
+  //   return props.card?.getLatestImageUrl();
+  // }
 
   return props.card.getImageUrl();
 });
@@ -54,7 +56,11 @@ onNuxtReady(async () => {
       @click="handleClickOnCard()"
   >
     <div class="card-image">
-      <img :src="parseCardImage" :alt="card.getName()">
+      <img
+          :src="parseCardImage"
+          :alt="card.getName()"
+          @error="$event.target.src=fallbackImageUrl"
+      >
     </div>
 
     <ul class="card-details" v-if="!hideDescriptions">

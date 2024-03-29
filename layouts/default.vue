@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {useLocalApiPost} from "../composables/useApiFetch";
+
 useHead({
   titleTemplate: () => {
     return 'My Card Vault'
@@ -9,24 +11,43 @@ useHead({
   ]
 });
 
-import {Ref} from "preact/compat";
-import {UnwrapRef} from "vue";
-
 const config = useRuntimeConfig();
 const globalState = useGlobalState();
+const isReady = ref(false);
 
-onBeforeMount(async () => {
-  await useDynamicPost('/scryfall/symbology')
-      .then((response) => {
-        if (response.data) {
-          globalState.value.mtgManaSymbolsCollection = response.data;
-        }
-      })
+onNuxtReady(async () => {
+  await new Promise((resolve) => {
+    const memoryDbSettingCookie = useCookie('memdb');
+    if (typeof memoryDbSettingCookie.value === 'undefined') {
+      memoryDbSettingCookie.value = true;
+    }
+
+    if (memoryDbSettingCookie.value !== globalState.value.useMemoryDatabases) {
+      globalState.value.useMemoryDatabases = memoryDbSettingCookie.value;
+    }
+
+    useLocalApiPost('/settings', { setting: 'use-memory-databases', value: !!memoryDbSettingCookie.value })
+        .then(() => {
+          useDynamicPost('/scryfall/symbology')
+              .then((response) => {
+                if (response.data) {
+                  globalState.value.mtgManaSymbolsCollection = response.data;
+                }
+
+                console.log('Asking for MemDB destruction...');
+                useLocalApiPost('/gatekeeper/destroy')
+                    .then(() => {
+                      isReady.value = true
+                    })
+              })
+        })
+  })
 })
 </script>
 
 <template>
   <div
+      v-if="isReady"
       class="main-system"
       :class="[`theme-${globalState.theme}`]"
   >

@@ -10,7 +10,6 @@ const refSelectAllCheckbox = ref(null);
 
 const emit = defineEmits(['update:filter', 'update:search', 'update:pagination', 'select-all', 'filtered', 'reset-filters']);
 const loadingState = useLoadingState();
-const tableKey = ref(1);
 
 const props = withDefaults(
     defineProps<{
@@ -189,13 +188,8 @@ const handleExpandRow = (row) => {
   }
 }
 
-const rebuild = () => {
-  tableKey.value++;
-}
-
-defineExpose({ rebuild });
-
 onNuxtReady(async () => {
+  console.log('app-table built and ready');
   if (props.defaultListSize !== parsePagination.value.pageSize) {
     let currentPagination = useNuxtApp().$deepClone(parsePagination.value);
     currentPagination.pageSize = props.defaultListSize;
@@ -212,7 +206,6 @@ onNuxtReady(async () => {
 
 <template>
   <div
-      :key="`app-table-${tableKey}`"
       class="app-table"
       :class="{'loading': loading || loadingState.loading}"
   >

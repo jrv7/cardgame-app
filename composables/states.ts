@@ -2,6 +2,7 @@
 
 export const useGlobalState = () => useState(() => {
   return {
+    useMemoryDatabases: true,
     loading: false,
     loadTimer: null,
     modals: [],

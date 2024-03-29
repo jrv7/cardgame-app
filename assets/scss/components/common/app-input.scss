@@ -23,8 +23,9 @@
     flex-flow: nowrap;
     width: 100%;
     padding: 0;
-    background-color: var(--c-white);
-    border: 1px solid var(--c-default-border-color);
+    background-color: #fff4;
+    border: 1px solid #ccc2;
+    color: #0006;
 
     .input-label-placeholder {
       position: absolute;
@@ -39,7 +40,7 @@
       position: relative;
       display: flex;
       margin: 6px 12px;
-      color: var(--c-text-default-color-lighter);
+      color: #0006;
       transition: all .3s ease-in-out;
 
       & > .left-icon-icon {
@@ -51,7 +52,7 @@
       position: relative;
       display: flex;
       margin: 4px 12px;
-      color: var(--c-text-default-color-lighter);
+      color: #0006;
       transition: all .3s ease-in-out;
 
       & > .right-icon-icon {
