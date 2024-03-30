@@ -168,6 +168,7 @@
   "name": "name",
   "cache": "cache",
   "filter_by": "filter by",
+  "deck": "deck",
   "decks": "decks",
   "decks_list_description": "decks_list_description",
   "colors": "colors",

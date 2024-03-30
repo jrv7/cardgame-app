@@ -14,7 +14,13 @@ export const useGlobalState = () => useState(() => {
     mtgManaSymbolsCollection: []
   }
 });
-
+export const useMtgState = () => useState(() => {
+  return {
+    scryfallSymbols: [],
+    apiColors: [],
+    colors: []
+  }
+});
 export const useLoadingState = () => useState(() => {
   return {
     loading: false

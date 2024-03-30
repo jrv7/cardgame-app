@@ -82,6 +82,8 @@ export default defineNuxtConfig({
     '@/assets/scss/components/system/app-footer.scss',
     '@/assets/scss/components/system/app-modals-container.scss',
     '@/assets/scss/components/system/app-system-prompt-confirmation-message.scss',
+    '@/assets/scss/components/system/system-header-deck-builder.scss',
+    '@/assets/scss/components/system/main-body-deck-builder.scss',
     '@/assets/scss/components/common/app-loading.scss',
     '@/assets/scss/components/common/app-modal.scss',
     '@/assets/scss/components/common/app-card.scss',
@@ -103,13 +105,15 @@ export default defineNuxtConfig({
     '@/assets/scss/components/common/mtg/app-mtg-set-symbol-carousel.scss',
     '@/assets/scss/components/common/mtg/app-mtg--deck-box.scss',
     '@/assets/scss/components/common/mtg/app-mtg--mana-bar-buttons.scss',
+    '@/assets/scss/components/common/mtg/app-mtg--deck-builder.scss',
     // Pages
     '@/assets/scss/components/pages/app-page--cards-list.scss',
     '@/assets/scss/components/pages/app-mtg--deck-list.scss',
-
     '@/assets/scss/components/pages/app-page--consumer.scss',
+    '@/assets/scss/components/pages/mtg/app-page--deck-editor.scss',
     // Sub Pages
     '@/assets/scss/components/pages/app-subpage--card-details.scss',
+    '@/assets/scss/components/pages/app-subpage--deck-details.scss',
     '@/assets/scss/components/pages/app-page--subpage-card-filters-page.scss'
   ],
   components: [

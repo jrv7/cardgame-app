@@ -8,22 +8,4 @@
   flex-direction: column;
   width: 100%;
   padding: 12px 24px 0 24px;
-
-  .filter-group {
-    position: relative;
-    display: flex;
-    flex-flow: nowrap;
-    width: 100%;
-
-    & > li {
-      position: relative;
-      display: flex;
-      flex-flow: nowrap;
-      padding: 0 8px;
-
-      &:first-of-type {
-        padding-left: 0;
-      }
-    }
-  }
 }

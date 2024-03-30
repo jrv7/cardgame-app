@@ -1,0 +1,28 @@
+
+
+
+
+.app-mtg--card-list {
+  position: relative;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+
+  .filter-group {
+    position: relative;
+    display: flex;
+    flex-flow: nowrap;
+    width: 100%;
+
+    & > li {
+      position: relative;
+      display: flex;
+      flex-flow: nowrap;
+      padding: 0 8px;
+
+      &:first-of-type {
+        padding-left: 0;
+      }
+    }
+  }
+}

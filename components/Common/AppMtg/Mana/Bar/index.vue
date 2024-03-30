@@ -4,6 +4,7 @@ import {SimpleButtonSizeType, SimpleButtonTypeType} from "~/composables/customTy
 import {DropdownContainerPositionType} from "~/composables/customTypes/DropdownTypes";
 
 const globalState = useGlobalState();
+const mtgState = useMtgState();
 
 const emit = defineEmits([
   'update:modelValue',
@@ -31,40 +32,8 @@ const props = withDefaults(
     }
 );
 
-const manaMap = ref([
-  {
-    code: '{W}',
-    name: 'white'
-  },
-  {
-    code: '{U}',
-    name: 'blue'
-  },
-  {
-    code: '{B}',
-    name: 'black'
-  },
-  {
-    code: '{R}',
-    name: 'red'
-  },
-  {
-    code: '{G}',
-    name: 'green'
-  },
-  {
-    code: '{C}',
-    name: 'generic'
-  }
-]);
-
 const parsedManaMap = computed(() => {
-  return manaMap.value.map((i, index) => {
-    return {
-      id: (index + 1),
-      ...i
-    }
-  });
+  return mtgState.value.colors
 });
 
 const parseFilterSource = computed({

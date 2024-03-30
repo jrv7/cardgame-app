@@ -14,7 +14,8 @@ const props = withDefaults(
       hasFilters?:boolean,
       filtersComponent?:any,
       stringSearch?:string,
-      title?:string
+      title?:string,
+      hideAdvancedFilters?:boolean
     }>(),
     {
       allowQuickSearch: true,
@@ -22,7 +23,8 @@ const props = withDefaults(
       filter: null,
       hasFilters: false,
       stringSearch: null,
-      title: null
+      title: null,
+      hideAdvancedFilters: false
     }
 );
 
@@ -148,17 +150,17 @@ const handleFilters = () => {
             </app-input>
           </template>
         </li>
-        <li class="separator" />
-        <li>
-          <template v-if="allowQuickSearch">
-            <app-button
-                :type="hasFilters ? 'primary' : 'secondary'"
-                size="sm-squared"
-                @click="handleFilters()"
-            >
-              <fa-icon :icon="['fas', 'filter']" />
-            </app-button>
-          </template>
+        <li class="separator" v-if="allowQuickSearch && !hideAdvancedFilters" />
+        <li
+            v-if="allowQuickSearch && !hideAdvancedFilters"
+        >
+          <app-button
+              :type="hasFilters ? 'primary' : 'secondary'"
+              size="sm-squared"
+              @click="handleFilters()"
+          >
+            <fa-icon :icon="['fas', 'filter']" />
+          </app-button>
         </li>
       </ul>
     </slot>

@@ -141,7 +141,3 @@ const handleLogOut = async () => {
     </ul>
   </div>
 </template>
-
-<style scoped>
-
-</style>

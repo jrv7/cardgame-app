@@ -1,53 +1,26 @@
 <script setup lang="ts">
 
-import LazyPageCardFilters from "~/components/Pages/Card/TableFilters/index.vue";
-import LazyAppTable from "~/components/Common/AppTable/index.vue";
-import LazyAppList from "~/components/Common/AppList/index.vue";
 import {Ref} from "preact/compat";
 import {UnwrapRef} from "vue";
-import LazyPageCardDetails from "~/components/Pages/Card/Details/index.vue";
+import LazyPageDeckDetails from "~/components/Pages/Deck/Details/index.vue";
 import {Deck} from "~/composables/entity/Deck";
 import {DeckInterface} from "~/composables/entity/DeckInterface";
 const route = useRoute();
+const router = useRouter();
 
-const listType = ref('card');
-const handleListTypeChange = (value:string) => {
-  listType.value = value;
-  const pageConfigsCookie = useCookie('pageconfigs');
-  let configsCookie = [];
-
-  if (pageConfigsCookie.value) {
-    configsCookie = pageConfigsCookie.value;
-  }
-
-  let currentConfigs = configsCookie.find(i => i.page === route.path);
-  if (!currentConfigs) {
-    currentConfigs = {
-      page: route.path,
-      listType: value
-    }
-  } else {
-    currentConfigs.listType = value;
-  }
-
-  let newConfigs = configsCookie.filter(i => i.page !== route.path);
-  newConfigs.push(currentConfigs);
-  //
-  pageConfigsCookie.value = JSON.stringify(newConfigs);
-}
-
+const TableCoreRef = ref(null);
 const ready = ref(false);
-const parseComponent = computed(() => {
-  if (listType.value === 'list') {
-    return LazyAppTable;
-  }
-
-  return LazyAppList;
-});
-
 const DeckEntity = new Deck();
 let tableData: Ref<UnwrapRef<DeckInterface[]>> = ref([]) as Ref<UnwrapRef<DeckInterface[]>>;
+const listReloadTrigger:any = ref(null) as any;
+const searchTrigger:any = ref(null) as any;
 
+const pageSettings = ref({
+  list: {
+    listType: 'card',
+    listItemsPerRow: 5
+  }
+});
 const pagination = ref({
   page: 1,
   pages: 1,
@@ -57,16 +30,63 @@ const pagination = ref({
   to:10
 });
 
+const colors = ref([
+  {
+    code: '{W}',
+    name: 'white'
+  },
+  {
+    code: '{U}',
+    name: 'blue'
+  },
+  {
+    code: '{B}',
+    name: 'black'
+  },
+  {
+    code: '{R}',
+    name: 'red'
+  },
+  {
+    code: '{G}',
+    name: 'green'
+  },
+  {
+    code: '{C}',
+    name: 'generic'
+  }].map((i, index) => {
+  return {
+    id: index + 1,
+    ...i
+  }
+}));
+
 const originalFilters = ref({
   simpleSearch: [],
+  stringSearch: null,
   collectionsSets: [],
   types: [],
   subtypes: [],
   supertypes: [],
-  colors: [],
+  colors: colors.value,
   identityColors: [],
+  filterColorsIn: 'colors',
+  colorMatch: 'any',
+  borderless: false,
+  landsOnly: false
 });
 const filters = ref(useNuxtApp().$deepClone(originalFilters.value));
+const parsedFilters = computed({
+  get: () => {
+    return filters.value;
+  },
+  set: (value) => {
+    useLocalApiPost(`/pages${route.path}/filters/set`, value)
+        .then(() => {
+          filters.value = value;
+        });
+  }
+});
 const parseHasFilters = computed(() => {
   return filters.value.simpleSearch.length
       || filters.value.collectionsSets.length
@@ -78,6 +98,124 @@ const parseHasFilters = computed(() => {
 });
 const refDecksList = ref(null);
 
+const filteredMana = ref(useNuxtApp().$deepClone(colors.value));
+const parsedFilteredMana = computed({
+  get: () => {
+    return filteredMana.value;
+  },
+  set: (value:{code:string, name:string, id?:number}[]) => {
+    filteredMana.value = value;
+
+    let currentFilters = useNuxtApp().$deepClone(filters.value);
+    currentFilters.colors = value;
+    parsedFilters.value = currentFilters;
+    pagination.value.page = 1;
+
+    clearTimeout(listReloadTrigger.value);
+    listReloadTrigger.value = null;
+    listReloadTrigger.value = setTimeout(() => {
+      TableCoreRef.value.reload();
+      clearTimeout(listReloadTrigger.value);
+      listReloadTrigger.value = null;
+    }, 1200);
+  }
+});
+
+const parseColorFilterTypeFilter = computed({
+  get: () => {
+    return filters.value.filterColorsIn;
+  },
+  set: async (value:string) => {
+    let currentFilters = useNuxtApp().$deepClone(filters.value);
+    currentFilters.filterColorsIn = value;
+
+    parsedFilters.value = currentFilters;
+
+    pagination.value.page = 1;
+
+    clearTimeout(listReloadTrigger.value);
+    listReloadTrigger.value = null;
+
+    listReloadTrigger.value = setTimeout(() => {
+      TableCoreRef.value.reload();
+      clearTimeout(listReloadTrigger.value);
+      listReloadTrigger.value = null;
+    }, 400)
+  }
+});
+
+const parsedColorMatchFilter = computed({
+  get: () => {
+    return filters.value.colorMatch;
+  },
+  set: (value:string) => {
+    let currentFilters = useNuxtApp().$deepClone(filters.value);
+    currentFilters.colorMatch = value;
+    parsedFilters.value = currentFilters;
+
+    clearTimeout(searchTrigger.value);
+    searchTrigger.value = null;
+    searchTrigger.value = setTimeout(() => {
+      TableCoreRef.value.reload();
+      clearTimeout(searchTrigger.value);
+      searchTrigger.value = null;
+    }, 200);
+  }
+});
+
+const parsedBorderlessFilter = computed({
+  get: () => {
+    return filters.value.borderless;
+  },
+  set: (value:boolean) => {
+    let currentFilters = useNuxtApp().$deepClone(filters.value);
+    currentFilters.borderless = value;
+    parsedFilters.value = currentFilters;
+
+    clearTimeout(searchTrigger.value);
+    searchTrigger.value = null;
+    searchTrigger.value = setTimeout(() => {
+      TableCoreRef.value.reload();
+      clearTimeout(searchTrigger.value);
+      searchTrigger.value = null;
+    }, 200);
+  }
+});
+
+const parsedLandsOnlyFilter = computed({
+  get: () => {
+    return filters.value.landsOnly;
+  },
+  set: (value:boolean) => {
+    let currentFilters = useNuxtApp().$deepClone(filters.value);
+    currentFilters.landsOnly = value;
+    parsedFilters.value = currentFilters;
+
+    clearTimeout(searchTrigger.value);
+    searchTrigger.value = null;
+    searchTrigger.value = setTimeout(() => {
+      TableCoreRef.value.reload();
+      clearTimeout(searchTrigger.value);
+      searchTrigger.value = null;
+    }, 200);
+  }
+});
+
+const searchedString = ref(null);
+const parsedSearchText = computed({
+  get: () => {
+    return searchedString.value;
+  },
+  set: (value:string|null) => {
+    let currentSearch = null;
+    if (value && value.length) {
+      currentSearch = value;
+    }
+
+    searchedString.value = currentSearch;
+  }
+});
+
 const modalHandler = useModal();
 const listUrl = ref('/decks');
 const search = ref(null);
@@ -85,7 +223,6 @@ const columns = ref([
   { column: 'id', hidden: true, label: 'id', main: true},
   { column: 'name', label: 'name', searchable: true, dataType: 'string'}
 ]);
-const selectedItems = ref([]);
 
 const isLoading = ref(false);
 const isLoadingTrigger: any = ref(null) as any;
@@ -116,54 +253,34 @@ const parsePrimaryColumn = computed(() => {
 const handleResetFilters = () => {
   filters.value = useNuxtApp().$deepClone(originalFilters.value);
 }
-const handleSelectAll = () => {
-  console.log('Select all');
-}
 
-const openCardViewModal = (deck:DeckInterface, fromChild = false) => {
-  const cardDetailsModal:AppModalType = modalHandler.getDefault();
-  cardDetailsModal.title = `${useNuxtApp().$_Tt('deck')}: ${deck.name}`;
-  cardDetailsModal.component = shallowRef(LazyPageCardDetails);
-  cardDetailsModal.componentData = {
+const openDeckViewModal = (deck:DeckInterface, fromChild = false) => {
+  const deckDetailsModal:AppModalType = modalHandler.getDefault();
+  deckDetailsModal.title = `${useNuxtApp().$_Tt('deck')}: ${deck.name}`;
+  deckDetailsModal.component = shallowRef(LazyPageDeckDetails);
+  deckDetailsModal.componentData = {
     deck: deck
   };
-  cardDetailsModal.noPadding = true;
-  cardDetailsModal.invisible = true;
-  cardDetailsModal.type = 'full-right';
-  cardDetailsModal.icon = ['fas', 'address-card'];
-  cardDetailsModal.buttons = {
-    confirm: false,
-    cancel: {
-      type: 'secondary',
+  deckDetailsModal.noPadding = true;
+  deckDetailsModal.invisible = true;
+  deckDetailsModal.type = 'full-right';
+  deckDetailsModal.icon = ['fas', 'address-deck'];
+  deckDetailsModal.buttons = {
+    confirm: {
+      type: 'primary',
       size: 'sm',
-      iconLeft: 'arrow-left',
-      text: useNuxtApp().$_Tt('go_back')
+      iconLeft: 'edit',
+      class: ['width-32'],
+      text: useNuxtApp().$_Tt('edit')
     },
+    cancel: false,
     close: true
   }
-  cardDetailsModal.onFinish = async (modalData) => {
-    return new Promise((resolve, reject) => {
-      const message = `${useNuxtApp().$_Tt('deck_delete_prompt_confirm_message')}`;
-      const middleMessage = `<b>${deck.getName()}</b>`;
-      const title = useNuxtApp().$_Tt('deck_delete_prompt_confirm_title');
-
-      modalHandler.getDefaultConfirmation(message, title, middleMessage)
-          .then(() => {
-            // Delete card
-            useDynamicPost(`/manager/card/delete/${modalData}`)
-                .then((response) => {
-                  resolve(true);
-                })
-                .catch(() => {
-                  console.log('Could not delete card');
-                })
-          })
-          .catch(() => {
-            console.log('Confirmation rejected');
-          })
-    })
+  deckDetailsModal.onFinish = async (modalData) => {
+    console.log('Deck modal data:', modalData);
+    await router.push(`/decks/editor/${deck.getId()}`);
   }
-  cardDetailsModal.onCancel = async () => {
+  deckDetailsModal.onCancel = async () => {
     return new Promise((resolve) => {
       setTimeout(() => {
         console.log('After 2 seconds... closing');
@@ -171,30 +288,47 @@ const openCardViewModal = (deck:DeckInterface, fromChild = false) => {
       }, 100);
     });
   }
-  modalHandler.set(cardDetailsModal);
-  modalHandler.show(cardDetailsModal);
+  modalHandler.set(deckDetailsModal);
+  modalHandler.show(deckDetailsModal);
 }
 
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 onNuxtReady(async () => {
-
   await new Promise((resolve) => {
-    const pageFiltersCookie = useCookie('pagefilters');
-    if (pageFiltersCookie.value) {
-      const currentPageFilters = pageFiltersCookie.value.find(i => i.page === route.path);
+    useLocalApiPost(`/pages${route.path}/settings/get`)
+        .then((item) => {
+          if (item) {
+            pageSettings.value = item;
+          }
 
-      if (currentPageFilters) {
-        filters.value = currentPageFilters.filters;
-      }
-    }
+          if (pageSettings.value.list.listType === 'card') {
+            pagination.value.pageSize = 25;
+          }
+        })
+    useLocalApiPost(`/pages${route.path}/filters/get`)
+        .then((item) => {
+          if (item) {
+            filters.value = item;
+            if (item.colors) {
+              filteredMana.value = item.colors;
+            }
 
-    const pageConfigsCookie = useCookie('pageconfigs');
-    if (pageConfigsCookie.value) {
-      const pageConfigs = pageConfigsCookie.value.find(i => i.page === route.path);
-
-      if (pageConfigs) {
-        listType.value = pageConfigs.listType;
-      }
-    }
+            if (item.stringSearch.length) {
+              searchedString.value = item.stringSearch;
+            }
+          }
+        })
 
     resolve();
   })
@@ -211,30 +345,26 @@ onNuxtReady(async () => {
     <div class="g-row">
       <div class="g-col --span-24">
         <app-table-header-actions
-            :filters-component="shallowRef(LazyPageCardFilters)"
             v-model:filter="filters"
-            v-model:string-search="search"
+            v-model:string-search="parsedSearchText"
             :has-filters="!!parseHasFilters"
             title="Cards"
+            hide-advanced-filters
             @reset-filters="handleResetFilters()"
         >
           <template #first-slot>
-            <app-button-group>
-              <app-button
-                  :type="listType === 'list' ? 'primary' : 'secondary'"
-                  size="sm-squared"
-                  @click="handleListTypeChange('list')"
-              >
-                <fa-icon :icon="['fas', 'bars']" />
-              </app-button>
-              <app-button
-                  :type="listType === 'card' ? 'primary' : 'secondary'"
-                  size="sm-squared"
-                  @click="handleListTypeChange('card')"
-              >
-                <fa-icon :icon="['fas', 'square-caret-down']" />
-              </app-button>
-            </app-button-group>
+            <ul class="filter-group">
+              <li>
+                <app-mtg-mana-bar
+                    ref="manaBarRef"
+                    v-model="parsedFilteredMana"
+                    v-model:filterSource="parseColorFilterTypeFilter"
+                    v-model:color-match="parsedColorMatchFilter"
+                    v-model:borderless="parsedBorderlessFilter"
+                    v-model:lands-only="parsedLandsOnlyFilter"
+                />
+              </li>
+            </ul>
           </template>
         </app-table-header-actions>
       </div>
@@ -252,52 +382,25 @@ onNuxtReady(async () => {
             v-model:filters="filters"
             :primary-column="parsePrimaryColumn"
         >
-          <component
-              :is="parseComponent"
+          <app-list
               ref="refDecksList"
               :table-data="tableData"
               :columns="columns"
               :Entity="Deck"
-              :selected="selectedItems"
               :title="$_Tt('decks')"
-              allow-filter
               hide-action-bar
+              allow-filter
               :loading="parseIsLoading"
               v-model:pagination="pagination"
               v-model:filter="filters"
-              v-model:search="search"
-              @select-all="handleSelectAll"
-              @reset-filters="handleResetFilters()"
           >
             <template #app-list-item="{itemData}">
-              <app-mtg-deck-box :deck="itemData"></app-mtg-deck-box>
+              <app-mtg-deck-box
+                  :deck="itemData"
+                  @click="openDeckViewModal(itemData)"
+              />
             </template>
-
-            <template #head-column-actions="{rowData}">
-              <fa-icon :icon="['fas', 'diamond']" />
-            </template>
-
-            <template #column_name="{rowData}">
-              <div class="g-row">
-                <div class="g-col --span-24">
-                  <div class="g-row">
-                    <div class="g-col --span-24">
-                  <span class="text-strong">
-                    <a href="javascript: () => null" @click.prevent="openCardViewModal(rowData)">{{ rowData.getName() }}</a>
-                    <!-- app-badge :value="rowData.uid" type="warning" size="sm" / -->
-                  </span>
-                    </div>
-                  </div>
-                  <div class="g-row">
-                    <div class="g-col --span-24">
-                      <span>{{ rowData.getGameFormat()?.getName() }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </template>
-
-          </component>
+          </app-list>
         </app-table-core>
       </div>
     </div>

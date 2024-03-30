@@ -1,0 +1,99 @@
+
+
+
+.app-page--deck-editor {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 48px);
+  height: calc(100vh - 48px);
+  padding: 48px 24px 0 24px;
+  z-index: 10;
+
+  & > div.play-table {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    perspective-origin: bottom;
+    z-index: 11;
+
+    & > .table-top {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      height: 1024px;
+      background-color: #fff;
+      border-radius: 8px;
+      transform:
+              rotateX(25deg) rotateY(0deg) rotateZ(0deg) translateX(0) translateY(-90px) translateZ(0)
+      ;
+
+      --ground-element-size: 120px;
+      & > .ground-element {
+        position: relative;
+        top: 0;
+        left: 320px;
+        width: var(--ground-element-size);
+        height: calc(var(--ground-element-size) * 1.4);
+        perspective: 1000px;
+        transform-style: preserve-3d;
+        perspective-origin: bottom;
+
+        & > .floating-content {
+          position: absolute;
+          top: 12px;
+          left: 12px;
+          bottom: 12px;
+          right: 12px;
+          display: flex;
+          scale: .9;
+
+          transform:
+                  rotateX(0deg)
+                  rotateY(0deg)
+                  rotateZ(0deg)
+                  translateX(0px)
+                  translateY(0px)
+                  translateZ(150px)
+        ;
+
+          &:before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            bottom: 12px;
+            right: 12px;
+            box-shadow: 0 0 40px -8px #000;
+            transform: translateY(12px) translateZ(-12px);
+          }
+        }
+      }
+    }
+  }
+
+  & > div.user-hand {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 32px;
+    background-color: #000c;
+    z-index: 110;
+  }
+
+  & > div.front-screen {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #f003;
+    z-index: 210;
+  }
+}

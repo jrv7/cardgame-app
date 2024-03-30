@@ -1,0 +1,29 @@
+
+
+
+.app-subpage--card-details {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+  width: 100%;
+  max-width: calc(320px + (2 * 12px));
+
+  & > .app-mtg-card {
+    margin: 0 auto;
+  }
+
+  & > .collection-sets-list {
+    position: relative;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    width: calc(100% - (2 * 12px));
+    margin: 0 auto;
+
+    & > li {
+      width: calc(100%/6);
+      margin: 4px auto;
+    }
+  }
+}

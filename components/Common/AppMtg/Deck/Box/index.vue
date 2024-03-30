@@ -17,7 +17,7 @@ const ready = ref(false);
 const isOpen = ref(false);
 
 const handleOpenClose = () => {
-  isOpen.value = !isOpen.value;
+  emit('click', true);
 }
 </script>
 

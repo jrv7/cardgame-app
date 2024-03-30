@@ -38,6 +38,13 @@ body {
     @include scrollbars(8px);
     -webkit-overflow-scrolling: touch;
     z-index: 2;
+
+    &.page--deck-builder {
+      height: 100vh;
+      min-height: 100vh;
+      max-height: 100vh;
+      overflow: auto;
+    }
   }
 }
 

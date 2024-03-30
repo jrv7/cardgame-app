@@ -219,6 +219,7 @@ const handleConfirm = async () => {
                       size="sm"
                       type="primary"
                       class="margin-left-auto"
+                      :class="buttons?.confirm?.class ?? null"
                       @click="handleConfirm()"
                   >
                     {{ $_Tt('confirm') }}
@@ -229,6 +230,7 @@ const handleConfirm = async () => {
                       :size="buttons?.confirm?.size || 'sm'"
                       :type="buttons?.confirm?.type || 'primary'"
                       class="margin-left-auto padding-h-12"
+                      :class="buttons?.confirm?.class ?? null"
                       @click="handleConfirm()"
                   >
                     {{ buttons?.confirm?.text }}

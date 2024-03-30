@@ -1,0 +1,20 @@
+
+
+
+.system-header-deck-builder {
+  position: absolute;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 28px;
+  background-color: #fff2;
+  z-index: 1000;
+
+  & > .header-list {
+    position: relative;
+    display: flex;
+    margin: auto 0;
+    height: 16px;
+  }
+}
