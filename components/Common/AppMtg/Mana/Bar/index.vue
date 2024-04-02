@@ -50,7 +50,7 @@ const parseEnabledItems = computed({
     return props.modelValue?.map(i => i.code) || [];
   },
   set: (value:{code:string, name:string}) => {
-    let currentMap = JSON.parse(JSON.stringify(props.modelValue));
+    let currentMap = JSON.parse(JSON.stringify(props.modelValue)) ?? [];
     if (currentMap.find(i => i.code === value.code)) {
       currentMap = currentMap.filter(i => i.code !== value.code);
     } else {

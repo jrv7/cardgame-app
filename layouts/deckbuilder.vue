@@ -58,7 +58,7 @@ onNuxtReady(async () => {
       class="main-system page--deck-builder"
   >
     <!-- Header -->
-    <app-header-deck-builder />
+    <!-- app-header-deck-builder / -->
     <!-- /Header -->
 
     <!-- Body -->

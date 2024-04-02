@@ -11,7 +11,7 @@ const tableKey = ref(1);
 const props = withDefaults(
     defineProps<{
       tableData?: EntityInterface[] | null,
-      columns: AppTableColumnType[],
+      columns?: AppTableColumnType[]|null,
       pagination?:AppTablePaginationType|null,
       loading?: boolean,
       selected?: number[],
@@ -23,9 +23,12 @@ const props = withDefaults(
       defaultListSize?:number,
       title?:string,
       filter?:any,
-      itemsPerRow?:number
+      itemsPerRow?:number,
+      squareItems?:boolean,
+      horizontalScroll?:boolean
     }>(),
     {
+      columns: null,
       allowSelection: true,
       allowQuickSearch: true,
       allowFilters: true,
@@ -34,7 +37,9 @@ const props = withDefaults(
       defaultListSize: 10,
       title: null,
       filter: null,
-      itemsPerRow: 5
+      itemsPerRow: 5,
+      squareItems: false,
+      horizontalScroll: false
     }
 );
 
@@ -53,9 +58,13 @@ const parseData = computed(() => {
 
 const loadingRequest:any = ref(null);
 
-const handleGoToPage = async (page) => {
+const handleGoToPage = async (page, navigateNext = false) => {
   if (loadingRequest.value !== null) return;
   let currentPagination = useNuxtApp().$deepClone(parsedPagination.value);
+
+  if (navigateNext) {
+    page = (currentPagination.page + page);
+  }
 
   if (page < 1 || page > currentPagination.pages || page === currentPagination.page) return;
   currentPagination.page = page;
@@ -69,11 +78,22 @@ onNuxtReady(async () => {
 </script>
 
 <template>
-  <div class="app-list">
+  <div class="app-list" :class="{'square-items': squareItems}">
     <div class="header">
     </div>
 
     <div class="body">
+      <template v-if="horizontalScroll">
+        <div class="scroll-nav scroll-nav-backwards">
+          <app-button
+              :disabled="pagination.page === 1"
+              @click="handleGoToPage(-1, true)"
+          >
+            <fa-icon :icon="['fas', 'arrow-left']" />
+          </app-button>
+        </div>
+      </template>
+
       <template v-for="(item, index) in parseData" :key="`app-list-item-${index}`">
         <div
             class="list-item"
@@ -86,9 +106,33 @@ onNuxtReady(async () => {
           </div>
         </div>
       </template>
+
+      <template v-for="(nItem, index) in (pagination.pageSize - parseData.length)" :key="`app-list-item-skeleton-${index}`">
+        <div
+            class="list-item"
+            :class="[`item-size-${itemsPerRow}`]"
+        >
+          <div class="item-content">
+            <slot name="app-list-item-skeleton">
+              <pre>{{ nItem }}</pre>
+            </slot>
+          </div>
+        </div>
+      </template>
+
+      <template v-if="horizontalScroll">
+        <div class="scroll-nav scroll-nav-forwards">
+          <app-button
+              :disabled="pagination.page === pagination.pages"
+              @click="handleGoToPage(1, true)"
+          >
+            <fa-icon :icon="['fas', 'arrow-right']" />
+          </app-button>
+        </div>
+      </template>
     </div>
 
-    <div class="footer">
+    <div class="footer" v-if="!horizontalScroll">
       <div class="app-table-pagination">
         <ul class="pagination-list" v-if="tableData.length && parsedPagination.total && parsedPagination.pages">
           <li>{{ $_Tt('showing') }} {{ tableData.length }} {{ $_tt('results') }} {{ $_tt('of') }} {{ parsedPagination.total }} | {{ $_Tt('from') }} {{ (((parsedPagination.page - 1) * parsedPagination.pageSize) + 1) }} {{ $_tt('to') }} {{ (((parsedPagination.page - 1) * parsedPagination.pageSize) + tableData.length) }}</li>

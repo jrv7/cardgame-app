@@ -15,25 +15,24 @@ export default defineEventHandler(async (event) => {
   const headerHash = btoa(JSON.stringify(requestBody));
 
   return new Promise((resolve, reject) => {
-    localDbList.getItem(`page--${headerHash}`)
-      .then((response) => {
-        if (response) {
-          new Promise(() => {
-            console.log('Loaded from memory');
-            resolve(response);
-          })
-        } else {
+    // localDbList.getItem(`page--${headerHash}`)
+    //   .then((response) => {
+    //     if (response) {
+    //       new Promise(() => {
+    //         console.log('Loaded from memory');
+    //         resolve(response);
+    //       })
+    //     } else {
           useApiPost('/decks', requestBody, headers)
             .then((response) => {
-              localDbList.setItem(`page--${headerHash}`, response);
-              console.log('Loaded from API');
+              // localDbList.setItem(`page--${headerHash}`, response);
               resolve(response);
             })
             .catch((e) => {
               console.log('API error', e);
               reject(e);
             });
-        }
-      })
+      //   }
+      // })
   })
 })

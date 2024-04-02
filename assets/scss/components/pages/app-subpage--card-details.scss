@@ -7,7 +7,8 @@
   flex-direction: column;
   padding: 0 12px;
   width: 100%;
-  max-width: calc(320px + (2 * 12px));
+  min-width: calc(480px + (2 * 12px));
+  max-width: calc(480px + (2 * 12px));
 
   & > .app-mtg-card {
     margin: 0 auto;

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
-import {SimpleButtonSizeType, SimpleButtonTypeType} from "~/composables/customTypes/SimpleButtonTypes";
 import {DeckInterface} from "~/composables/entity/DeckInterface";
 import {CardInterface} from "~/composables/entity/CardInterface";
 import {Card} from "~/composables/entity/Card";
 
 const mtgState = useMtgState();
+const mtgCardListRef = ref(null);
 
 const props = withDefaults(
     defineProps<{
@@ -16,7 +16,6 @@ const props = withDefaults(
 
 const ready = ref(false);
 const DeckCards:CardInterface[] = ref([]) as CardInterface[];
-
 const originalFilters = ref({
   simpleSearch: [],
   stringSearch: null,
@@ -32,138 +31,124 @@ const originalFilters = ref({
   landsOnly: false
 });
 const filters = ref(useNuxtApp().$deepClone(originalFilters.value));
-const parsedFilters = computed({
-  get: () => {
-    return filters.value;
-  },
-  set: (value) => {
-    filters.value = value;
-    // useLocalApiPost(`/pages${route.path}/filters/set`, value)
-    //     .then(() => {
-    //       filters.value = value;
-    //     });
-  }
+
+const defaultColors = computed(() => {
+  return mtgState.value.colors;
 });
 
-const filteredMana = ref(useNuxtApp().$deepClone(mtgState.value.colors));
-const parsedFilteredMana = computed({
-  get: () => {
-    return filteredMana.value;
-  },
-  set: (value:{code:string, name:string, id?:number}[]) => {
-    filteredMana.value = value;
+const cardInDeck = (card) => {
+  return !!DeckCards.value.find(i => i.getId() === card.getId());
+}
 
-    let currentFilters = useNuxtApp().$deepClone(filters.value);
-    currentFilters.colors = value;
-    parsedFilters.value = currentFilters;
-    //
-    // clearTimeout(listReloadTrigger.value);
-    // listReloadTrigger.value = null;
-    // listReloadTrigger.value = setTimeout(() => {
-    //   TableCoreRef.value.reload();
-    //   clearTimeout(listReloadTrigger.value);
-    //   listReloadTrigger.value = null;
-    // }, 1200);
-  }
-});
+const addCardToDeck = async  (card:CardInterface) => {
+  await useDynamicPost(`/decks/${props.deck.getId()}/cards/add`, {cardId: card.getId()})
+      .then((addResp) => {
+        fetchDeckList()
+      })
+}
 
-const parseColorFilterTypeFilter = computed({
-  get: () => {
-    return filters.value.filterColorsIn;
-  },
-  set: async (value:string) => {
-    let currentFilters = useNuxtApp().$deepClone(filters.value);
-    currentFilters.filterColorsIn = value;
+const showCardDetails = (card) => {
+  mtgCardListRef.value.openCardViewModal(card);
+}
 
-    parsedFilters.value = currentFilters;
-    //
-    // listReloadTrigger.value = setTimeout(() => {
-    //   TableCoreRef.value.reload();
-    //   clearTimeout(listReloadTrigger.value);
-    //   listReloadTrigger.value = null;
-    // }, 400)
-  }
-});
+const fetchDeckList = async () => {
+  return new Promise((resolve, reject) => {
+    useDynamicPost(`/decks/${props.deck.getId()}/cards`)
+        .then(({data, success}) => {
+          if (success) {
+            if (data.length) {
+              DeckCards.value = data.map(i => {
+                return new Card(i.card);
+              })
+            }
 
-const parsedColorMatchFilter = computed({
-  get: () => {
-    return filters.value.colorMatch;
-  },
-  set: (value:string) => {
-    let currentFilters = useNuxtApp().$deepClone(filters.value);
-    currentFilters.colorMatch = value;
-    parsedFilters.value = currentFilters;
-
-    // clearTimeout(searchTrigger.value);
-    // searchTrigger.value = null;
-    // searchTrigger.value = setTimeout(() => {
-    //   TableCoreRef.value.reload();
-    //   clearTimeout(searchTrigger.value);
-    //   searchTrigger.value = null;
-    // }, 200);
-  }
-});
-
-const parsedBorderlessFilter = computed({
-  get: () => {
-    return filters.value.borderless;
-  },
-  set: (value:boolean) => {
-    let currentFilters = useNuxtApp().$deepClone(filters.value);
-    currentFilters.borderless = value;
-    parsedFilters.value = currentFilters;
-
-    // clearTimeout(searchTrigger.value);
-    // searchTrigger.value = null;
-    // searchTrigger.value = setTimeout(() => {
-    //   TableCoreRef.value.reload();
-    //   clearTimeout(searchTrigger.value);
-    //   searchTrigger.value = null;
-    // }, 200);
-  }
-});
-
-const parsedLandsOnlyFilter = computed({
-  get: () => {
-    return filters.value.landsOnly;
-  },
-  set: (value:boolean) => {
-    let currentFilters = useNuxtApp().$deepClone(filters.value);
-    currentFilters.landsOnly = value;
-    parsedFilters.value = currentFilters;
-
-    // clearTimeout(searchTrigger.value);
-    // searchTrigger.value = null;
-    // searchTrigger.value = setTimeout(() => {
-    //   TableCoreRef.value.reload();
-    //   clearTimeout(searchTrigger.value);
-    //   searchTrigger.value = null;
-    // }, 200);
-  }
-});
+            resolve();
+          } else {
+            reject('Could not fetch list');
+          }
+        })
+        .catch((e) => {
+          reject('Could not fetch list', e);
+        })
+  })
+}
 
 onBeforeMount(async () => {
-  await useDynamicPost(`/decks/${props.deck.getId()}/cards`)
-      .then(({data, success}) => {
-        if (success) {
-          if (data.length) {
-            console.log('Cards', data);
-            DeckCards.value = data.map(i => {
-              return new Card(i.card);
-            })
-          }
-          ready.value = true;
-        }
+  await fetchDeckList()
+      .then(() => {
+        ready.value = true;
       })
 })
 </script>
 
 <template>
-  <div class="app-mtg--deck-builder" v-if="ready">
+  <div class="app-mtg--deck-builder">
+    <div class="card-list">
+      <app-mtg-card-list
+          ref="mtgCardListRef"
+          :prefilter-colors="[...deck?.getPrimaryCard()?.getColors(), ...defaultColors.filter(i => i.code === '{C}')]"
+          horizontal-scroll
+          :list-size="8"
+          :page-size="24"
+      >
+        <template
+            #indicator="{card}"
+        >
+          <div class="in-deck-indicator"
+               v-if="cardInDeck(card)" />
+        </template>
+        
+        <template #actions="{card}">
+          <ul class="deck-builder-card-actions-slot">
+            <li>
+              <app-button
+                  type="primary"
+                  size="xs"
+                  @click="showCardDetails(card)"
+              >
+                <fa-icon :icon="['fas', 'magnifying-glass-plus']" />
+              </app-button>
+            </li>
+            <li class="spacer" />
+            <li>
+              <app-button
+                  type="primary"
+                  size="xs"
+                  @click="addCardToDeck(card)"
+              >
+                <fa-icon :icon="['fas', 'plus']" />
+              </app-button>
+            </li>
+          </ul>
+        </template>
+      </app-mtg-card-list>
+    </div>
+
+
     <div class="deck-specs">
       <ul class="deck-list">
+        <li
+            class="deck-card commander"
+        >
+          <app-mtg-card-header
+              :card="deck.getPrimaryCard()!"
+              has-crown
+          >
+            <template #details="{card}">
+              <div class="deck-details">
+                <span class="cards-count">
+                  <span class="count">{{ DeckCards.length }}</span>
+                   <span class="total">100</span>
+                </span>
+              </div>
+            </template>
+          </app-mtg-card-header>
+        </li>
         <template v-for="(card, index) in DeckCards" :key="`deck-card-${card.getId()}`">
-          <li class="deck-card">
+          <li
+              class="deck-card"
+              :class="{'commander': deck.getPrimaryCard()?.getId() == card.getId()}"
+          >
             <app-mtg-card-header :card="card" />
           </li>
         </template>

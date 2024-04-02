@@ -1,6 +1,6 @@
 
 export default defineEventHandler(async (event) => {
-  const requestControlDb = useStorage('cache-db:card-page-settings');
+  const requestControlDb = useStorage('cache-db:card-list-page-settings');
   let requestBody:{requestHash:string};
 
   if (process.env.NODE_ENV === "development") {

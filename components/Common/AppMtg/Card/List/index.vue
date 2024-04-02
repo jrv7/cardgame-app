@@ -9,33 +9,46 @@ import {AppTablePaginationType} from "~/composables/customTypes/AppTablePaginati
 import {SimpleButtonSizeType, SimpleButtonTypeType} from "~/composables/customTypes/SimpleButtonTypes";
 
 const route = useRoute();
+const mtgState = useMtgState();
 
 const TableCoreRef = ref(null);
 const manaBarRef = ref(null);
 const listReloadTrigger:any = ref(null) as any;
+const ready = ref(false);
+
+const props = withDefaults(
+    defineProps<{
+      prefilterColors?:{}[]|null,
+      squareItems?:boolean,
+      listSize?:number,
+      pageSize?:number,
+      infinite?:boolean,
+      horizontalScroll?:boolean
+    }>(), {
+      prefilterColors: null,
+      squareItems: false,
+      listSize: 5,
+      pageSize: 25,
+      infinite: false,
+      horizontalScroll: false
+    }
+);
+
+const CardEntity = new Card();
+let tableData: Ref<UnwrapRef<CardInterface[]>> = ref([]) as Ref<UnwrapRef<CardInterface[]>>;
+
+const pagination:AppTablePaginationType = ref({
+  page: 1,
+  pages: 1,
+  pageSize: props.pageSize,
+  total: 0,
+  from: 1,
+  to:10
+}) as AppTablePaginationType;
+
 const pageSettings = ref({
   list: {
-    listType: 'card',
-    listItemsPerRow: 5
-  }
-});
-const listType = computed({
-  get: () => {
-    return pageSettings.value.list.listType
-  },
-  set: (value:string) => {
-    let current = useNuxtApp().$deepClone(pageSettings.value);
-    current.list.listType = value;
-    pageSettings.value = current;
-    useLocalApiPost(`/pages${route.path}/settings/set`, current);
-
-    clearTimeout(listReloadTrigger.value);
-    listReloadTrigger.value = null;
-    listReloadTrigger.value = setTimeout(() => {
-      clearTimeout(listReloadTrigger.value);
-      listReloadTrigger.value = null;
-    }, 1200)
-
+    listItemsPerRow: props.listSize ?? 5
   }
 });
 const listItemsPerRow = computed({
@@ -58,26 +71,6 @@ const listItemsPerRow = computed({
   }
 });
 
-const ready = ref(false);
-
-const props = withDefaults(
-    defineProps<{
-    }>(), {
-    }
-);
-
-const CardEntity = new Card();
-let tableData: Ref<UnwrapRef<CardInterface[]>> = ref([]) as Ref<UnwrapRef<CardInterface[]>>;
-
-const pagination:AppTablePaginationType = ref({
-  page: 1,
-  pages: 1,
-  pageSize: 10,
-  total: 0,
-  from: 1,
-  to:10
-}) as AppTablePaginationType;
-
 const parsedPagination = computed({
   get: () => {
     return pagination.value;
@@ -90,37 +83,6 @@ const parsedPagination = computed({
   }
 });
 
-const colors = ref([
-  {
-    code: '{W}',
-    name: 'white'
-  },
-  {
-    code: '{U}',
-    name: 'blue'
-  },
-  {
-    code: '{B}',
-    name: 'black'
-  },
-  {
-    code: '{R}',
-    name: 'red'
-  },
-  {
-    code: '{G}',
-    name: 'green'
-  },
-  {
-    code: '{C}',
-    name: 'generic'
-  }].map((i, index) => {
-  return {
-    id: index + 1,
-    ...i
-  }
-}));
-
 const originalFilters = ref({
   simpleSearch: [],
   stringSearch: null,
@@ -128,7 +90,7 @@ const originalFilters = ref({
   types: [],
   subtypes: [],
   supertypes: [],
-  colors: colors.value,
+  colors: ((props.prefilterColors && props.prefilterColors.length) ? mtgState.value.colors.filter(i => props.prefilterColors!.map(j => j.code).includes(i.code)) : mtgState.value.colors),
   identityColors: [],
   filterColorsIn: 'colors',
   colorMatch: 'any',
@@ -243,7 +205,11 @@ const searchTrigger:any = ref(null) as any;
 const searchedString = ref(null);
 const parsedSearchText = computed({
   get: () => {
-    return searchedString.value;
+    if (searchedString.value && searchedString.value !== 'null') {
+      return searchedString.value;
+    }
+
+    return '';
   },
   set: (value:string|null) => {
     let currentSearch = null;
@@ -267,16 +233,9 @@ const handleSearch = () => {
   }, 200)
 }
 
-const columns = ref([
-  { column: 'id', hidden: true, label: 'id', main: true},
-  { column: 'cmc', label: 'cmc', width: '4%', searchable: true, dataType: 'string'},
-  { column: 'manaCost', label: 'manaCost', width: '4%', searchable: true, dataType: 'string'},
-  { column: 'collectionSet', label: 'collectionSet', width: '4%', searchable: true, dataType: 'string'},
-  { column: 'name', label: 'name', searchable: true, dataType: 'string'}
-]);
 const selectedItems = ref([]);
 
-const filteredMana = ref(useNuxtApp().$deepClone(colors.value));
+const filteredMana = ref(useNuxtApp().$deepClone(((props.prefilterColors && props.prefilterColors.length) ? mtgState.value.colors.filter(i => props.prefilterColors!.map(j => j.code).includes(i.code)) : mtgState.value.colors)));
 const parsedFilteredMana = computed({
   get: () => {
     return filteredMana.value;
@@ -386,6 +345,8 @@ const openCardViewModal = (card, fromChild = false) => {
   modalHandler.set(cardDetailsModal);
   modalHandler.show(cardDetailsModal);
 }
+
+defineExpose({ openCardViewModal });
 /**
  *
  *
@@ -395,6 +356,7 @@ const openCardViewModal = (card, fromChild = false) => {
  * On Page Ready
  */
 onNuxtReady(async () => {
+  console.log('Starting page with colors', props.prefilterColors, mtgState.value.colors);
   await new Promise((resolve) => {
     useLocalApiPost(`/pages${route.path}/settings/get`)
         .then((item) => {
@@ -432,7 +394,7 @@ onNuxtReady(async () => {
 
 <template>
   <div class="app-mtg--card-list" v-if="ready">
-    <div class="g-row">
+    <div class="g-row card-list-headers">
       <div class="g-col --span-24">
         <app-table-header-actions
             :filters-component="shallowRef(LazyPageCardFilters)"
@@ -448,7 +410,6 @@ onNuxtReady(async () => {
               <li class="margin-right-8">
                 <app-button-group>
                   <app-button
-                      v-if="listType === 'card'"
                       type="secondary"
                       size="sm"
                       class="padding-h-12"
@@ -460,7 +421,6 @@ onNuxtReady(async () => {
                   </app-button>
 
                   <app-button
-                      v-if="listType === 'card'"
                       type="secondary"
                       size="sm"
                       class="padding-h-12"
@@ -489,13 +449,13 @@ onNuxtReady(async () => {
       </div>
     </div>
 
-    <div class="g-row">
+    <div class="g-row card-list-data">
       <div class="g-col --span-24">
         <app-table-core
             ref="TableCoreRef"
             :url="listUrl"
             :Entity="Card"
-            :infinite="listType === 'card'"
+            :infinite="infinite"
             v-model:data="tableData"
             v-model:pagination="pagination"
             v-model:loading="parseIsLoading"
@@ -503,16 +463,17 @@ onNuxtReady(async () => {
             :primary-column="parsePrimaryColumn"
         >
           <app-list
-              v-if="listType === 'card'"
               :table-data="tableData"
-              :columns="columns"
               :Entity="Card"
               :selected="selectedItems"
               :title="$_Tt('cards')"
               allow-filter
               hide-action-bar
+              :infinite="infinite"
+              :horizontal-scroll="horizontalScroll"
               :loading="parseIsLoading"
               :items-per-row="listItemsPerRow"
+              :square-items="squareItems"
               v-model:pagination="parsedPagination"
               v-model:filter="parsedFilters"
               v-model:search="parsedSearchText"
@@ -522,9 +483,22 @@ onNuxtReady(async () => {
             <template #app-list-item="{itemData}">
               <app-mtg-card
                   :card="itemData"
-                  @click="openCardViewModal(itemData)"
                   hide-descriptions
-              />
+                  :square="squareItems"
+                  @click="openCardViewModal(itemData)"
+              >
+                <template #indicator="{card}">
+                  <slot name="indicator" :card="card"></slot>
+                </template>
+                <template #actions="{card}">
+                  <slot name="actions" :card="card"></slot>
+                </template>
+              </app-mtg-card>
+            </template>
+            <template #app-list-item-skeleton>
+              <app-mtg-card-skeleton
+              >
+              </app-mtg-card-skeleton>
             </template>
           </app-list>
         </app-table-core>

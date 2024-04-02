@@ -8,6 +8,14 @@
   flex-direction: column;
   width: calc(100%);
   margin: 0 auto;
+  z-index: 1;
+
+  &.square-items {
+    --item-size-adjustment: 1;
+  }
+  &:not(.square-items) {
+    --item-size-adjustment: 1.4;
+  }
 
   & > .header {
     position: relative;
@@ -15,6 +23,7 @@
     flex-direction: column;
     width: calc(100%);
     margin: 24px 0;
+    z-index: 30;
   }
 
   & > .body {
@@ -24,8 +33,10 @@
     display: flex;
     flex-flow: wrap;
     justify-content: flex-start;
+    vertical-align: top;
     horiz-align: left;
     width: 100%;
+    z-index: 20;
 
     --item-size: 5;
 
@@ -44,13 +55,13 @@
       position: relative;
       display: flex;
       flex-direction: column;
+      vertical-align: top;
       width: 0;
-      padding: calc((((100% - 48px) / var(--item-size)) / 2) * 1.4) calc(((100% - 48px) / var(--item-size)) / 2);
+      padding: calc((((100% - 48px) / var(--item-size)) / 2) * var(--item-size-adjustment)) calc(((100% - 48px) / var(--item-size)) / 2);
       max-height: calc(((100% / var(--item-size)) - 16px) * 1.4);
       margin: 0 calc(((100% - ((((100% - 48px) / var(--item-size)))) * var(--item-size)) / 6) / 2) 12px 0;
       transition: all .3s ease-in-out;
-      z-index: 1;
-      background-color: #000;
+      z-index: 21;
       @include no-scrollbars();
 
       & > .item-content {
@@ -65,6 +76,46 @@
       &:hover {
         scale: 1.04;
         z-index: 10;
+      }
+    }
+
+    & > .scroll-nav {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      z-index: 25;
+
+      & > .app-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 64px;
+        transition: all .2s ease-in-out;
+        opacity: .4;
+
+        &:not(:disabled):not(.disabled):hover {
+          opacity: 1;
+        }
+      }
+
+      &.scroll-nav-backwards {
+        left: 0;
+
+        & > .app-button {
+          left: 4px;
+          border-radius: 0 20px 20px 0;
+        }
+      }
+
+      &.scroll-nav-forwards {
+        right: 0;
+
+        & > .app-button {
+          left: -100%;
+          transform: translate(calc(-100% - 12px), -50%);
+          border-radius: 20px 0 0 20px;
+        }
       }
     }
   }

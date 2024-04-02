@@ -1,0 +1,27 @@
+
+
+
+.app-mtg-mana-cost-translator {
+  position: relative;
+  display: flex;
+  padding: 0;
+  margin: 0;
+
+  &:not(.small) {
+    --size-adjustment: 1;
+  }
+
+  &.small {
+    --size-adjustment: .8;
+  }
+
+  & > li {
+    position: relative;
+    display: flex;
+    height: calc(18px * var(--size-adjustment));
+    margin-left: calc(1px * var(--size-adjustment));
+    border-radius: 20px;
+    border: 1px solid #0005;
+    box-shadow: calc((1px * .8)) calc((1px * .8)) 3px -1px #000;
+  }
+}

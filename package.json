@@ -28,6 +28,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@saeris/typeface-beleren-bold": "^1.0.1",
     "formidable": "^3.5.1",
     "vue-advanced-cropper": "^2.8.8"
   }

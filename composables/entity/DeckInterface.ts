@@ -9,6 +9,8 @@ export type DeckType = {
     id: number,
     gameFormat: GameFormatInterface|null,
     coverCard: CardInterface|null,
+    primaryCard: CardInterface|null,
+    secondaryCard: CardInterface|null,
     name:string|null,
     description:string|null,
 };
@@ -17,6 +19,8 @@ export interface DeckInterface extends EntityInterface {
     id: number;
     gameFormat: GameFormatInterface|null;
     coverCard: CardInterface|null;
+    primaryCard: CardInterface|null;
+    secondaryCard: CardInterface|null;
     name:string|null;
     description:string|null;
 
@@ -29,6 +33,12 @@ export interface DeckInterface extends EntityInterface {
     // coverCard: string;
     getCoverCard():CardInterface|null;
     setCoverCard(value:CardInterface|null): self;
+    // coverCard: string;
+    getPrimaryCard():CardInterface|null;
+    setPrimaryCard(value:CardInterface|null): self;
+    // coverCard: string;
+    getSecondaryCard():CardInterface|null;
+    setSecondaryCard(value:CardInterface|null): self;
     // name: string;
     getName():string|null;
     setName(value:string|null): self;

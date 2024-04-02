@@ -14,6 +14,8 @@ export class Deck implements DeckInterface {
   private id: number = 0;
   private gameFormat: GameFormatInterface|null;
   private coverCard: CardInterface|null;
+  private primaryCard: CardInterface|null;
+  private secondaryCard: CardInterface|null;
   private name: string | null = null;
   private description: string | null = null;
 
@@ -21,6 +23,8 @@ export class Deck implements DeckInterface {
     'id',
     'gameFormat',
     'coverCard',
+    'primaryCard',
+    'secondaryCard',
     'name',
     'description'
   ];
@@ -40,6 +44,10 @@ export class Deck implements DeckInterface {
         this.setName(cloneFrom.getGameFormat());
         // coverCard
         this.setCoverCard(cloneFrom.getCoverCard());
+        // coverCard
+        this.setPrimaryCard(cloneFrom.getPrimaryCard());
+        // coverCard
+        this.setSecondaryCard(cloneFrom.getSecondaryCard());
         // name:string|null;
         this.setName(cloneFrom.getName());
         // description:string|null;
@@ -70,6 +78,22 @@ export class Deck implements DeckInterface {
   }
   setCoverCard(value:CardInterface|null): DeckInterface {
     this.coverCard = value;
+    return this;
+  }
+  // 'primaryCard',
+  getPrimaryCard():CardInterface|null {
+    return this.primaryCard;
+  }
+  setPrimaryCard(value:CardInterface|null): DeckInterface {
+    this.primaryCard = value;
+    return this;
+  }
+  // 'secondaryCard',
+  getSecondaryCard():CardInterface|null {
+    return this.secondaryCard;
+  }
+  setSecondaryCard(value:CardInterface|null): DeckInterface {
+    this.secondaryCard = value;
     return this;
   }
   // 'name',
@@ -132,6 +156,8 @@ export class Deck implements DeckInterface {
       id: this.getId(),
       gameFormat: this.getGameFormat(),
       coverCard: this.getCoverCard(),
+      primaryCard: this.getPrimaryCard(),
+      secondaryCard: this.getSecondaryCard(),
       name: this.getName(),
       description: this.getDescription()
     };
@@ -150,6 +176,10 @@ export class Deck implements DeckInterface {
     this.setGameFormat(new GameFormat(object.gameFormat));
     // coverCard: number;
     this.setCoverCard(new Card(object.coverCard));
+    // coverCard: number;
+    this.setPrimaryCard(new Card(object.primaryCard));
+    // coverCard: number;
+    this.setSecondaryCard(new Card(object.secondaryCard));
     // name:string|null;
     this.setName(object.name);
     // description:string|null;

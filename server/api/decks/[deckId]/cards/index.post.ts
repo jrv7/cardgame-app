@@ -14,23 +14,23 @@ export default defineEventHandler(async (event) => {
   }
 
   return new Promise((resolve, reject) => {
-    localDb.getItem(`deck--${deckId}-cards`)
-      .then((cards) => {
-        if (cards) {
-          new Promise(() => {
-            resolve(cards);
-          })
-        } else {
+    // localDb.getItem(`deck--${deckId}-cards`)
+    //   .then((cards) => {
+    //     if (cards) {
+    //       new Promise(() => {
+    //         resolve(cards);
+    //       })
+    //     } else {
           useApiPost(`/decks/${deckId}/cards`, requestBody, headers)
             .then((response) => {
-              localDb.setItem(`deck--${deckId}-cards`, response);
+              // localDb.setItem(`deck--${deckId}-cards`, response);
               resolve(response);
             })
             .catch((e) => {
               console.log('API error', e);
               reject(e);
             });
-        }
-      })
+      //   }
+      // })
   })
 })

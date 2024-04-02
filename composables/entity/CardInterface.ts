@@ -18,6 +18,7 @@ export type CardType = {
     toughness:number|null,
     loyalty:number|null,
     manaCost:string|null,
+    identityCost:string|null,
     rarity:string|null,
     type:string|null,
     latestImageUrl:string|null,
@@ -51,6 +52,7 @@ export interface CardInterface extends EntityInterface {
     toughness:number|null;
     loyalty:number|null;
     manaCost:string|null;
+    identityCost:string|null;
     rarity:string|null;
     type:string|null;
     latestImageUrl:string|null;
@@ -106,6 +108,9 @@ export interface CardInterface extends EntityInterface {
     // manaCost:string|null;
     getManaCost():string|null;
     setManaCost(value:string|null): self;
+    // identityCost:string|null;
+    getIdentityCost():string|null;
+    setIdentityCost(value:string|null): self;
     // rarity:string|null;
     getRarity():string|null;
     setRarity(value:string|null): self;

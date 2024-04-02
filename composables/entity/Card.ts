@@ -1,5 +1,5 @@
 import {EntityColumnType} from "~/composables/entity/EntityInterface";
-import {CardType, CardInterface} from "~/composables/entity/CardInterface";
+import {CardType, CardInterface, self} from "~/composables/entity/CardInterface";
 import {UnwrapRef} from "vue";
 import {Ref} from "preact/compat";
 import {CollectionSet} from "~/composables/entity/CollectionSet";
@@ -18,6 +18,7 @@ export class Card implements CardInterface {
   private toughness: number | null = null;
   private loyalty: number | null = null;
   private manaCost: string | null = null;
+  private identityCost: string | null = null;
   private rarity: string | null = null;
   private type: string | null = null;
   private latestImageUrl: string | null = null;
@@ -50,6 +51,7 @@ export class Card implements CardInterface {
     'toughness',
     'loyalty',
     'manaCost',
+    'identityCost',
     'rarity',
     'type',
     'latestImageUrl',
@@ -103,6 +105,8 @@ export class Card implements CardInterface {
         this.setLoyalty(cloneFrom.getLoyalty());
         // manaCost:string|null;
         this.setManaCost(cloneFrom.getManaCost());
+        // identityCost:string|null;
+        this.setIdentityCost(cloneFrom.getIdentityCost());
         // rarity:string|null;
         this.setRarity(cloneFrom.getRarity());
         // type:string|null;
@@ -239,6 +243,15 @@ export class Card implements CardInterface {
   }
   setManaCost(value:string|null): CardInterface {
     this.manaCost = value;
+    return this;
+  }
+  // identityCost:string|null;
+  // 'identityCost',
+  getIdentityCost():string|null {
+    return this.identityCost;
+  }
+  setIdentityCost(value:string|null): CardInterface {
+    this.identityCost = value;
     return this;
   }
   // 'rarity',
@@ -452,9 +465,11 @@ export class Card implements CardInterface {
       toughness: this.getToughness(),
       loyalty: this.getLoyalty(),
       manaCost: this.getManaCost(),
+      identityCost: this.getIdentityCost(),
       rarity: this.getRarity(),
       type: this.getType(),
       latestImageUrl: this.getLatestImageUrl(),
+      artImageUrl: this.getArtImageUrl(),
       imageUrl: this.getImageUrl(),
       oracleText: this.getOracleText(),
       originalText: this.getOriginalText(),
@@ -503,6 +518,8 @@ export class Card implements CardInterface {
     this.setLoyalty(object.loyalty);
     // manaCost:string|null;
     this.setManaCost(object.manaCost);
+    // identityCost:string|null;
+    this.setIdentityCost(object.identityCost);
     // rarity:string|null;
     this.setRarity(object.rarity);
     // type:string|null;

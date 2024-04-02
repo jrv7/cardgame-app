@@ -8,6 +8,12 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100&display=swap');
 
+@font-face {
+  font-family: "Beleren";
+  src: local("Beleren"),
+  url("~/assets/fonts/typeface-beleren-bold-master/Beleren2016-Bold.ttf");
+}
+
 body {
   position: relative;
   width: 100vw;
@@ -16,7 +22,7 @@ body {
   padding: 0;
   margin: 0;
   // font: 400 14px/20px Roboto,RobotoDraft,Helvetica,"Open Sans",Arial,sans-serif;
-  font-family: 'Open Sans',Arial,sans-serif !important;
+  font-family: 'Beleren','Open Sans',Arial,sans-serif !important;
   color: var(--c-text-default-color);
   //font-family: 'Montserrat',Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
   font-weight: 400;

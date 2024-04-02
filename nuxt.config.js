@@ -97,15 +97,15 @@ export default defineNuxtConfig({
     '@/assets/scss/components/common/app-accordion.scss',
     '@/assets/scss/components/common/app-date-time-picker.scss',
     '@/assets/scss/components/common/app-label.scss',
-    '@/assets/scss/components/common/app-mtg-card.scss',
-    '@/assets/scss/components/common/app-mana-cost-symbol.scss',
-    '@/assets/scss/components/common/app-mtg-set-symbol.scss',
     // MTG Components
+    '@/assets/scss/components/common/mtg/app-mtg-set-symbol.scss',
+    '@/assets/scss/components/common/mtg/app-mana-cost-symbol.scss',
     '@/assets/scss/components/common/mtg/mtg-card.scss',
     '@/assets/scss/components/common/mtg/app-mtg-set-symbol-carousel.scss',
     '@/assets/scss/components/common/mtg/app-mtg--deck-box.scss',
     '@/assets/scss/components/common/mtg/app-mtg--mana-bar-buttons.scss',
     '@/assets/scss/components/common/mtg/app-mtg--deck-builder.scss',
+    '@/assets/scss/components/common/mtg/app-mtg-mana-cost-translator.scss',
     // Pages
     '@/assets/scss/components/pages/app-page--cards-list.scss',
     '@/assets/scss/components/pages/app-mtg--deck-list.scss',
