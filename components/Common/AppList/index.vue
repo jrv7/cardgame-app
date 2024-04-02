@@ -109,8 +109,8 @@ onNuxtReady(async () => {
 
       <template v-for="(nItem, index) in (pagination.pageSize - parseData.length)" :key="`app-list-item-skeleton-${index}`">
         <div
-            class="list-item"
-            :class="[`item-size-${itemsPerRow}`]"
+            class="list-item skeleton"
+            :class="[`item-size-${itemsPerRow}`, {'invisible': !!parseData.length}]"
         >
           <div class="item-content">
             <slot name="app-list-item-skeleton">
