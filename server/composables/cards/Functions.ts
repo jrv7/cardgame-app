@@ -8,17 +8,12 @@ export const fetchCardDetails = async (localDb, cardId, requestBody = null, head
         .then((response) => {
           localDb.setItem(`card--${cardId}`, response);
           resolve(response);
-
-          console.log('Card list result:', response);
         })
         .catch((e) => {
           console.log('API error', e);
           reject(e);
         });
   })
-  //       }
-  //     })
-  // })
 }
 export const fetchCardList = async (localDb, requestBody, headers, localDbCards = null, currentPage = 1) => {
   let _requestBody = JSON.parse(JSON.stringify(requestBody));
