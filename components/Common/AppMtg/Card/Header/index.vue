@@ -9,10 +9,12 @@ const props = withDefaults(
     defineProps<{
       card:CardInterface,
       small?:boolean,
-      hasCrown?:boolean
+      hasCrown?:boolean,
+      hideCost?:boolean,
     }>(), {
       small: false,
-      hasCrown:false
+      hasCrown:false,
+      hideCost: false
     }
 );
 
@@ -81,7 +83,7 @@ const parseCardColor = computed(() => {
         <div class="name">
           <span>{{ card.getName() }}</span>
         </div>
-        <div class="cost">
+        <div class="cost" v-show="!hideCost">
           <app-mtg-mana-cost-translate
               :value="card.getManaCost()!"
               :small="small"

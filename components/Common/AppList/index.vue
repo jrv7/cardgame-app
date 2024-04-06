@@ -25,7 +25,9 @@ const props = withDefaults(
       filter?:any,
       itemsPerRow?:number,
       squareItems?:boolean,
-      horizontalScroll?:boolean
+      horizontalScroll?:boolean,
+      inline?:boolean,
+      noSkeleton?:boolean
     }>(),
     {
       columns: null,
@@ -39,7 +41,9 @@ const props = withDefaults(
       filter: null,
       itemsPerRow: 5,
       squareItems: false,
-      horizontalScroll: false
+      horizontalScroll: false,
+      inline: false,
+      noSkeleton: false
     }
 );
 
@@ -78,7 +82,10 @@ onNuxtReady(async () => {
 </script>
 
 <template>
-  <div class="app-list" :class="{'square-items': squareItems}">
+  <div
+      class="app-list"
+      :class="{'square-items': squareItems, 'inline': inline}"
+  >
     <div class="header">
     </div>
 
@@ -107,7 +114,7 @@ onNuxtReady(async () => {
         </div>
       </template>
 
-      <template v-for="(nItem, index) in (pagination.pageSize - parseData.length)" :key="`app-list-item-skeleton-${index}`">
+      <template v-if="!noSkeleton" v-for="(nItem, index) in (pagination.pageSize - parseData.length)" :key="`app-list-item-skeleton-${index}`">
         <div
             class="list-item skeleton"
             :class="[`item-size-${itemsPerRow}`, {'invisible': !!parseData.length}]"
