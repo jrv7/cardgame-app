@@ -10,11 +10,13 @@ const props = withDefaults(
     defineProps<{
       card:CardInterface,
       activeSet?:CollectionSet|null,
+      hideAction?:boolean,
       hideDescriptions?:boolean,
       square?:boolean,
     }>(),
     {
       activeSet: null,
+      hideAction: false,
       hideDescriptions: false,
       square: false
     }
@@ -140,7 +142,7 @@ onNuxtReady(async () => {
       >
     </div>
 
-    <slot name="actions" :card="card">
+    <slot name="actions" :card="card" v-if="!hideAction">
       <div class="actions-slot">
         <app-button
             type="link"

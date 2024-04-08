@@ -15,6 +15,12 @@
     opacity: .6;
   }
 
+  &.no-opacity {
+    &.skeleton {
+      opacity: 1;
+    }
+  }
+
   &:not(.square) {
     padding: calc((100% / 2) * 1.4) calc(100% / 2);
 

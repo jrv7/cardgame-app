@@ -4,10 +4,15 @@ import {ImageCollection} from "~/composables/entity/ImageCollection";
 
 
 export class CardController {
-  private readonly Card:CardInterface;
+  private Card:CardInterface;
 
-  constructor(card:CardInterface) {
-    this.Card = card;
+  constructor(card:CardInterface|null) {
+    if (null !== card) {
+      this.Card = card;
+    }
+  }
+  setCard(value:CardInterface):void {
+    this.Card = value;
   }
   getCard():CardInterface {
     return this.Card;

@@ -27,7 +27,7 @@ export const fetchCardList = async (localDb, requestBody, headers, localDbCards 
           const cardList = response.data.results.map(i => i.id);
           useApiPost('/cards/build-cache', {page: 1, pageSize: cardList.length, cardList: cardList}, headers);
 
-          if ((response.data.page) < 5 && (response.data.page < response.data.pages)) {
+          if ((response.data.page) < 20 && (response.data.page < response.data.pages)) {
             let new_requestBody = JSON.parse(JSON.stringify(_requestBody));
             new_requestBody.page = (_requestBody.page + 1);
             fetchCardList(localDb, new_requestBody, headers);

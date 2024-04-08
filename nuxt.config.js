@@ -106,6 +106,8 @@ export default defineNuxtConfig({
     '@/assets/scss/components/common/mtg/app-mtg--mana-bar-buttons.scss',
     '@/assets/scss/components/common/mtg/app-mtg--deck-builder.scss',
     '@/assets/scss/components/common/mtg/app-mtg-mana-cost-translator.scss',
+    '@/assets/scss/components/common/mtg/game/app-mtg-game--draw.scss',
+    '@/assets/scss/components/common/mtg/app-mtg-library.scss',
     // Pages
     '@/assets/scss/components/pages/app-page--cards-list.scss',
     '@/assets/scss/components/pages/app-mtg--deck-list.scss',

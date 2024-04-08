@@ -172,5 +172,7 @@
   "decks": "decks",
   "decks_list_description": "decks_list_description",
   "colors": "colors",
-  "identity": "identity"
+  "identity": "identity",
+  "players": "players",
+  "ready_players": "ready players"
 }

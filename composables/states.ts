@@ -1,6 +1,8 @@
 
 
 export const useGlobalState = () => useState(() => {
+  let dragTrigger:any = null;
+
   return {
     useMemoryDatabases: true,
     loading: false,
@@ -11,7 +13,10 @@ export const useGlobalState = () => useState(() => {
     scrollingLocked: 0,
     blurReactiveComponents: [],
     missingTranslations: [],
-    mtgManaSymbolsCollection: []
+    mtgManaSymbolsCollection: [],
+    isDragging: false,
+    draggingTrigger: dragTrigger,
+    draggableElement: null
   }
 });
 export const useMtgState = () => useState(() => {

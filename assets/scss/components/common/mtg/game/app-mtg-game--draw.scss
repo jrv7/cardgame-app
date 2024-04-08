@@ -1,0 +1,124 @@
+
+
+
+
+.app-mtg-game--draw {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0009;
+  overflow: auto;
+  z-index: 100;
+
+  & > .card-drawer {
+    position: absolute;
+    display: flex;
+    top: calc(50% - 64px);
+    left: calc(50% - 60px);
+    transform: translate(-50%, -50%);
+    width: calc(100% - 320px);
+    padding: 0;
+    margin: 0;
+    z-index: 1;
+
+    & > .deck-drawer {
+      position: relative;
+      display: none;
+      width: 240px;
+      min-width: 240px;
+      max-width: 240px;
+      padding: 64px;
+      border: 2px solid #000;
+      background-color: #0009;
+      border-radius: 8px;
+      margin-right: 32px;
+      box-shadow: 0 0 4px -1px #fff;
+    }
+
+    & > .cards-carousel {
+      position: relative;
+      display: flex;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      z-index: 1;
+
+      & > li {
+        position: relative;
+        display: flex;
+        width: calc(100% / 7);
+        min-width: calc(100% / 7);
+        max-width: calc(100% / 7);
+        transition: all .3s ease-in-out;
+
+        & > .app-mtg-card-id-holder {
+          position: relative;
+          display: flex;
+          width: 320px;
+          min-width: 320px;
+          max-width: 320px;
+          top: 0;
+          left: 0;
+          transition: all .3s ease-in-out;
+        }
+
+        // &:hover {
+        &.hovered {
+          // transform: translate(-50%, calc(-50% + 164px));
+          z-index: 20 !important;
+
+          & > .app-mtg-card-id-holder {
+            top: -52px;
+            left: -52px;
+          }
+        }
+      }
+    }
+
+    &.show-library {
+      & > .deck-drawer {
+        display: flex;
+      }
+      & > .cards-carousel {
+        width: calc(100% - 380px - 32px);
+      }
+    }
+  }
+
+  & > .mulligan-choices {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    & > .return-alert, & > .mulligans-left-alert {
+      position: relative;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    & > .mulligans-left-alert {
+      margin-bottom: 8px;
+    }
+
+    & > .mulligan-choice-options {
+      position: relative;
+      display: flex;
+
+      & > li {
+        position: relative;
+        display: flex;
+        width: 220px;
+
+        &:first-of-type {
+          margin-right: 24px;
+        }
+      }
+    }
+  }
+}

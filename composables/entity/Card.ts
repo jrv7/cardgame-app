@@ -7,6 +7,7 @@ import {ImageCollection} from "~/composables/entity/ImageCollection";
 
 export class Card implements CardInterface {
   private id: number = 0;
+  private cardHash:string = '';
   private uniqueCardId: number = 0;
   private uniqueCardCode: string = '';
   private cardId: string | null = null;
@@ -40,6 +41,7 @@ export class Card implements CardInterface {
 
   private columns: {}[] = [
     'id',
+    'cardHash',
     'uniqueCardId',
     'uniqueCardCode',
     'cardId',
@@ -83,6 +85,8 @@ export class Card implements CardInterface {
       } else {
         // id: number;
         this.setId(cloneFrom.getId());
+        // cardHash: number;
+        this.setCardHash(cloneFrom.getCardHash());
         // uniqueCardId: number;
         this.setUniqueCardId(cloneFrom.getUniqueCardId());
         // uniqueCardCode: string;
@@ -155,6 +159,14 @@ export class Card implements CardInterface {
   }
   setId(value: number): CardInterface {
     this.id = value;
+    return this;
+  }
+  // 'cardHash',
+  getCardHash():string {
+    return this.cardHash;
+  }
+  setCardHash(value:string): CardInterface {
+    this.cardHash = value;
     return this;
   }
   // 'uniqueCardId',
@@ -454,6 +466,7 @@ export class Card implements CardInterface {
   getData(column?:string) {
     let dataObj:CardType = {
       id: this.getId(),
+      cardHash: this.getCardHash(),
       uniqueCardId: this.getUniqueCardId(),
       uniqueCardCode: this.getUniqueCardCode(),
       cardId: this.getCardId(),
@@ -496,6 +509,8 @@ export class Card implements CardInterface {
   transformFromObject(object: CardType | CardInterface): CardInterface {
     // id: number;
     this.setId(object.id);
+    // cardHash:string;
+    this.setCardHash(object.cardHash);
     // uniqueCardId: number;
     this.setUniqueCardId(object.uniqueCardId);
     // uniqueCardCode: string;

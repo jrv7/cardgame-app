@@ -7,6 +7,7 @@ export type self = CardInterface;
 
 export type CardType = {
     id: number,
+    cardHash:string,
     uniqueCardId: number,
     uniqueCardCode: string,
     cardId:string|null,
@@ -32,15 +33,16 @@ export type CardType = {
     artist:string|null,
     colors:string[]|null,
     identityColors:string[]|null,
-    supertypes:string[]|null,
-    types:string[]|null,
-    subtypes:string[]|null,
+    supertypes: { name:string }[]|null,
+    types: { name:string }[]|null,
+    subtypes: { name:string }[]|null,
     collectionSets:CollectionSet[]|null,
     imageCollection:ImageCollection[]|null
 };
 
 export interface CardInterface extends EntityInterface {
     id: number;
+    cardHash:string;
     uniqueCardId: number;
     uniqueCardCode: string;
     cardId:string|null;
@@ -75,6 +77,9 @@ export interface CardInterface extends EntityInterface {
     // id: number;
     getId(): number;
     setId(value: number): self;
+    // id: number;
+    getCardHash():string;
+    setCardHash(value:string): self;
     // uniqueCardId: number;
     getUniqueCardId(): number;
     setUniqueCardId(value: number): self;

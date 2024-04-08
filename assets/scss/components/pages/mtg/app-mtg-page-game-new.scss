@@ -12,12 +12,22 @@
   & > .player-list {
     position: absolute;
     top: 0;
-    right: 0;
-    width: 320px;
-    height: calc(100% - 48px);
-    padding-top: 48px;
     overflow-y: auto;
-    background-color: #0009;
+
+    &.available-players {
+      left: 0;
+      width: 320px;
+      height: calc(100% - 48px);
+      padding-top: 48px;
+      background-color: #fff9;
+    }
+
+    &.ready-players {
+      right: 0;
+      width: 320px;
+      height: calc(100% - 48px - 52px);
+      padding-top: 48px;
+    }
 
     & > .header {
       position: absolute;
@@ -36,6 +46,12 @@
       bottom: 0;
       overflow: hidden;
 
+      &.current-player {
+        padding: 2px 0;
+        background-color: #fff2;
+        box-shadow: 0 0 4px -1px #fff;
+      }
+
       & > .img {
         position: relative;
         width: 52px;
@@ -53,7 +69,7 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        width: calc(100% - 52px);
+        width: calc(100% - 52px - 52px);
 
         & > .name {
           position: relative;
@@ -70,6 +86,34 @@
           opacity: .6;
         }
       }
+
+      & > .deck {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 52px;
+        height: 52px;
+        overflow: hidden;
+        border-radius: 50%;
+        box-shadow: 0 0 12px -4px #fff9;
+
+        & > img {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 100%;
+          transform: translate(-50%, -50%);
+        }
+      }
     }
+  }
+
+  & > .actions {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: calc(320px - 48px);
+    height: 52px;
+    padding: 0 24px;
   }
 }

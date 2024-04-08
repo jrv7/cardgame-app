@@ -4,6 +4,25 @@ export const useStateHandler = () => {
   const globalState = useGlobalState();
 
   return {
+    setDraggableItem: (value) => {
+      clearTimeout(globalState.value.draggingTrigger);
+      globalState.value.draggableElement = value.target.getAttribute('draggable-item-id');
+    },
+    unsetDraggableItem: () => {
+      if (globalState.value.isDragging) {
+        globalState.value.draggingTrigger = setTimeout(() => {
+          globalState.value.draggableElement = null;
+          globalState.value.draggingTrigger = null;
+          clearTimeout(globalState.value.draggingTrigger);
+        }, 2000)
+      } else {
+        globalState.value.draggingTrigger = setTimeout(() => {
+          globalState.value.draggableElement = null;
+          globalState.value.draggingTrigger = null;
+          clearTimeout(globalState.value.draggingTrigger);
+        }, 100)
+      }
+    },
     disableMemoryDatabase: async () => {
       const memoryDbSettingCookie = useCookie('memdb');
       memoryDbSettingCookie.value = false;
