@@ -344,29 +344,33 @@ onNuxtReady(async () => {
   <div class="app-mtg--deck-list" v-if="ready">
     <div class="g-row">
       <div class="g-col --span-24">
-        <app-table-header-actions
-            v-model:filter="filters"
-            v-model:string-search="parsedSearchText"
-            :has-filters="!!parseHasFilters"
-            title="Cards"
-            hide-advanced-filters
-            @reset-filters="handleResetFilters()"
-        >
-          <template #first-slot>
-            <ul class="filter-group">
-              <li>
-                <app-mtg-mana-bar
-                    ref="manaBarRef"
-                    v-model="parsedFilteredMana"
-                    v-model:filterSource="parseColorFilterTypeFilter"
-                    v-model:color-match="parsedColorMatchFilter"
-                    v-model:borderless="parsedBorderlessFilter"
-                    v-model:lands-only="parsedLandsOnlyFilter"
-                />
-              </li>
-            </ul>
-          </template>
-        </app-table-header-actions>
+        <div class="card-12-nm bg-color-black-mute border-radius-6">
+
+          <app-table-header-actions
+              v-model:filter="filters"
+              v-model:string-search="parsedSearchText"
+              :has-filters="!!parseHasFilters"
+              title="Cards"
+              hide-advanced-filters
+              @reset-filters="handleResetFilters()"
+          >
+            <template #first-slot>
+              <ul class="filter-group">
+                <li>
+                  <app-mtg-mana-bar
+                      ref="manaBarRef"
+                      v-model="parsedFilteredMana"
+                      v-model:filterSource="parseColorFilterTypeFilter"
+                      v-model:color-match="parsedColorMatchFilter"
+                      v-model:borderless="parsedBorderlessFilter"
+                      v-model:lands-only="parsedLandsOnlyFilter"
+                  />
+                </li>
+              </ul>
+            </template>
+          </app-table-header-actions>
+
+        </div>
       </div>
     </div>
     <div class="g-row">
@@ -399,6 +403,9 @@ onNuxtReady(async () => {
                   :deck="itemData"
                   @click="openDeckViewModal(itemData)"
               />
+            </template>
+            <template #app-list-item-skeleton>
+              <p>No Decks</p>
             </template>
           </app-list>
         </app-table-core>

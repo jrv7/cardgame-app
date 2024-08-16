@@ -30,7 +30,7 @@ body {
   letter-spacing: .02rem;
   line-height: 1.32rem;
   //background-color: var(--c-cardgame-light-grey);
-  background-color: #000;
+  background-color: var(--app-white-mute) !important;
   z-index: 1;
 
   .main-system {

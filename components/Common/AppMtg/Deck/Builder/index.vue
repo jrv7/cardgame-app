@@ -15,7 +15,7 @@ const props = withDefaults(
 );
 
 const ready = ref(false);
-const DeckCards:CardInterface[] = ref([]) as CardInterface[];
+const DeckCards: { card: CardInterface, quantity: number }[] = ref([]) as { card: CardInterface, quantity: number }[];
 const originalFilters = ref({
   simpleSearch: [],
   stringSearch: null,
@@ -32,12 +32,21 @@ const originalFilters = ref({
 });
 const filters = ref(useNuxtApp().$deepClone(originalFilters.value));
 
+const parsedDeckLength = computed(() => {
+  let countCards = 1;
+
+  DeckCards.value.forEach((dCard:any) => {
+    countCards += (dCard.quantity ?? 1);
+  })
+  return countCards;
+})
+
 const defaultColors = computed(() => {
   return mtgState.value.colors;
 });
 
 const cardInDeck = (card) => {
-  return !!DeckCards.value.find(i => i.getId() === card.getId());
+  return !!DeckCards.value.find(i => i.card.getId() === card.getId());
 }
 
 const addCardToDeck = async  (card:CardInterface) => {
@@ -45,6 +54,14 @@ const addCardToDeck = async  (card:CardInterface) => {
       .then((addResp) => {
         fetchDeckList()
       })
+}
+
+const removeCardFromDeck = async  (card:CardInterface) => {
+  await useDynamicPost(`/decks/${props.deck.getId()}/cards/remove/${card.getId()}`, {})
+      .then((addResp) => {
+        fetchDeckList()
+      })
+
 }
 
 const showCardDetails = (card) => {
@@ -58,7 +75,10 @@ const fetchDeckList = async () => {
           if (success) {
             if (data.length) {
               DeckCards.value = data.map(i => {
-                return new Card(i.card);
+                return {
+                  card: new Card(i.card),
+                  quantity: i.quantity
+                }
               })
             }
 
@@ -88,8 +108,10 @@ onBeforeMount(async () => {
           ref="mtgCardListRef"
           :prefilter-colors="[...deck?.getPrimaryCard()?.getColors(), ...defaultColors.filter(i => i.code === '{C}')]"
           horizontal-scroll
+          :deck="deck"
           :list-size="8"
           :page-size="24"
+          class="margin-top-12"
       >
         <template
             #indicator="{card}"
@@ -110,6 +132,15 @@ onBeforeMount(async () => {
               </app-button>
             </li>
             <li class="spacer" />
+            <li>
+              <app-button
+                  type="danger"
+                  size="xs"
+                  @click="removeCardFromDeck(card)"
+              >
+                <fa-icon :icon="['fas', 'minus']" />
+              </app-button>
+            </li>
             <li>
               <app-button
                   type="primary"
@@ -137,19 +168,19 @@ onBeforeMount(async () => {
             <template #details="{card}">
               <div class="deck-details">
                 <span class="cards-count">
-                  <span class="count">{{ DeckCards.length }}</span>
+                  <span class="count">{{ parsedDeckLength }}</span>
                    <span class="total">100</span>
                 </span>
               </div>
             </template>
           </app-mtg-card-header>
         </li>
-        <template v-for="(card, index) in DeckCards" :key="`deck-card-${card.getId()}`">
+        <template v-for="(deckCard, index) in DeckCards" :key="`deck-card-${deckCard.card.getId()}`">
           <li
               class="deck-card"
-              :class="{'commander': deck.getPrimaryCard()?.getId() == card.getId()}"
+              :class="{'commander': deck.getPrimaryCard()?.getId() == deckCard.card.getId()}"
           >
-            <app-mtg-card-header :card="card" />
+            <app-mtg-card-header :card="deckCard.card" :quantity="deckCard.quantity" />
           </li>
         </template>
       </ul>

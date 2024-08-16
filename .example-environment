@@ -1,4 +1,4 @@
 ENVIRONMENT=development
 APP_NAME="Cardgame"
-APP_BASE_URI="http://sapp.cardgame.development.local"
-API_BASE_URL="http://sapi.cardgame.development.local/api"
+APP_BASE_URI="http://sapp.card-game.local"
+API_BASE_URL="http://sapi.card-game.local/api"

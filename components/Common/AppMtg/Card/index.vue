@@ -25,6 +25,11 @@ const ready = ref(false);
 
 const setImages:any = ref([]) as any;
 
+const showBacksideImage = ref(false);
+const toggleBacksideImage = () => {
+  showBacksideImage.value = !showBacksideImage.value;
+}
+
 const parseCardImage = computed(() => {
   if (!props.card?.getImageUrl()) {
     return '~/assets/images/backgrounds/mtg-card-default-background.png';
@@ -40,7 +45,7 @@ const parseCardImage = computed(() => {
     return props.card.getArtImageUrl() ?? props.card.getImageUrl();
   }
 
-  return props.card.getImageUrl();
+  return showBacksideImage.value ? (props.card.getBacksideImageUrl() ?? props.card.getImageUrl()) : props.card.getImageUrl();
 });
 
 const fetchColorsFromArray = (arr:string[]) => {
@@ -120,6 +125,19 @@ const handleClickOnCard = () => {
   emit('click');
 }
 
+const alterationsTrigger:any = ref(null);
+const keepAlterations = () => {
+  clearTimeout(alterationsTrigger.value);
+  alterationsTrigger.value = null;
+}
+const disableAlterations = () => {
+  alterationsTrigger.value = setTimeout(() => {
+    showBacksideImage.value = false
+    clearTimeout(alterationsTrigger.value);
+    alterationsTrigger.value = null;
+  }, 1000)
+}
+
 onNuxtReady(async () => {
   await new Promise((resolve) => {
     ready.value = true;
@@ -133,6 +151,8 @@ onNuxtReady(async () => {
       class="mtg-card"
       :class="[{'square': square}, `card-color-${parsedColorFromCost}`]"
       :style="{'background-image': `url(${parseCardImage})`}"
+      @mouseenter="keepAlterations()"
+      @mouseleave="disableAlterations()"
   >
     <div class="card-image">
       <img
@@ -140,7 +160,22 @@ onNuxtReady(async () => {
           :alt="card.getName()"
           @error="$event.target.src=fallbackImageUrl"
       >
+      <img
+          v-if="card.backsideImageUrl"
+          class="hidden-backside-image"
+          :src="card.backsideImageUrl"
+          :alt="card.getName()"
+          @error="$event.target.src=fallbackImageUrl"
+      >
     </div>
+
+    <button
+        v-if="card.backsideImageUrl"
+        class="flip-button"
+        @click="toggleBacksideImage()"
+    >
+      <fa-icon :icon="['fas', 'repeat']" />
+    </button>
 
     <slot name="actions" :card="card" v-if="!hideAction">
       <div class="actions-slot">

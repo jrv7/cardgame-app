@@ -1,0 +1,266 @@
+
+:root {
+  --app-white: #fff;
+  --app-white-soft: #f8f8f8;
+  --app-white-mute: #f2f2f2;
+
+  --app-black: #181818;
+  --app-black-soft: #222222;
+  --app-black-mute: #282828;
+
+  --app-red: #dc3545;//
+  --app-red-10: #fcebec;//
+  --app-red-20: #f8d7da;//
+  --app-red-30: #f5c2c7;//
+  --app-red-40: #f1aeb5;//
+  --app-red-50: #ee9aa2;//
+  --app-red-60: #ea868f;//
+  --app-red-70: #e7727d;//
+  --app-red-80: #e35d6a;//
+  --app-red-90: #e04958;//
+  --app-red-900: #160507;//
+  --app-red-800: #2c0b0e;//
+  --app-red-700: #421015;//
+  --app-red-600: #58151c;//
+  --app-red-500: #6e1b23;//
+  --app-red-400: #842029;//
+  --app-red-300: #9a2530;//
+  --app-red-200: #b02a37;//
+  --app-red-100: #c6303e;//
+
+  --app-orange: #fd7e14;//
+  --app-orange-10: #fff2e8;
+  --app-orange-20: #ffe5d0;
+  --app-orange-30: #fed8b9;
+  --app-orange-40: #fecba1;
+  --app-orange-50: #febf8a;
+  --app-orange-60: #feb272;
+  --app-orange-70: #fea55b;
+  --app-orange-80: #fd9843;
+  --app-orange-90: #fd8b2c;
+  --app-orange-100: #e47112;
+  --app-orange-200: #ca6510;
+  --app-orange-300: #b1580e;
+  --app-orange-400: #984c0c;
+  --app-orange-500: #7f3f0a;
+  --app-orange-600: #653208;
+  --app-orange-700: #4c2606;
+  --app-orange-800: #331904;
+  --app-orange-900: #190d02;
+
+  --app-yellow: #ffc107;
+  --app-yellow-10: #fff9e6;
+  --app-yellow-20: #fff3cd;
+  --app-yellow-30: #ffecb5;
+  --app-yellow-40: #ffe69c;
+  --app-yellow-50: #ffe083;
+  --app-yellow-60: #ffda6a;
+  --app-yellow-70: #ffd451;
+  --app-yellow-80: #ffcd39;
+  --app-yellow-90: #ffc720;
+  --app-yellow-100: #e6ae06;
+  --app-yellow-200: #cc9a06;
+  --app-yellow-300: #b38705;
+  --app-yellow-400: #997404;
+  --app-yellow-500: #806104;
+  --app-yellow-600: #664d03;
+  --app-yellow-700: #4c3a02;
+  --app-yellow-800: #332701;
+  --app-yellow-900: #191301;
+
+  --app-pink: #d63384;
+  --app-pink-10: #fbebf3;
+  --app-pink-20: #f7d6e6;
+  --app-pink-30: #f3c2da;
+  --app-pink-40: #efadce;
+  --app-pink-50: #eb99c2;
+  --app-pink-60: #e685b5;
+  --app-pink-70: #e270a9;
+  --app-pink-80: #de5c9d;
+  --app-pink-90: #da4790;
+  --app-pink-100: #c12e77;
+  --app-pink-200: #ab296a;
+  --app-pink-300: #96245c;
+  --app-pink-400: #801f4f;
+  --app-pink-500: #6b1a42;
+  --app-pink-600: #561435;
+  --app-pink-700: #400f28;
+  --app-pink-800: #2b0a1a;
+  --app-pink-900: #15050d;
+
+  --app-green: #198754;
+  --app-green-10: #e8f3ee;
+  --app-green-20: #d1e7dd;
+  --app-green-30: #badbcc;
+  --app-green-40: #a3cfbb;
+  --app-green-50: #8cc3aa;
+  --app-green-60: #75b798;
+  --app-green-70: #5eab87;
+  --app-green-80: #479f76;
+  --app-green-90: #309365;
+  --app-green-100: #177a4c;
+  --app-green-200: #146c43;
+  --app-green-300: #125f3b;
+  --app-green-400: #0f5132;
+  --app-green-500: #0d442a;
+  --app-green-600: #0a3622;
+  --app-green-700: #072819;
+  --app-green-800: #051b11;
+  --app-green-900: #020d08;
+
+  --app-teal: #20c997;
+  --app-teal-10: #e9faf5;
+  --app-teal-20: #d2f4ea;
+  --app-teal-30: #bcefe0;
+  --app-teal-40: #a6e9d5;
+  --app-teal-50: #90e4cb;
+  --app-teal-60: #79dfc1;
+  --app-teal-70: #63d9b6;
+  --app-teal-80: #4dd4ac;
+  --app-teal-90: #36cea1;
+  --app-teal-100: #1db588;
+  --app-teal-200: #1aa179;
+  --app-teal-300: #168d6a;
+  --app-teal-400: #13795b;
+  --app-teal-500: #10654c;
+  --app-teal-600: #0d503c;
+  --app-teal-700: #0a3c2d;
+  --app-teal-800: #06281e;
+  --app-teal-900: #03140f;
+
+  --app-blue: #0d6efd;
+  --app-blue-10: #e7f1ff;
+  --app-blue-20: #cfe2ff;
+  --app-blue-30: #b6d4fe;
+  --app-blue-40: #9ec5fe;
+  --app-blue-50: #86b7fe;
+  --app-blue-60: #6ea8fe;
+  --app-blue-70: #569afe;
+  --app-blue-80: #3d8bfd;
+  --app-blue-90: #257dfd;
+  --app-blue-100: #0c63e4;
+  --app-blue-200: #0a58ca;
+  --app-blue-300: #094db1;
+  --app-blue-400: #084298;
+  --app-blue-500: #07377f;
+  --app-blue-600: #052c65;
+  --app-blue-700: #04214c;
+  --app-blue-800: #031633;
+  --app-blue-900: #010b19;
+
+  --app-indigo: #6610f2;
+  --app-indigo-10: #f0e7fe;
+  --app-indigo-20: #e0cffc;
+  --app-indigo-30: #d1b7fb;
+  --app-indigo-40: #c29ffa;
+  --app-indigo-50: #b388f9;
+  --app-indigo-60: #a370f7;
+  --app-indigo-70: #9458f6;
+  --app-indigo-80: #8540f5;
+  --app-indigo-90: #7528f3;
+  --app-indigo-100: #5c0eda;
+  --app-indigo-200: #520dc2;
+  --app-indigo-300: #470ba9;
+  --app-indigo-400: #3d0a91;
+  --app-indigo-500: #330879;
+  --app-indigo-600: #290661;
+  --app-indigo-700: #1f0549;
+  --app-indigo-800: #140330;
+  --app-indigo-900: #0a0218;
+
+  --app-purple: #6f42c1;
+  --app-purple-10: #f1ecf9;
+  --app-purple-20: #e2d9f3;
+  --app-purple-30: #d4c6ec;
+  --app-purple-40: #c5b3e6;
+  --app-purple-50: #b7a1e0;
+  --app-purple-60: #a98eda;
+  --app-purple-70: #9a7bd4;
+  --app-purple-80: #8c68cd;
+  --app-purple-90: #7d55c7;
+  --app-purple-100: #643bae;
+  --app-purple-200: #59359a;
+  --app-purple-300: #4e2e87;
+  --app-purple-400: #432874;
+  --app-purple-500: #382161;
+  --app-purple-600: #2c1a4d;
+  --app-purple-700: #21143a;
+  --app-purple-800: #160d27;
+  --app-purple-900: #0b0713;
+
+  --app-cyan: #0dcaf0;
+  --app-cyan-10: #e7fafe;
+  --app-cyan-20: #cff4fc;
+  --app-cyan-30: #b6effb;
+  --app-cyan-40: #9eeaf9;
+  --app-cyan-50: #86e5f8;
+  --app-cyan-60: #6edff6;
+  --app-cyan-70: #56daf5;
+  --app-cyan-80: #3dd5f3;
+  --app-cyan-90: #25cff2;
+  --app-cyan-100: #0cb6d8;
+  --app-cyan-200: #0aa2c0;
+  --app-cyan-300: #098da8;
+  --app-cyan-400: #087990;
+  --app-cyan-500: #076578;
+  --app-cyan-600: #055160;
+  --app-cyan-700: #043d48;
+  --app-cyan-800: #032830;
+  --app-cyan-900: #011418;
+
+
+  --app-grey: #adb5bd;
+  --app-grey-10: #eef3f3;
+  --app-grey-20: #eff0f2;
+  --app-grey-30: #e6e9eb;
+  --app-grey-40: #dee1e5;
+  --app-grey-50: #d6dade;
+  --app-grey-60: #ced3d7;
+  --app-grey-70: #c6cbd1;
+  --app-grey-80: #bdc4ca;
+  --app-grey-90: #b5bcc4;
+  --app-grey-100: #9ca3aa;
+  --app-grey-200: #8a9197;
+  --app-grey-300: #797f84;
+  --app-grey-400: #686d71;
+  --app-grey-500: #575b5f;
+  --app-grey-600: #45484c;
+  --app-grey-700: #343639;
+  --app-grey-800: #232426;
+  --app-grey-900: #111213;
+}
+
+$colors: "blue", "cyan", "indigo", "purple", "red", "orange", "yellow", "pink", "green", "teal", "grey";
+
+@each $color in $colors {
+  .bg-color-#{$color} {
+    background-color: var(--app-#{$color});
+  }
+
+  @for $j from 1 through 9 {
+    .bg-color-#{$color}-#{$j*10} {
+      background-color: var(--app-#{$color}-#{$j*10});
+    }
+    .bg-color-#{$color}-#{$j*100} {
+      background-color: var(--app-#{$color}-#{$j*100});
+    }
+  }
+}
+
+$wbs: "white", "black";
+@each $wb in $wbs {
+  .bg-color-#{$wb} {
+    background-color: var(--app-#{$wb});
+  }
+
+  $shades: "soft", "mute";
+  @each $shade in $shades {
+    .bg-color-#{$wb}-#{$shade} {
+      background-color: var(--app-#{$wb}-#{$shade});
+    }
+  }
+}
+
+.bg-blurred {
+  backdrop-filter: blur(2px);
+}

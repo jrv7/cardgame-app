@@ -11,10 +11,12 @@ const props = withDefaults(
       small?:boolean,
       hasCrown?:boolean,
       hideCost?:boolean,
+      quantity?:number
     }>(), {
       small: false,
       hasCrown:false,
-      hideCost: false
+      hideCost: false,
+      quantity: 0
     }
 );
 
@@ -81,6 +83,7 @@ const parseCardColor = computed(() => {
         <div class="header-plate"></div>
         <div class="name-plate"></div>
         <div class="name">
+          <span v-if="quantity">{{ quantity }} x </span>
           <span>{{ card.getName() }}</span>
         </div>
         <div class="cost" v-show="!hideCost">

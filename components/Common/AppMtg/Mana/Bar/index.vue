@@ -33,7 +33,8 @@ const props = withDefaults(
 );
 
 const parsedManaMap = computed(() => {
-  return mtgState.value.colors
+  console.log('mtgState.value.colors', mtgState.value.colors);
+  return [...mtgState.value.colors, {id:100, code: '{C}', name: 'colorless', simpleCode: 'C', url: 'https://svgs.scryfall.io/card-symbols/C.svg'}]
 });
 
 const parseFilterSource = computed({
@@ -137,6 +138,20 @@ defineExpose({ retrieveManaMap });
           </app-button>
         </template>
       </li>
+
+<!--      <li-->
+<!--          class="mana-filter"-->
+<!--          :class="{'enabled': parseEnabledItems.includes('{C}')}"-->
+<!--      >-->
+<!--        <app-button-->
+<!--            type="link"-->
+<!--            size="xs-auto"-->
+<!--            :style="{'height': '18px !important', 'padding': '0', 'margin': 'auto'}"-->
+<!--            @click="handleClickManaFilter({code: '{C}', name: 'colorless'})"-->
+<!--        >-->
+<!--          <img :src="manaData('{C}')?.svg_uri" alt="colorless" style="height: 18px; margin: auto 0">-->
+<!--        </app-button>-->
+<!--      </li>-->
 
       <li
           class="mana-filter"

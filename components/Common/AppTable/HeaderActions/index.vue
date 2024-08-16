@@ -162,6 +162,9 @@ const handleFilters = () => {
             <fa-icon :icon="['fas', 'filter']" />
           </app-button>
         </li>
+        <li>
+          <slot name="last-slot"></slot>
+        </li>
       </ul>
     </slot>
   </div>

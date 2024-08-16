@@ -5,20 +5,6 @@
     flex-direction: column;
   }
 
-  .g-row {
-    position: relative;
-    display: flex;
-    flex-flow: nowrap;
-    width: 100%;
-  }
-
-  .g-col {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-
   .--width-px-52 {
     width: 52px;
     min-width: 52px;
@@ -81,4 +67,99 @@
   .--span-22 { width: calc((100% / 24) * 22) !important; }
   .--span-23 { width: calc((100% / 24) * 23) !important; }
   .--span-24 { width: calc((100% / 24) * 24) !important; }
+
+
+
+
+
+
+  .grid-defaults {
+    position: relative;
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+
+  .g-row {
+    @extend .grid-defaults;
+    flex-flow: nowrap !important;
+    width: 100%;
+  }
+
+  .grid-col-defaults {
+    @extend .grid-defaults;
+    flex-direction: column;
+    border: 1px solid #fff0;
+  }
+
+  .g-col {
+    @extend .grid-col-defaults;
+    width: 100% !important;
+  }
+
+  @for $i from 1 through 24 {
+    .g-col-#{$i} {
+      @extend .grid-col-defaults;
+      width: calc(((100% / 24) * #{$i}) - 2px) !important;
+    }
+  }
+
+  @for $i from 1 through 32 {
+    .padded-#{$i} {
+      width: calc(100% - (2 * #{$i}px));
+      padding: #{$i}px;
+    }
+    .padded-v-#{$i} {
+      width: calc(100% - (2 * #{$i}px));
+      padding-top: #{$i}px;
+      padding-bottom: #{$i}px;
+    }
+    .padded-h-#{$i} {
+      width: calc(100% - (2 * #{$i}px));
+      padding-left: #{$i}px;
+      padding-right: #{$i}px;
+    }
+    .padded-t-#{$i} {
+      width: calc(100% - #{$i}px);
+      padding-top: #{$i}px;
+    }
+    .padded-b-#{$i} {
+      width: calc(100% - #{$i}px);
+      padding-bottom: #{$i}px;
+    }
+    .padded-l-#{$i} {
+      width: calc(100% - #{$i}px);
+      padding-left: #{$i}px;
+    }
+    .padded-r-#{$i} {
+      width: calc(100% - #{$i}px);
+      padding-right: #{$i}px;
+    }
+  }
+
+  .scroll-x {
+    overflow-x: auto;
+  }
+
+  .accordion {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease-in-out;
+
+    &.open {
+
+      max-height: 100vh;
+    }
+  }
+
+  @for $i from 1 through 120 {
+    .width-#{$i} {
+      width: #{$i}px !important;
+    }
+    .height-#{$i} {
+      height: #{$i}px;
+      min-height: #{$i}px;
+    }
+  }
+
 }

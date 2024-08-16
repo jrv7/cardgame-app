@@ -7,6 +7,7 @@ import {CardInterface} from "~/composables/entity/CardInterface";
 import {Ref} from "preact/compat";
 import {AppTablePaginationType} from "~/composables/customTypes/AppTablePaginationType";
 import {SimpleButtonSizeType, SimpleButtonTypeType} from "~/composables/customTypes/SimpleButtonTypes";
+import {DeckInterface} from "~/composables/entity/DeckInterface";
 
 const route = useRoute();
 const mtgState = useMtgState();
@@ -23,14 +24,16 @@ const props = withDefaults(
       listSize?:number,
       pageSize?:number,
       infinite?:boolean,
-      horizontalScroll?:boolean
+      horizontalScroll?:boolean,
+      deck?:DeckInterface|null
     }>(), {
       prefilterColors: null,
       squareItems: false,
       listSize: 5,
-      pageSize: 25,
+      pageSize: 24,
       infinite: false,
-      horizontalScroll: false
+      horizontalScroll: false,
+      deck: null
     }
 );
 
@@ -45,6 +48,21 @@ const pagination:AppTablePaginationType = ref({
   from: 1,
   to:10
 }) as AppTablePaginationType;
+
+const customPageSize = computed(() => {
+  return pageSettings.value.list.listItemsPerRow * 5
+});// ref(parseInt(`${pagination.value.pageSize}`));
+
+const corePagination = computed({
+  get: () => {
+    let currentPag = JSON.parse(JSON.stringify(pagination.value));
+    currentPag.pageSize = customPageSize.value;
+    return currentPag;
+  },
+  set: (val) => {
+    pagination.value = val;
+  }
+})
 
 const pageSettings = ref({
   list: {
@@ -64,6 +82,7 @@ const listItemsPerRow = computed({
     clearTimeout(listReloadTrigger.value);
     listReloadTrigger.value = null;
     listReloadTrigger.value = setTimeout(() => {
+      TableCoreRef.value.reload();
       clearTimeout(listReloadTrigger.value);
       listReloadTrigger.value = null;
     }, 1200)
@@ -95,7 +114,8 @@ const originalFilters = ref({
   filterColorsIn: 'colors',
   colorMatch: 'any',
   borderless: false,
-  landsOnly: false
+  landsOnly: false,
+  filterByDeck: null
 });
 const filters = ref(useNuxtApp().$deepClone(originalFilters.value));
 const parsedFilters = computed({
@@ -291,6 +311,28 @@ const handleSelectAll = () => {
   console.log('Select all');
 }
 
+const toggleFilterByDeck = async () => {
+  if (!props.deck) return;
+
+  let currentFilters = useNuxtApp().$deepClone(filters.value);
+
+  if (currentFilters.filterByDeck) {
+    currentFilters.filterByDeck = null;
+  } else {
+    currentFilters.filterByDeck = props.deck!.getId()
+  }
+
+  parsedFilters.value = currentFilters;
+
+  clearTimeout(listReloadTrigger.value);
+  listReloadTrigger.value = null;
+  listReloadTrigger.value = setTimeout(() => {
+    TableCoreRef.value.reload();
+    clearTimeout(listReloadTrigger.value);
+    listReloadTrigger.value = null;
+  }, 600);
+}
+
 const openCardViewModal = (card, fromChild = false) => {
   const cardDetailsModal:AppModalType = modalHandler.getDefault();
   cardDetailsModal.title = `${useNuxtApp().$_Tt('card')}: ${card.name}`;
@@ -396,56 +438,73 @@ onNuxtReady(async () => {
   <div class="app-mtg--card-list" v-if="ready">
     <div class="g-row card-list-headers">
       <div class="g-col --span-24">
-        <app-table-header-actions
-            :filters-component="shallowRef(LazyPageCardFilters)"
-            v-model:filter="filters"
-            v-model:string-search="parsedSearchText"
-            :has-filters="!!parseHasFilters"
-            title="Cards"
-            @searched="handleSearch()"
-            @reset-filters="handleResetFilters()"
-        >
-          <template #first-slot>
-            <ul class="filter-group">
-              <li class="margin-right-8">
-                <app-button-group>
-                  <app-button
-                      type="secondary"
-                      size="sm"
-                      class="padding-h-12"
-                      :value="(((listItemsPerRow + 1) <= 10) ? (listItemsPerRow + 1) : 10)"
-                      v-model="listItemsPerRow"
-                      quick-click
-                  >
-                    <fa-icon :icon="['fas', 'magnifying-glass-minus']" />
-                  </app-button>
+        <div class="card-12-nm bg-color-black-mute border-radius-6">
 
-                  <app-button
-                      type="secondary"
-                      size="sm"
-                      class="padding-h-12"
-                      :value="(((listItemsPerRow - 1) > 0) ? (listItemsPerRow - 1) : 1)"
-                      v-model="listItemsPerRow"
-                      quick-click
-                  >
-                    <fa-icon :icon="['fas', 'magnifying-glass-plus']" />
-                  </app-button>
-                </app-button-group>
-              </li>
+          <app-table-header-actions
+              :filters-component="shallowRef(LazyPageCardFilters)"
+              v-model:filter="filters"
+              v-model:string-search="parsedSearchText"
+              :has-filters="!!parseHasFilters"
+              title="Cards"
+              @searched="handleSearch()"
+              @reset-filters="handleResetFilters()"
+          >
+            <template #first-slot>
+              <ul class="filter-group">
+                <li class="margin-right-8">
+                  <app-button-group>
+                    <app-button
+                        type="secondary"
+                        size="sm"
+                        class="padding-h-12"
+                        :value="(((listItemsPerRow + 1) <= 10) ? (listItemsPerRow + 1) : 10)"
+                        v-model="listItemsPerRow"
+                        quick-click
+                    >
+                      <fa-icon :icon="['fas', 'magnifying-glass-minus']" />
+                    </app-button>
 
-              <li>
-                <app-mtg-mana-bar
-                    ref="manaBarRef"
-                    v-model="parsedFilteredMana"
-                    v-model:filterSource="parseColorFilterTypeFilter"
-                    v-model:color-match="parsedColorMatchFilter"
-                    v-model:borderless="parsedBorderlessFilter"
-                    v-model:lands-only="parsedLandsOnlyFilter"
-                />
-              </li>
-            </ul>
-          </template>
-        </app-table-header-actions>
+                    <app-button
+                        type="secondary"
+                        size="sm"
+                        class="padding-h-12"
+                        :value="(((listItemsPerRow - 1) > 0) ? (listItemsPerRow - 1) : 1)"
+                        v-model="listItemsPerRow"
+                        quick-click
+                    >
+                      <fa-icon :icon="['fas', 'magnifying-glass-plus']" />
+                    </app-button>
+                  </app-button-group>
+                </li>
+
+                <li>
+                  <app-mtg-mana-bar
+                      ref="manaBarRef"
+                      v-model="parsedFilteredMana"
+                      v-model:filterSource="parseColorFilterTypeFilter"
+                      v-model:color-match="parsedColorMatchFilter"
+                      v-model:borderless="parsedBorderlessFilter"
+                      v-model:lands-only="parsedLandsOnlyFilter"
+                  />
+                </li>
+              </ul>
+            </template>
+
+            <template #last-slot>
+              <div class="margin-left-8">
+                <app-button
+                    :type="filters.filterByDeck ? 'primary' : 'secondary'"
+                    size="sm"
+                    class="padding-h-12"
+                    @click="toggleFilterByDeck()"
+                >
+                  view deck list
+                </app-button>
+              </div>
+            </template>
+          </app-table-header-actions>
+
+        </div>
       </div>
     </div>
 
@@ -457,7 +516,7 @@ onNuxtReady(async () => {
             :Entity="Card"
             :infinite="infinite"
             v-model:data="tableData"
-            v-model:pagination="pagination"
+            v-model:pagination="corePagination"
             v-model:loading="parseIsLoading"
             v-model:filters="parsedFilters"
             :primary-column="parsePrimaryColumn"
@@ -496,9 +555,7 @@ onNuxtReady(async () => {
               </app-mtg-card>
             </template>
             <template #app-list-item-skeleton>
-              <app-mtg-card-skeleton
-              >
-              </app-mtg-card-skeleton>
+              <p>No cards</p>
             </template>
           </app-list>
         </app-table-core>

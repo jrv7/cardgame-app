@@ -1,0 +1,23 @@
+:root {
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #fff0;
+  }
+
+  @for $i from 1 through 32 {
+    .card-#{$i} {
+      @extend .card;
+      width: calc((100% - (4 * #{$i}px)) - 2px);
+      margin: #{$i}px;
+      padding: #{$i}px;
+    }
+    .card-#{$i}-nm {
+      @extend .card;
+      width: calc((100% - (2 * #{$i}px)) - 2px);
+      padding: #{$i}px;
+    }
+  }
+}

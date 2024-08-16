@@ -24,6 +24,7 @@ export class Card implements CardInterface {
   private type: string | null = null;
   private latestImageUrl: string | null = null;
   private imageUrl: string | null = null;
+  private backsideImageUrl: string | null = null;
   private artImageUrl: string | null = null;
   private oracleText: string | null = null;
   private originalText: string | null = null;
@@ -58,6 +59,7 @@ export class Card implements CardInterface {
     'type',
     'latestImageUrl',
     'imageUrl',
+    'backsideImageUrl',
     'artImageUrl',
     'oracleText',
     'originalText',
@@ -119,6 +121,8 @@ export class Card implements CardInterface {
         this.setLatestImageUrl(cloneFrom.getLatestImageUrl());
         // imageUrl:string|null;
         this.setImageUrl(cloneFrom.getImageUrl());
+        // imageUrl:string|null;
+        this.setBacksideImageUrl(cloneFrom.getBacksideImageUrl());
         // artImageUrl:string|null;
         this.setArtImageUrl(cloneFrom.getArtImageUrl());
         // oracleText:string|null;
@@ -298,6 +302,15 @@ export class Card implements CardInterface {
     this.imageUrl = value;
     return this;
   }
+  // 'imageUrl',
+  getBacksideImageUrl():string|null {
+    return this.backsideImageUrl;
+  }
+  setBacksideImageUrl(value:string|null): CardInterface {
+    this.backsideImageUrl = value;
+    return this;
+  }
+
   // 'artImageUrl',
   getArtImageUrl():string|null {
     return this.artImageUrl;
@@ -484,6 +497,7 @@ export class Card implements CardInterface {
       latestImageUrl: this.getLatestImageUrl(),
       artImageUrl: this.getArtImageUrl(),
       imageUrl: this.getImageUrl(),
+      backsideImageUrl: this.getBacksideImageUrl(),
       oracleText: this.getOracleText(),
       originalText: this.getOriginalText(),
       originalType: this.getOriginalType(),
@@ -543,6 +557,8 @@ export class Card implements CardInterface {
     this.setLatestImageUrl(object.latestImageUrl);
     // imageUrl:string|null;
     this.setImageUrl(object.imageUrl);
+    // imageUrl:string|null;
+    this.setBacksideImageUrl(object.backsideImageUrl);
     // artImageUrl:string|null;
     this.setArtImageUrl(object.artImageUrl);
     // oracleText:string|null;

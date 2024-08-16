@@ -15,6 +15,29 @@
     opacity: .6;
   }
 
+  & > .flip-button {
+    position: absolute;
+    bottom: 32px;
+    right: 0;
+    // transform: translate(-50%, -50%);
+    background-color: #ff9;
+    border: none;
+    border-top-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    width: 42px;
+    height: 42px;
+    opacity: .4;
+    z-index: 100;
+    transition: all .3s ease-in-out;
+    cursor: pointer !important;
+  }
+
+  &:hover {
+    & > .flip-button {
+      opacity: .8;
+    }
+  }
+
   &.no-opacity {
     &.skeleton {
       opacity: 1;
@@ -46,6 +69,15 @@
         display: flex;
         width: calc(100% + 8px);
         background-color: #000;
+      }
+
+      & > .hidden-backside-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        width: 1px;
+        opacity: 0;
       }
 
       & > svg {
