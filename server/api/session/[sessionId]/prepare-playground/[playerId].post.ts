@@ -2,7 +2,7 @@ import {useApiPost} from "~/composables/useApiFetch";
 
 const prepareSessionOnBack = async (sessionId, playerId, requestBody, headers) => {
   return new Promise((resolve, reject) => {
-    useApiPost(`/session/${sessionId}/prepare-player/${playerId}`, requestBody, headers)
+    useApiPost(`/session/${sessionId}/prepare-playground/${playerId}`, requestBody, headers)
       .then((response) => {
         resolve(response);
       })
@@ -83,7 +83,7 @@ export default defineEventHandler(async (event) => {
                         if (!currentSettings.playersGraveyards) {
                           currentSettings.playersGraveyards = [];
                         }
-                        currentSettings.playersGraveyards.push({playerId: playerId, graveyard: []});
+                        currentSettings.playersGraveyards.push({playerId: playerId, cards: []});
                       }
 
                       // Set exile
@@ -92,7 +92,7 @@ export default defineEventHandler(async (event) => {
                         if (!currentSettings.playersExiles) {
                           currentSettings.playersExiles = [];
                         }
-                        currentSettings.playersExiles.push({playerId: playerId, exile: []});
+                        currentSettings.playersExiles.push({playerId: playerId, cards: []});
                       }
 
                       // Set tables
@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
                         if (!currentSettings.playersTables) {
                           currentSettings.playersTables = [];
                         }
-                        currentSettings.playersTables.push({playerId: playerId, table: []});
+                        currentSettings.playersTables.push({playerId: playerId, cards: []});
                       }
 
                       gameDb.setItem(`settings`, currentSettings)

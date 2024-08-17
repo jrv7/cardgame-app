@@ -19,13 +19,6 @@ export const useGlobalState = () => useState(() => {
     draggableElement: null
   }
 });
-export const useMtgState = () => useState(() => {
-  return {
-    scryfallSymbols: [],
-    apiColors: [],
-    colors: []
-  }
-});
 export const useLoadingState = () => useState(() => {
   return {
     loading: false
@@ -65,4 +58,23 @@ export const useSettingsState = () => useState(() => {
 
 export const useModalState = () => useState(() => {
   return [];
+});
+export const useMtgState = () => useState(() => {
+  return {
+    scryfallSymbols: [],
+    apiColors: [],
+    colors: []
+  }
+});
+
+export const useGameState = () => useState(() => {
+  return {
+    started: false,
+    Session: null,
+    PlayerUid: null
+  } as {
+    started:boolean,
+    Session:any,
+    PlayerUid:string|null
+  }
 });

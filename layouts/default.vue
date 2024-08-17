@@ -26,21 +26,24 @@ onNuxtReady(async () => {
       globalState.value.useMemoryDatabases = memoryDbSettingCookie.value;
     }
 
-    useLocalApiPost('/settings', { setting: 'use-memory-databases', value: !!memoryDbSettingCookie.value })
-        .then(() => {
-          useDynamicPost('/scryfall/symbology')
-              .then((response) => {
-                if (response.data) {
-                  globalState.value.mtgManaSymbolsCollection = response.data;
-                }
+    isReady.value = true
 
-                console.log('Asking for MemDB destruction...');
-                useLocalApiPost('/gatekeeper/destroy')
-                    .then(() => {
-                      isReady.value = true
-                    })
-              })
-        })
+
+    // useLocalApiPost('/settings', { setting: 'use-memory-databases', value: !!memoryDbSettingCookie.value })
+    //     .then(() => {
+    //       useLocalApiPost('/scryfall/symbology')
+    //           .then((response) => {
+    //             if (response.data) {
+    //               globalState.value.mtgManaSymbolsCollection = response.data;
+    //             }
+    //
+    //             console.log('Asking for MemDB destruction...');
+    //             useLocalApiPost('/gatekeeper/destroy')
+    //                 .then(() => {
+    //                   isReady.value = true
+    //                 })
+    //           })
+    //     })
   })
 })
 </script>

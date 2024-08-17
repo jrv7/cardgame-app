@@ -18,56 +18,16 @@ export default defineEventHandler(async (event) => {
   let overlapTrigger:any = null;
 
   return new Promise((resolve, reject) => {
-    overlapTrigger = setInterval(() => {
-      gameDb.getItem(`updating`)
-        .then((isUpdating) => {
-          if (!isUpdating) {
-            gameDb.setItem(`updating`, true)
-              .then(() => {
-                clearInterval(overlapTrigger);
-
-                gameDb.getItem(`settings`)
-                  .then((response) => {
-                    if (response) {
-                      gameDb.setItem(`updating`, false)
-                        .then(() => {
-                          resolve(response);
-                        })
-                    } else {
-                      useApiPost(`/session/${sessionId}`, requestBody, headers)
-                        .then((sessionResponse) => {
-                          let sessionData = sessionResponse.data;
-
-                          if (!sessionData?.interactionCounter) {
-                            sessionData.interactionCounter = 1;
-                          }
-
-                          gameDb.setItem(`settings`, sessionData);
-                          resolve(sessionData);
-
-                          if (sessionResponse.cards?.length) {
-                            const preFetchCardsPagination = {
-                              page: 1,
-                              pageSize: 20,
-                              filters: {
-                                byIdList: sessionResponse.cards
-                              }
-                            }
-                            fetchCardList(localDbList, preFetchCardsPagination, headers);
-                          }
-                        })
-                        .catch((e) => {
-                          console.log('Could not resolve game session', e);
-                          reject(e);
-                        })
-                        .finally(() => {
-                          gameDb.setItem(`updating`, false);
-                        })
-                    }
-                  })
-              })
-          }
-        })
-    }, 1000)
+      useApiPost(`/session/${sessionId}`, requestBody, headers)
+          .then((sessionResponse) => {
+              resolve(sessionResponse);
+          })
+          .catch((e) => {
+              console.log('Could not resolve game session', e);
+              reject(e);
+          })
+          .finally(() => {
+              gameDb.setItem(`updating`, false);
+          })
   })
 })

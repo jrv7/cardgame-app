@@ -5,9 +5,7 @@ const emit = defineEmits(['update:session']);
 const props = withDefaults(
     defineProps<{
       gameUid:string,
-      session:GameSessionType|null
     }>(), {
-      session: null
     }
 );
 
@@ -33,7 +31,7 @@ const Observe = async () => {
 defineExpose({ Observe });
 
 onBeforeMount(async () => {
-  await Observe();
+  // await Observe();
 })
 </script>
 

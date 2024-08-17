@@ -53,7 +53,8 @@ const playersHeaderReady = new Card({id: 1, name: 'Ready to play', manaCost: '{W
 const isLoadingPlayers = ref(false);
 
 const handleGoToGame = async () => {
-  await router.push(`/game/${gameCookie.value}`);
+  const currentPlayer = playerReadyList.value.find((p:any) => p.player.id === myPlayerId.value)
+  await router.push(`/game/${gameCookie.value}/${currentPlayer.player.uid}`);
 }
 
 onBeforeMount(async () => {

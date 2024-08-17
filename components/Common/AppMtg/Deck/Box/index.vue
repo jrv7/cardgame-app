@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {DeckInterface} from "~/composables/entity/DeckInterface";
+import {DeckClass} from "~/composables/entity/Class/DeckClass";
 
 const emit = defineEmits(['click']);
 
 const props = withDefaults(
     defineProps<{
-      deck:DeckInterface,
+      deck:DeckClass,
       hideDescriptions?:boolean
     }>(),
     {
@@ -29,10 +29,9 @@ const handleOpenClose = () => {
   >
     <div class="deck-cards">
       <div class="front-card">
-        <template v-if="deck.getCoverCard()">
-
+        <template v-if="deck.coverCard">
+          <app-mtg-card :card="deck.coverCard" hide-descriptions />
         </template>
-        <app-mtg-card :card="deck.getCoverCard()!" hide-descriptions />
       </div>
       <div
           class="card-behind"

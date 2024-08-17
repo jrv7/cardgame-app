@@ -35,7 +35,7 @@ onNuxtReady(async () => {
 
     useLocalApiPost('/settings', { setting: 'use-memory-databases', value: !!memoryDbSettingCookie.value })
         .then(() => {
-          useDynamicPost('/scryfall/symbology')
+          useLocalApiPost('/scryfall/symbology')
               .then((response) => {
                 if (response.data) {
                   globalState.value.mtgManaSymbolsCollection = response.data;

@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   }
 
   return new Promise((resolve, reject) => {
-    useApiPost(`/session/${sessionId}/first-hand-draw/${playerId}`, requestBody, headers)
+    useApiPost(`/session/${sessionId}/shuffle/${playerId}`, requestBody, headers)
       .then((handResp) => {
         resolve(handResp);
       })

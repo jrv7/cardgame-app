@@ -1,26 +1,21 @@
 <script setup lang="ts">
 
-import {HashedCardType} from "~/composables/customTypes/GameSessionType";
-import {CardType} from "~/composables/entity/CardInterface";
+import {GameController} from "~/composables/entity/Controller/GameController";
+import {GamePlayerClass} from "~/composables/entity/Class/GamePlayerClass";
 
 const globalState = useGlobalState();
 
 const emit = defineEmits(['magic-played']);
-
-const props = withDefaults(
-    defineProps<{
-      deck:HashedCardType[],
-      battlefield:CardType[]
-    }>(), {
-
-    }
-);
 
 const setActiveDragDrawer = () => {
   if (globalState.value.draggableElement) {
     emit('magic-played', globalState.value.draggableElement);
   }
 }
+
+const deck = computed(() => {
+  return [];
+})
 </script>
 
 <template>
@@ -29,10 +24,6 @@ const setActiveDragDrawer = () => {
         class="playmat"
         @mouseenter="setActiveDragDrawer()"
     >
-      <div class="battlefield">
-        <pre>{{ battlefield }}</pre>
-      </div>
-
       <div class="library-holder">
         <app-mtg-library
             :cards="deck"
@@ -90,5 +81,6 @@ const setActiveDragDrawer = () => {
       background-color: #0009;
     }
   }
+
 }
 </style>

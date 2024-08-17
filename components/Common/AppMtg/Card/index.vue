@@ -3,13 +3,15 @@ import {CardInterface} from "~/composables/entity/CardInterface";
 import {CollectionSet} from "~/composables/entity/CollectionSet";
 import {ImageCollection} from "~/composables/entity/ImageCollection";
 import fallbackImageUrl from '~/assets/images/backgrounds/mtg-card-default-background.png'
+import {CardClass} from "~/composables/entity/Class/CardClass";
+import {CollectionSetClass} from "~/composables/entity/Class/CollectionSetClass";
 const mtgState = useMtgState();
 const emit = defineEmits(['click']);
 
 const props = withDefaults(
     defineProps<{
-      card:CardInterface,
-      activeSet?:CollectionSet|null,
+      card:CardClass,
+      activeSet?:CollectionSetClass|null,
       hideAction?:boolean,
       hideDescriptions?:boolean,
       square?:boolean,
@@ -31,21 +33,21 @@ const toggleBacksideImage = () => {
 }
 
 const parseCardImage = computed(() => {
-  if (!props.card?.getImageUrl()) {
+  if (!props.card?.imageUrl) {
     return '~/assets/images/backgrounds/mtg-card-default-background.png';
   }
   if (null !== props.activeSet) {
-    const cardSetImage = props.card.getImageCollection().find(i => i.getCollectionSet().getId() === props.activeSet?.getId());
+    const cardSetImage = props.card.imageCollection?.find(i => i.getCollectionSet().getId() === props.activeSet?.id);
     if (cardSetImage) {
       return cardSetImage.getCollectionImage();
     }
   }
 
   if (props.square) {
-    return props.card.getArtImageUrl() ?? props.card.getImageUrl();
+    return props.card.artImageUrl ?? props.card.imageUrl;
   }
 
-  return showBacksideImage.value ? (props.card.getBacksideImageUrl() ?? props.card.getImageUrl()) : props.card.getImageUrl();
+  return showBacksideImage.value ? (props.card.backsideImageUrl ?? props.card.imageUrl) : props.card.imageUrl;
 });
 
 const fetchColorsFromArray = (arr:string[]) => {
@@ -66,14 +68,14 @@ const fetchColorsFromArray = (arr:string[]) => {
 }
 
 const parsedColorFromCost = computed(() => {
-  const cardCost = props.card.getManaCost();
+  const cardCost = props.card.manaCost;
   if (!cardCost) return '-';
 
   let splitCost = cardCost.split('}{');
   let costColors = fetchColorsFromArray(splitCost);
 
   if (!costColors.length) {
-    const identityCost = props.card.getIdentityCost();
+    const identityCost = props.card.identityCost;
     if (identityCost) {
       let splitIdentity = identityCost.split('}{');
       costColors = fetchColorsFromArray(splitIdentity);
@@ -94,7 +96,7 @@ const parsedColorFromCost = computed(() => {
     return [...returnValue, costColors.map(i => i.replaceAll('{','').replaceAll('}','').replaceAll('/','')).join('')].join('-');
   }
 
-  if (props.card.getType()?.toLowerCase().includes('artifact')) {
+  if (props.card.type?.toLowerCase().includes('artifact')) {
     return 'artifact';
   } else {
     return 'colorless';
@@ -157,14 +159,14 @@ onNuxtReady(async () => {
     <div class="card-image">
       <img
           :src="parseCardImage"
-          :alt="card.getName()"
+          :alt="card.name"
           @error="$event.target.src=fallbackImageUrl"
       >
       <img
           v-if="card.backsideImageUrl"
           class="hidden-backside-image"
           :src="card.backsideImageUrl"
-          :alt="card.getName()"
+          :alt="card.name"
           @error="$event.target.src=fallbackImageUrl"
       >
     </div>
@@ -196,25 +198,25 @@ onNuxtReady(async () => {
         <div class="header">
           <img :src="parseCardFrame" alt="card-face-u">
 
-          <span class="card-name">{{ card.getName() }}</span>
+          <span class="card-name">{{ card.name }}</span>
         </div>
 
 
         <div class="footer">
 <!--          <img src="~/assets/images/mtg/card-frames/non-creature/text-box-gold.png" alt="card-face-u">-->
 
-          <span class="card-type">{{ card.getType() }}</span>
+          <span class="card-type">{{ card.type }}</span>
         </div>
       </div>
     </template>
 
     <ul class="card-details" v-if="!hideDescriptions">
       <li>
-        <span class="value">{{ card.getName() }}</span>
+        <span class="value">{{ card.name }}</span>
       </li>
       <li>
         <span class="title">Mana cost:</span>
-        <span class="value">{{ card.getCmc() }}</span>
+        <span class="value">{{ card.cmc }}</span>
       </li>
     </ul>
   </div>

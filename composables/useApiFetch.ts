@@ -2,8 +2,6 @@
 export const useApiPost = async (requestUrl, opts = {}, headers = {}) => {
   const config = useRuntimeConfig();
 
-  // headers.Authorization = `Bearer ${apiCookie?.value}`;
-
   return new Promise(async (resolve, reject) => {
     const reqOptions = {
       baseURL: config.public.baseApiUrl,
@@ -36,14 +34,13 @@ export const useLocalApiPost = async (requestUrl, opts = {}, headers = {}) => {
   const config = useRuntimeConfig();
 
   return new Promise(async (resolve, reject) => {
-    const {data, error} = await useFetch(`/api${requestUrl}`, {
-      baseURL: config.public.baseAppUrl,
+    const {data, error} = await useFetch(`${config.public.baseAppUrl}/api${requestUrl}`, {
       method: 'POST',
       body: opts,
       headers: {
         Accept: 'application/json'
       },
-    });
+    } as any);
 
     if (!error?.value?.data) {
       resolve(data.value)
@@ -70,6 +67,7 @@ export const useDynamicPost = async (requestUrl, opts = {}, headers = null) => {
     }
   }
 
+  // return await useApiPost(requestUrl, opts, postHeaders);
   if ([useConsts().ENV_DEVELOPMENT, useConsts().ENV_INTEGRATION, useConsts().ENV_RECETTE].includes(config.public.env)) {
     return await useApiPost(requestUrl, opts, postHeaders);
   } else {
