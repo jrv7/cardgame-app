@@ -1,0 +1,26 @@
+
+
+
+
+@for $i from 1 through 64 {
+  .padding-#{$i} {
+    padding: #{$i}px !important;
+  }
+
+  $positions: "top", "bottom", "left", "right";
+  @each $pos in $positions {
+    .padding-#{$pos}-#{$i} {
+      padding-#{$pos}: #{$i}px !important;
+    }
+  }
+
+  .padding-v-#{$i} {
+    padding-left: #{$i}px !important;
+    padding-right: #{$i}px !important;
+  }
+
+  .padding-h-#{$i} {
+    padding-top: #{$i}px !important;
+    padding-bottom: #{$i}px !important;
+  }
+}

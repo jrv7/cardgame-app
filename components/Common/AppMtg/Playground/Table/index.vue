@@ -1,11 +1,19 @@
 <script setup lang="ts">
 
-import {GameController} from "~/composables/entity/Controller/GameController";
-import {GamePlayerClass} from "~/composables/entity/Class/GamePlayerClass";
+import {SessionControllerClass} from "~/composables/entity/Controller/SessionControllerClass";
 
 const globalState = useGlobalState();
 
 const emit = defineEmits(['magic-played']);
+const props = withDefaults(
+    defineProps<{
+      session:Ref<SessionControllerClass>
+    }>(), {
+
+    }
+);
+
+const Session:Ref<SessionControllerClass> = computed(() => props.session) as Ref<SessionControllerClass>;
 
 const setActiveDragDrawer = () => {
   if (globalState.value.draggableElement) {
@@ -14,7 +22,7 @@ const setActiveDragDrawer = () => {
 }
 
 const deck = computed(() => {
-  return [];
+  return Session.value.Player.Library.cards;//.filter((c, index) => index === 0);
 })
 </script>
 
@@ -69,7 +77,7 @@ const deck = computed(() => {
       position: absolute;
       bottom: 0;
       right: 2px;
-      width: 60px;
+      width: 80px;
     }
 
     & > .battlefield {

@@ -77,6 +77,8 @@ export default defineNuxtConfig({
     '@/assets/scss/colors.scss',
     '@/assets/scss/app.scss',
     '@/assets/scss/_grid.scss',
+    '@/assets/scss/_paddings.scss',
+    '@/assets/scss/_margins.scss',
     '@/assets/scss/_cards.scss',
     '@/assets/scss/_borders.scss',
     '@/assets/scss/_colors.scss',

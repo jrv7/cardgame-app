@@ -49,4 +49,13 @@ export class CollectionSetClass extends EntityClass {
     set releaseDate(value: string | null) {
         this._releaseDate = value;
     }
+
+    toObject():oCollectionSet {
+        return {
+            id: this._id,
+            code: this._code,
+            name: this._name,
+            releaseDate: this._releaseDate,
+        }
+    }
 }

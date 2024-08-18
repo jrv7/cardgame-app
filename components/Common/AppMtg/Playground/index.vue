@@ -43,7 +43,7 @@ onMounted(async () => {
   >
     <app-mtg-observer
         ref="ObserverRef"
-        :game-uid="SessionController.Session.game.uid"
+        :game-uid="SessionController.Session.uid"
     >
 
       <app-mtg-playground-table :session="SessionController" />

@@ -29,7 +29,7 @@ const props = withDefaults(
       horizontalPerspectiveModifier: 1
     }
 );
-const cardsVisible = ref(20);
+const cardsVisible = ref(30);
 const currentPercentage = computed(() => {
   return props.cards.length / props.deckSize;
 });
@@ -66,13 +66,14 @@ const handleHover = () => {
         'can-drag-to-top': allowDragToTop,
         'is-dragging': isDragging
       }"
-      :style="{'top': `${(-1 * (parseInt(cardsVisible * currentPercentage) / 2))}px`, 'left': `${(-1 * (parseInt(cardsVisible * currentPercentage) / 2))}px`}"
+      :style="{'top': '-48px', 'left': '-48px'}"
   >
+<!--    :style="{'top': `${(-1 * (parseInt(cardsVisible * currentPercentage) / 2))}px`, 'left': `${(-1 * (parseInt(cardsVisible * currentPercentage) / 2))}px`}"-->
     <ul
         class="library-pile"
         @mouseenter="handleHover()"
     >
-      <template v-for="n in parseInt(cardsVisible * currentPercentage)" :key="`lib-card-${n}`">
+      <template v-for="n in parseInt(`${(cardsVisible * currentPercentage) + (cards.length ? 1 : 0)}`)" :key="`lib-card-${n}`">
         <li :style="{'top': `${verticalPerspective === 'top' ? '' : '-'}${(n * verticalPerspectiveModifier)}px`, 'left': `${horizontalPerspective === 'right' ? '-' : ''}${horizontalPerspective === 'center' ? '0' : (n * horizontalPerspectiveModifier)}px`}">
           <template v-if="showFirstCard && n === parseInt(cardsVisible * currentPercentage)">
             <app-mtg-card-id-holder
@@ -160,7 +161,6 @@ const handleHover = () => {
     bottom: 0;
     padding: 0;
     margin: 0;
-    background-color: #0009;
     transition: all .3s ease-in-out;
     opacity: 0;
     z-index: 100;
@@ -180,10 +180,6 @@ const handleHover = () => {
         left: 50%;
         transform: translate(-50%, -50%);
       }
-    }
-
-    &:hover {
-      background-color: #fff9;
     }
 
     &.bottom {

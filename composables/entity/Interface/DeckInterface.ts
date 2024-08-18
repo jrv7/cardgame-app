@@ -2,6 +2,8 @@ import {EntityInterface} from "~/composables/entity/Interface/EntityInterface";
 import {oGameFormat} from "~/composables/entity/Interface/GameFormatInterface";
 import {oCard} from "~/composables/entity/Interface/CardInterface";
 import {CardClass} from "~/composables/entity/Class/CardClass";
+import {oDeckCard} from "~/composables/entity/Interface/DeckCardInterface";
+import {DeckCardClass} from "~/composables/entity/Class/DeckCardClass";
 
 export type oDeck = {
     id:number|null,
@@ -10,7 +12,7 @@ export type oDeck = {
     coverCard:any,
     primaryCard:any,
     secondaryCard:any,
-    cards:oCard[]|null
+    cards:oDeckCard[]|null
 };
 
 export interface DeckInterface extends EntityInterface {
@@ -20,5 +22,5 @@ export interface DeckInterface extends EntityInterface {
     coverCard:any;
     primaryCard:any;
     secondaryCard:any;
-    cards:CardClass[]|null;
+    cards:DeckCardClass[]|null;
 }

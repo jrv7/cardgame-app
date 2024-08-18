@@ -1,5 +1,6 @@
 import {EntityClass} from "~/composables/entity/Class/EntityClass";
 import {oSupertype} from "~/composables/entity/Interface/SupertypeInterface";
+import {oColor} from "~/composables/entity/Interface/ColorInterface";
 
 
 export class SupertypeClass extends EntityClass {
@@ -30,5 +31,12 @@ export class SupertypeClass extends EntityClass {
     }
     set name(value: string | null) {
         this._name = value;
+    }
+
+    toObject():oSupertype {
+        return {
+            id: this._id,
+            name: this._name,
+        }
     }
 }

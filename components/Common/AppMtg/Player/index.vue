@@ -18,7 +18,10 @@ const Session:Ref<SessionControllerClass> = computed(() => props.session) as Ref
       class="app-mtg-player"
   >
     <app-mtg-player-top-bar :session="Session" />
-    <app-mtg-player-mulligan :session="Session" />
+    <app-mtg-player-mulligan v-if="!Session.Player.readyToPlay" :session="Session" />
+
+    <pre>{{ Session.Player.Hand.cards.length }}</pre>
+    <pre>{{ Session.Player.Library.cards.length }}</pre>
   </div>
 </template>
 

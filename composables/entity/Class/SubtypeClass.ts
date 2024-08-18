@@ -1,5 +1,6 @@
 import {EntityClass} from "~/composables/entity/Class/EntityClass";
 import {oSubtype} from "~/composables/entity/Interface/SubtypeInterface";
+import {oType} from "~/composables/entity/Interface/TypeInterface";
 
 
 export class SubtypeClass extends EntityClass {
@@ -30,5 +31,12 @@ export class SubtypeClass extends EntityClass {
     }
     set name(value: string | null) {
         this._name = value;
+    }
+
+    toObject():oSubtype {
+        return {
+            id: this._id,
+            name: this._name,
+        }
     }
 }

@@ -1,0 +1,26 @@
+
+
+
+
+@for $i from 1 through 64 {
+  .margin-#{$i} {
+    margin: #{$i}px !important;
+  }
+
+  $positions: "top", "bottom", "left", "right";
+  @each $pos in $positions {
+    .margin-#{$pos}-#{$i} {
+      margin-#{$pos}: #{$i}px !important;
+    }
+  }
+
+  .margin-v-#{$i} {
+    margin-left: #{$i}px !important;
+    margin-right: #{$i}px !important;
+  }
+
+  .margin-h-#{$i} {
+    margin-top: #{$i}px !important;
+    margin-bottom: #{$i}px !important;
+  }
+}

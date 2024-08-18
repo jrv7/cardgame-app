@@ -5,6 +5,9 @@ import {GameFormatClass} from "~/composables/entity/Class/GameFormatClass";
 import {CardClass} from "~/composables/entity/Class/CardClass";
 import {oCard} from "~/composables/entity/Interface/CardInterface";
 import {object} from "zod";
+import {DeckCardClass} from "~/composables/entity/Class/DeckCardClass";
+import {oDeckCard} from "~/composables/entity/Interface/DeckCardInterface";
+import {oHandCard} from "~/composables/entity/Interface/HandCardInterface";
 
 
 export class DeckClass extends EntityClass {
@@ -14,7 +17,7 @@ export class DeckClass extends EntityClass {
     private _coverCard:CardClass|null;
     private _primaryCard:CardClass|null;
     private _secondaryCard:CardClass|null;
-    private _cards:CardClass[]|null;
+    private _cards:DeckCardClass[]|null;
     private _original:DeckClass|null;
 
     constructor(object:oDeck, setOriginal:boolean = false) {
@@ -25,7 +28,7 @@ export class DeckClass extends EntityClass {
         this._coverCard = object?.coverCard ? (new CardClass(object.coverCard)) : null;
         this._primaryCard = object?.primaryCard ? (new CardClass(object.primaryCard)) : null;
         this._secondaryCard = object?.secondaryCard ? (new CardClass(object.secondaryCard)) : null;
-        this._cards = object?.cards ? object.cards.map((c:oCard) => (new CardClass(c)) ) : [];
+        this._cards = object?.cards ? object.cards.map((c:oDeckCard) => (new DeckCardClass(c)) ) : [];
 
         if (setOriginal) {
             this._original = new DeckClass(object, false);

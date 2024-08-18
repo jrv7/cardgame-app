@@ -1,6 +1,7 @@
 import {EntityClass} from "~/composables/entity/Class/EntityClass";
 import {oColor} from "~/composables/entity/Interface/ColorInterface";
 import {object} from "zod";
+import {oCollectionSet} from "~/composables/entity/Interface/CollectionSetInterface";
 
 
 export class ColorClass extends EntityClass {
@@ -59,5 +60,15 @@ export class ColorClass extends EntityClass {
     }
     set colorOrder(value: number | null) {
         this._colorOrder = value;
+    }
+
+    toObject():oColor {
+        return {
+            id: this._id,
+            code: this._code,
+            mtgCode: this._mtgCode,
+            name: this._name,
+            colorOrder: this._colorOrder,
+        }
     }
 }

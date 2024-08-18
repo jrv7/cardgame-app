@@ -276,4 +276,37 @@ export class CardClass extends EntityClass {
     set originalType(value: string | null) {
         this._originalType = value;
     }
+
+    toObject():oCard {
+        return {
+            id: this._id,
+            cardHash: this._cardHash,
+            cardId: this._cardId,
+            cardNumber: this._cardNumber,
+            multiverseId: this._multiverseId,
+            collectionSet: this._collectionSet.toObject(),
+            collectionSets: this._collectionSets?.map((cs:CollectionSetClass) => cs.toObject()) ?? [],
+            colors: this._colors?.map((c:ColorClass) => c.toObject()) ?? [],
+            identityColors: this._identityColors?.map((c:ColorClass) => c.toObject()) ?? [],
+            supertypes: this._supertypes?.map((spt:SupertypeClass) => spt.toObject()) ?? [],
+            types: this._types?.map((t:TypeClass) => t.toObject()) ?? [],
+            subtypes: this._subtypes?.map((sbt:SubtypeClass) => sbt.toObject()) ?? [],
+            name: this._name,
+            cmc: this._cmc,
+            manaCost: this._manaCost,
+            power: this._power,
+            toughness: this._toughness,
+            loyalty: this._loyalty,
+            rarity: this._rarity,
+            layout: this._layout,
+            imageUrl: this._imageUrl,
+            artImageUrl: this._artImageUrl,
+            backsideImageUrl: this._backsideImageUrl,
+            latestImageUrl: this._latestImageUrl,
+            oracleText: this._oracleText,
+            originalText: this._originalText,
+            type: this._type,
+            originalType: this._originalType,
+        }
+    }
 }
