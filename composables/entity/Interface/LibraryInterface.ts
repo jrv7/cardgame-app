@@ -1,15 +1,15 @@
 import {EntityInterface} from "~/composables/entity/Interface/EntityInterface";
-import {oLibraryCard} from "~/composables/entity/Interface/LibraryCardInterface";
-import {LibraryCardClass} from "~/composables/entity/Class/LibraryCardClass";
+import {oHandCard} from "~/composables/entity/Interface/HandCardInterface";
+import {HandCardClass} from "~/composables/entity/Class/HandCardClass";
 
 export type oLibrary = {
     empty:boolean,
     size:number,
-    cards:oLibraryCard[],
+    cards:oHandCard[],
 };
 
 export interface LibraryInterface extends EntityInterface {
     empty:boolean;
     size:number;
-    cards:LibraryCardClass[];
+    cards:HandCardClass[];
 }

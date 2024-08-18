@@ -82,6 +82,7 @@ export default defineNuxtConfig({
     '@/assets/scss/_cards.scss',
     '@/assets/scss/_borders.scss',
     '@/assets/scss/_colors.scss',
+    '@/assets/scss/_texts.scss',
     '@/assets/scss/components/system/app-header.scss',
     '@/assets/scss/components/system/app-body.scss',
     '@/assets/scss/components/system/app-footer.scss',

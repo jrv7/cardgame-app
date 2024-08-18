@@ -36,11 +36,16 @@ export class SessionControllerClass extends SessionControllerInterface {
 
     async init(value:oSession) {
         return new Promise((res, rej) => {
-            this._Session = new SessionClass(value);
+            if (this._Session === null) {
+                this._Session = new SessionClass(value);
+            }
 
-            if (this._gameState.PlayerUid) {
-                this.Player = new GamePlayerControllerClass(this._gameState);
-                this.Player.init()
+            if (this.state.PlayerUid) {
+                if (this._Player === null) {
+                    this._Player = new GamePlayerControllerClass();
+                }
+
+                this._Player.init()
                     .then(() => {
                         if (this.Player!.GamePlayer?.deck?.id) {
                             const pDeck = this.self.decks?.find((d:DeckClass) => {

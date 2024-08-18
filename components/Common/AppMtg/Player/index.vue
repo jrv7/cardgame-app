@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {SessionControllerClass} from "~/composables/entity/Controller/SessionControllerClass";
 
+const gameState = useGameState();
 const ready = ref(false);
 const props = withDefaults(
     defineProps<{
@@ -11,6 +12,19 @@ const props = withDefaults(
 );
 
 const Session:Ref<SessionControllerClass> = computed(() => props.session) as Ref<SessionControllerClass>;
+
+const isPlayerReady = computed(() => {
+  return !!gameState.value?.Player?.readyToPlay || !!Session.value.Player?.readyToPlay;
+})
+
+const showMulliganScreen = ref(true);
+const handleMulliganDone = async (result:boolean) => {
+  if (result) {
+    showMulliganScreen.value = false;
+  } else {
+    console.log('MULLIGAN ERROR');
+  }
+}
 </script>
 
 <template>
@@ -18,10 +32,16 @@ const Session:Ref<SessionControllerClass> = computed(() => props.session) as Ref
       class="app-mtg-player"
   >
     <app-mtg-player-top-bar :session="Session" />
-    <app-mtg-player-mulligan v-if="!Session.Player.readyToPlay" :session="Session" />
+    <app-mtg-player-mulligan
+        v-if="!isPlayerReady && showMulliganScreen" :session="Session"
+        @hand-kept="(result) => handleMulliganDone(result)"
+    />
+    <app-mtg-player-hud v-if="isPlayerReady" :session="Session">
 
-    <pre>{{ Session.Player.Hand.cards.length }}</pre>
-    <pre>{{ Session.Player.Library.cards.length }}</pre>
+      <template #cardHolder>
+        <app-mtg-player-hand :session="Session" />
+      </template>
+    </app-mtg-player-hud>
   </div>
 </template>
 

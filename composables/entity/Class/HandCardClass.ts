@@ -1,9 +1,6 @@
 import {EntityClass} from "~/composables/entity/Class/EntityClass";
 import {oHandCard} from "~/composables/entity/Interface/HandCardInterface";
-import {object} from "zod";
 import {CardClass} from "~/composables/entity/Class/CardClass";
-import {Card} from "~/composables/entity/Card";
-import {oCard} from "~/composables/entity/Interface/CardInterface";
 
 
 export class HandCardClass extends EntityClass {
@@ -14,9 +11,9 @@ export class HandCardClass extends EntityClass {
     private _visibleToAll:boolean = false;
     private _visibleToPlayers:number[] = [];
 
-    constructor(object: oHandCard) {
+    constructor(object: oHandCard, position:number|null = null) {
         super();
-        this._position = this.$deepClone(object.position);
+        this._position = (position !== null ? position : this.$deepClone(object.position));
         this._cardHash = this.$deepClone(object.cardHash);
         this._card = object.card ? (new CardClass(object.card)) : null;
         this._visibleToOwner = true;
@@ -40,6 +37,10 @@ export class HandCardClass extends EntityClass {
         const idLen = parseInt(this.cardHash.substr(7, 2));
         return parseInt(this.cardHash.substr((this.cardHash.length - (2 * idLen)), idLen));
     }
+
+    showToMe():void { this.visibleToOwner = true; }
+    showEverybody():void { this.visibleToAll = true; }
+    showToPlayer(value:number):void { this.visibleToPlayers = [...this.visibleToPlayers.filter(i => i !== value), value]; }
 
     toggleVisibilityToOwner() {
         this.visibleToOwner = JSON.parse(JSON.stringify(!this.visibleToOwner));

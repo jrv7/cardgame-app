@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import {SessionControllerClass} from "~/composables/entity/Controller/SessionControllerClass";
 
-const gameStore = useGame();
 const gameState = useGameState();
-
 const ObserverRef = ref(null);
 const meCookie = useCookie('currentplayer');
 const myPlayerId = computed(() => {
@@ -11,15 +9,34 @@ const myPlayerId = computed(() => {
 });
 const ready = ref(false);
 
-const SessionController:Ref<SessionControllerClass> = ref(new SessionControllerClass(gameState)) as Ref<SessionControllerClass>;
+const SessionController:Ref<SessionControllerClass> = ref(new SessionControllerClass()) as Ref<SessionControllerClass>;
+
+const SessionUpdateTrigger:any = ref(null);
+watch(gameState.value, async (newVal:any) => {
+  clearTimeout(SessionUpdateTrigger.value)
+  SessionUpdateTrigger.value = null;
+  SessionUpdateTrigger.value = setTimeout(() => {
+    SessionController.value.init(newVal.Session)
+  }, 1500)
+}, { deep: true, immediate: true })
 
 const awaitFetchSession = async () => {
   setTimeout(() => {
-    if (gameState.value.started && gameState.value.Session) {
+    if (gameState.value.started && gameState.value.Session && myPlayerId.value) {
       useApiPost(`/session/${gameState.value.Session.uid}/prepare-playground`)
           .then(({success, data}:{success:boolean, data:any}) => {
-            SessionController.value.init(data)
+            const sessionData = {
+              ...data,
+              Player: data.players?.find(p => p.player?.id === myPlayerId.value),
+              ...{
+                PlayerId: myPlayerId.value ?? null,
+                PlayerUid: data.players?.find(p => p.player?.id === myPlayerId.value)?.player?.uid ?? null,
+                readyToPlay: data.players?.find(p => p.player?.id === myPlayerId.value)?.readyToPlay ?? false,
+              },
+            };
+            SessionController.value.init(sessionData)
                 .then(() => {
+                  SessionController.value.setGameState(sessionData);
                   setTimeout(() => {
                     ready.value = true;
                   }, 400)

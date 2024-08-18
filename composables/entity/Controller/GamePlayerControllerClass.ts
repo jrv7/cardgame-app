@@ -10,24 +10,31 @@ import {HandClass} from "~/composables/entity/Class/HandClass";
 import {HandCardClass} from "~/composables/entity/Class/HandCardClass";
 import {HandInterface} from "~/composables/entity/Interface/HandInterface";
 import {oHandCard} from "~/composables/entity/Interface/HandCardInterface";
+import {Ref} from "preact/compat";
+import {p} from "@antfu/utils";
+import {undefined} from "zod";
+import {i} from "vite-node/types-516036fa";
+import obj from "svgo/lib/svgo/css-select-adapter";
 
 
 export class GamePlayerControllerClass extends SessionControllerInterface {
     private _GamePlayer:GamePlayerClass|null = null;
     private _Deck:DeckClass|null = null;
-    private _Library:LibraryClass|null = null;
+    private _Library:LibraryClass = new LibraryClass();
     private _Hand:HandClass = new HandClass();
+    private _Graveyard:HandClass = new HandClass();
+    private _Exile:HandClass = new HandClass();
     private _mulligans:Ref<number> = ref(-1) as Ref<number>;
     private _readyToPlay:Ref<boolean> = ref(false) as Ref<boolean>;
 
-    constructor(state:any) {
-        super(state);
+    constructor() {
+        super();
     }
 
     get GamePlayer(): GamePlayerClass | null { return this._GamePlayer; }
     set GamePlayer(value: GamePlayerClass | null) { this._GamePlayer = value; }
-    get mulligans(): number { return this._mulligans; }
-    set mulligans(value: number) { this._mulligans = value; }
+    get mulligans(): Ref<number> { return this._mulligans; }
+    set mulligans(value: Ref<number>) { this._mulligans = value; }
     get Deck(): DeckClass | null { return this._Deck; }
     set Deck(value: DeckClass | null) { this._Deck = value; }
     get Library(): LibraryClass | null { return this._Library; }
@@ -47,9 +54,10 @@ export class GamePlayerControllerClass extends SessionControllerInterface {
         } as HandInterface;
     }
     set Hand(value: HandClass) { this._Hand = value; }
-    get Session():any {
-        return this._gameState.Session;
-    }
+    get Graveyard(): HandClass { return this._Graveyard; }
+    set Graveyard(value: HandClass) { this._Graveyard = value; }
+    get Exile(): HandClass { return this._Exile; }
+    set Exile(value: HandClass) { this._Exile = value; }
     get readyToPlay(): Ref<boolean> { return this._readyToPlay; }
     set readyToPlay(value: Ref<boolean>) { this._readyToPlay = value; }
 
@@ -63,7 +71,8 @@ export class GamePlayerControllerClass extends SessionControllerInterface {
 
     async init() {
         return new Promise((res, rej) => {
-            const playerData = this.Session.players.find((p:oGamePlayer) => p.player.uid === this._gameState.PlayerUid);
+            const gameState = useGameState();
+            const playerData = gameState.value.Session.Player ?? gameState.value.Session.players.find((p:oGamePlayer) => p.player.uid === this.state.PlayerUid);
             this.GamePlayer = new GamePlayerClass(playerData)
             this._mulligans = (![null, undefined].includes(playerData.player.mulligans)) ? playerData.player.mulligans : -1;
 
@@ -83,7 +92,7 @@ export class GamePlayerControllerClass extends SessionControllerInterface {
     async shuffle() {
         return new Promise((resolve, reject) => {
             useApiPost(`/session/${this.gameUid}/shuffle/${this.playerId}`, {mulligans: this.mulligans})
-                .then(({success, data}:{success:boolean, data:oLibraryCard[]}) => {
+                .then(({success, data}:{success:boolean, data:oHandCard[]}) => {
                     this.Library = new LibraryClass(data);
                     resolve(data);
                 })
@@ -100,7 +109,7 @@ export class GamePlayerControllerClass extends SessionControllerInterface {
         return new Promise((res) => {
             for(let i = 0; i < quantity; i++) {
                 this.Library.draw(i)
-                    .then((card:LibraryCardClass) => {
+                    .then((card:HandCardClass) => {
                         const obj = card.toObject();
                         let newCard = new HandCardClass({
                             position: obj.position,
@@ -119,7 +128,7 @@ export class GamePlayerControllerClass extends SessionControllerInterface {
     async putBack(hashes:string[]) {
         const handCards = this._Hand.cards.filter(c => hashes.includes(c.cardHash)).map(c => ( c.toObject(false) ))
         await this._Hand.remove(hashes);
-        await this._Library.pushToBottom(handCards.map(c => ( { position: c.position, card: c.cardHash } as oLibraryCard ) ));
+        await this._Library.pushToBottom(handCards.map(c => ( { position: c.position, cardHash: c.cardHash } as oHandCard ) ));
     }
 
     async mulligan() {
@@ -131,7 +140,7 @@ export class GamePlayerControllerClass extends SessionControllerInterface {
         return new Promise((res, rej) => {
             useApiPost(`/session/${this.gameUid}/persist-hand/${this.playerId}`, {hand: this._Hand.toObject()})
                 .then((response) => {
-                    res(true);
+                    res(response);
                 })
                 .catch((err) => {
                     console.log('Could not persist hand', err)
@@ -144,12 +153,38 @@ export class GamePlayerControllerClass extends SessionControllerInterface {
         return new Promise((res, rej) => {
             useApiPost(`/session/${this.gameUid}/persist-library/${this.playerId}`, {library: this._Library?.toObject()})
                 .then((response) => {
-                    res(true);
+                    res(response);
                 })
                 .catch((err) => {
                     console.log('Could not persist library', err)
                     rej(err);
                 })
+        })
+    }
+
+    async keepHand(response:any) {
+        return new Promise((res) => {
+            this.setGameState(response.data);
+            const playerData = response.data.players.find((p:oGamePlayer) => p.player.uid === this.state.PlayerUid);
+
+            if (playerData.hand?.cards?.length) {
+                this._Hand = new HandClass(playerData.hand.cards);
+            }
+
+            res(true);
+        })
+    }
+
+    async keepRefreshLibrary(response:any) {
+        return new Promise((res) => {
+            this.setGameState(response.data);
+            const playerData = response.data.players.find((p:oGamePlayer) => p.player.uid === this.state.PlayerUid);
+
+            if (playerData.library?.cards?.length) {
+                this._Library = new LibraryClass(playerData.library.cards);
+            }
+
+            res(true);
         })
     }
 }

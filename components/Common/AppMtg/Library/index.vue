@@ -81,11 +81,6 @@ const handleHover = () => {
                 hide-action
             />
           </template>
-          <template v-else-if="n === 1 && cards?.length">
-            <div class="last-card">
-              {{ cards.length }} card{{ cards.length > 1 ? 's' : '' }}
-            </div>
-          </template>
           <template v-else>
             <app-mtg-card-skeleton no-opacity />
           </template>

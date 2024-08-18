@@ -22,6 +22,7 @@ const setActiveDragDrawer = () => {
 }
 
 const deck = computed(() => {
+  if (!Session.value?.Player?.Library?.cards.length) return [];
   return Session.value.Player.Library.cards;//.filter((c, index) => index === 0);
 })
 </script>

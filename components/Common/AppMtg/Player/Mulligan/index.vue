@@ -1,12 +1,9 @@
 <script setup lang="ts">
 
 import {SessionControllerClass} from "~/composables/entity/Controller/SessionControllerClass";
-import {GamePlayerControllerClass} from "~/composables/entity/Controller/GamePlayerControllerClass";
 import {HandCardClass} from "~/composables/entity/Class/HandCardClass";
-import {Preview} from "vue-advanced-cropper";
 
-const gameState = useGameState();
-const playerMulligans = useCookie('mulligans');
+const emit = defineEmits(['hand-kept']);
 const props = withDefaults(
     defineProps<{
       session:Ref<SessionControllerClass>
@@ -38,9 +35,19 @@ const handleKeepHand = async () => {
     await Session.value.Player.putBack(Session.value.Player.Hand.invisibleCards.map(c => c.cardHash));
   }
 
-  await Session.value.Player.persistHand();
-  await Session.value.Player.persistLibrary();
-  console.log('Keeping hand');
+  await Session.value.Player.persistHand()
+      .then((respHandKept) => {
+        Session.value.Player.persistLibrary()
+            .then((respLibKept) => {
+              Session.value.Player.keepHand(respHandKept)
+                  .then(() => {
+                    Session.value.Player.keepRefreshLibrary(respLibKept)
+                        .then(() => {
+                          emit('hand-kept', true);
+                        }).catch(() => { emit('hand-kept', true); })
+                  }).catch(() => { emit('hand-kept', false); })
+            }).catch(() => { emit('hand-kept', false); })
+      }).catch(() => { emit('hand-kept', false); })
 }
 
 onMounted(async () => {

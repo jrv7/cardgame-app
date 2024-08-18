@@ -236,13 +236,22 @@ $colors: "blue", "cyan", "indigo", "purple", "red", "orange", "yellow", "pink", 
   .bg-color-#{$color} {
     background-color: var(--app-#{$color});
   }
+  .text-color-#{$color} {
+    color: var(--app-#{$color}) !important;
+  }
 
   @for $j from 1 through 9 {
     .bg-color-#{$color}-#{$j*10} {
       background-color: var(--app-#{$color}-#{$j*10});
     }
+    .text-color-#{$color}-#{$j*10} {
+      color: var(--app-#{$color}-#{$j*10}) !important;
+    }
     .bg-color-#{$color}-#{$j*100} {
       background-color: var(--app-#{$color}-#{$j*100});
+    }
+    .text-color-#{$color}-#{$j*100} {
+      color: var(--app-#{$color}-#{$j*100}) !important;
     }
   }
 }
@@ -252,11 +261,17 @@ $wbs: "white", "black";
   .bg-color-#{$wb} {
     background-color: var(--app-#{$wb});
   }
+  .text-color-#{$wb} {
+    color: var(--app-#{$wb}) !important;
+  }
 
   $shades: "soft", "mute";
   @each $shade in $shades {
     .bg-color-#{$wb}-#{$shade} {
       background-color: var(--app-#{$wb}-#{$shade});
+    }
+    .text-color-#{$wb}-#{$shade} {
+      color: var(--app-#{$wb}-#{$shade}) !important;
     }
   }
 }

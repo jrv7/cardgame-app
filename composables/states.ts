@@ -69,10 +69,12 @@ export const useMtgState = () => useState(() => {
 
 export const useGameState = () => useState(() => {
   return {
+    upTime: 0,
     started: false,
     Session: null,
     PlayerUid: null
   } as {
+    upTime: number,
     started:boolean,
     Session:any,
     PlayerUid:string|null

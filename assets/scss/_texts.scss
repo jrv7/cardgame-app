@@ -1,0 +1,9 @@
+
+
+:root {
+  @for $i from 1 through 120 {
+    .text-size-#{$i} {
+      font-size: #{$i}px !important;
+    }
+  }
+}
